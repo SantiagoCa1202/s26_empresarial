@@ -1,0 +1,134 @@
+/* TEMA S26 EMPRESARIAL */
+
+body.s26-theme {
+  background-color: var(--bs-light);
+}
+
+.s26-theme .s26-navbar-top, .s26-theme .s26-navbar .menu li.title-menu {
+  background: var(--s26-blue);
+}
+
+.s26-theme .btn-icon, .btn-hide-menu, .s26-theme .s26-navbar-top, .s26-theme .btn-s26-dash, .s26-theme .s26-navbar .menu li.title-menu {
+  color: var(--bs-light) !important;
+}
+
+.s26-theme .s26-navbar ul {
+  background: var(--bs-white);
+  color: var(--s26-blue);
+}
+
+.s26-theme .s26-navbar .menu a {
+  color: rgba(0, 0, 0, .5);
+  transition: .3s;
+}
+
+.s26-theme .s26-navbar .menu a:hover, .s26-theme .s26-navbar .menu a:hover > i.icon-arrow, .s26-theme .s26-navbar .menu a.focus-menu, .s26-theme .focus-menu i.icon-arrow, .table {
+  color: var(--s26-blue) !important;
+}
+
+.s26-theme .btn-icon-close:hover {
+  color: var(--bs-white)
+}
+
+.s26-theme .s26-navbar .menu a.btn-focus {
+  color: var(--s26-blue);
+  list-style: circle;
+  font-weight: 700;
+}
+
+/* buttoms */
+
+.s26-theme .btn-s26-success {
+  color: var(--bs-white);
+  background-color: #00aa70;
+  border-color: #00aa70;
+}
+
+.s26-theme .btn-s26-success:hover {
+  background-color: #008b5d;
+  border-color: #008b5d;
+}
+
+.s26-theme .btn-s26-success:focus {
+  background-color: #007950;
+  border-color: #007950;
+  box-shadow: none;
+}
+
+.s26-theme .btn-s26-info {
+  color: var(--bs-white);
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.s26-theme .btn-s26-info:hover {
+  background-color: #137d8d;
+  border-color: #137d8d;
+}
+
+.s26-theme .btn-s26-info:focus {
+  background-color: #116875;
+  border-color: #116875;
+  box-shadow: none;
+}
+
+.s26-theme .btn-times {
+  color: var(--s26-blue);
+}
+
+.s26-theme .btn-show-sidebar, .s26-theme .modal-content, .s26-theme .s26-tarjet, .s26-theme .s26-table tbody tr, .s26-theme .s26-table tbody tr td, .s26-theme .s26-nav-dropdown .s26-list-dropdown, .s26-theme #s26-date-picker .container-date-picker {
+  background-color: var(--bs-white);
+  color: var(--s26-blue);
+}
+
+/* Info Tables */
+
+.s26-theme .container-sidebar {
+  background-color: var(--s26-white);
+  color: var(--s26-blue);
+}
+
+/* Custom Tables */
+
+.s26-theme .s26-table thead tr th, .table thead tr th {
+  background-color: var(--s26-blue-gray);
+  color: var(--s26-white);
+}
+
+/* CUSTOM TARJETS INFO */
+
+.s26-tarjet-primary .title {
+  color: var(--primary)
+}
+
+.s26-tarjet-primary .s26-tarjet-icon .circle-icon {
+  background-color: var(--primary);
+  color: var(--bs-white);
+}
+
+.s26-tarjet-secondary .title {
+  color: var(--secondary)
+}
+
+.s26-tarjet-secondary .s26-tarjet-icon .circle-icon {
+  background-color: var(--secondary);
+  color: var(--bs-white);
+}
+
+.s26-tarjet-danger .title {
+  color: var(--danger)
+}
+
+.s26-tarjet-danger .s26-tarjet-icon .circle-icon {
+  background-color: var(--danger);
+  color: var(--bs-white);
+}
+
+.s26-tarjet-gray .title {
+  color: var(--gray)
+}
+
+.s26-tarjet-gray .s26-tarjet-icon .circle-icon {
+  background-color: var(--gray);
+  color: var(--bs-white);
+}
