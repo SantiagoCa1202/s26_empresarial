@@ -22,7 +22,7 @@ body.s26-theme {
   transition: .3s;
 }
 
-.s26-theme .s26-navbar .menu a:hover, .s26-theme .s26-navbar .menu a:hover > i.icon-arrow, .s26-theme .s26-navbar .menu a.focus-menu, .s26-theme .focus-menu i.icon-arrow, .table {
+.s26-theme .s26-navbar .menu a:hover, .s26-theme .s26-navbar .menu a:hover>i.icon-arrow, .s26-theme .s26-navbar .menu a.focus-menu, .s26-theme .focus-menu i.icon-arrow, .table {
   color: var(--s26-blue) !important;
 }
 
@@ -76,7 +76,7 @@ body.s26-theme {
   color: var(--s26-blue);
 }
 
-.s26-theme .btn-show-sidebar, .s26-theme .modal-content, .s26-theme .s26-tarjet, .s26-theme .s26-table tbody tr, .s26-theme .s26-table tbody tr td, .s26-theme .s26-nav-dropdown .s26-list-dropdown, .s26-theme #s26-date-picker .container-date-picker {
+.s26-theme .btn-show-sidebar, .s26-theme .modal-content, .s26-theme .s26-tarjet, .s26-theme .s26-table tbody tr:not(.skeleton-tr), .s26-theme .s26-table tbody tr td:not(.skeleton-tr td), .s26-theme .s26-nav-dropdown .s26-list-dropdown, .s26-theme #s26-date-picker .container-date-picker {
   background-color: var(--bs-white);
   color: var(--s26-blue);
 }
@@ -84,7 +84,7 @@ body.s26-theme {
 /* Info Tables */
 
 .s26-theme .container-sidebar {
-  background-color: var(--s26-white);
+  background-color: var(--bs-white);
   color: var(--s26-blue);
 }
 
@@ -98,29 +98,29 @@ body.s26-theme {
 /* CUSTOM TARJETS INFO */
 
 .s26-tarjet-primary .title {
-  color: var(--primary)
+  color: var(--bs-primary)
 }
 
 .s26-tarjet-primary .s26-tarjet-icon .circle-icon {
-  background-color: var(--primary);
+  background-color: var(--bs-primary);
   color: var(--bs-white);
 }
 
 .s26-tarjet-secondary .title {
-  color: var(--secondary)
+  color: var(--bs-secondary)
 }
 
 .s26-tarjet-secondary .s26-tarjet-icon .circle-icon {
-  background-color: var(--secondary);
+  background-color: var(--bs-secondary);
   color: var(--bs-white);
 }
 
 .s26-tarjet-danger .title {
-  color: var(--danger)
+  color: var(--bs-danger)
 }
 
 .s26-tarjet-danger .s26-tarjet-icon .circle-icon {
-  background-color: var(--danger);
+  background-color: var(--bs-danger);
   color: var(--bs-white);
 }
 

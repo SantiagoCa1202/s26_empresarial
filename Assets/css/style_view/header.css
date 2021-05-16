@@ -1,0 +1,152 @@
+/* NAVEGACION SUPERIOR */
+
+.header-menu {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 50px;
+  box-shadow: 0px -3px 10px #243a46;
+  z-index: 1070;
+}
+
+.header-menu .s26-navbar-top, .header-menu .s26-navbar-top div {
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.header-menu .navbar-top-left, .header-menu .navbar-top-right {
+  width: 40%;
+}
+
+.header-menu .navbar-top-center {
+  width: 20%;
+  justify-content: center;
+}
+
+.header-menu .navbar-top-left div, .header-menu .navbar-top-left .btn-icon {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.header-menu .navbar-top-right {
+  justify-content: flex-end;
+}
+
+.header-menu .navbar-top-right div, .header-menu .navbar-top-right .btn-icon {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.header-menu .btn-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* NAVEGACION LATERAL */
+
+.s26-navbar {
+  position: absolute;
+  top: 0;
+  left: 0px;
+  width: 0%;
+  height: 100vh;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.s26-navbar .menu::-webkit-scrollbar {
+  width: 0px;
+  height: 8px;
+}
+
+.s26-navbar .btn-close-subMenu {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  padding: 0;
+}
+
+.s26-navbar .menu {
+  width: 250px;
+  height: 100%;
+  list-style: none;
+  position: absolute;
+  overflow: auto;
+  top: 0px;
+  left: -250px;
+  padding: 0px;
+  transition: 0.3s;
+}
+
+.s26-navbar .submenu {
+  max-height: 0;
+  overflow: hidden;
+  list-style: none;
+  font-size: 1rem;
+  padding-left: 2.5rem;
+  transition: .4s;
+}
+
+.activeSubMenu, .activeAccordion {
+  max-height: 500px !important;
+  transition: .7s !important;
+  transition-timing-function: ease-out;
+}
+
+.focus-menu i.icon-arrow {
+  transform: rotate(90deg);
+  font-weight: 700;
+}
+
+.s26-navbar .menu li.title-menu {
+  padding: 8.3px;
+  font-size: 1.2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.s26-navbar .menu a {
+  display: block;
+  position: relative;
+  padding: 13px;
+  font-size: 1.1rem;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.s26-navbar .submenu a {
+  font-size: .98rem;
+}
+
+.s26-navbar .menu li .menu-icon {
+  margin-right: 12px;
+  width: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.s26-navbar .menu .item-submenu .icon-arrow {
+  float: right;
+  color: #b4b4b4;
+  width: .5rem;
+  margin-top: .35rem;
+  transition: .5s;
+}
+
+.s26-navbar .menu a.btn-focus:before {
+  content: '';
+  display: inline-block;
+  background-color: var(--s26-blue);
+  width: .5rem;
+  height: .5rem;
+  border-radius: 1rem;
+  margin-right: 20px;
+  margin-left: -31.5px;
+}

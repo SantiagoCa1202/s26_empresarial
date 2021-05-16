@@ -136,6 +136,7 @@ class Users extends Controllers
     } else {
       $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
     }
+    sleep(5);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -149,6 +150,7 @@ class Users extends Controllers
     } else {
       $arrRes = array('type' => false, 'msg' => 'Error al eliminar Usuario.');
     }
+    sleep(5);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }

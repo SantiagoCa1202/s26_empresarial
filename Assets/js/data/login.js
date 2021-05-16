@@ -2,8 +2,9 @@ let S26Login = new Vue({
   el: "#s26-login",
   data: {
     form: {
-      user: "",
-      password: "",
+      //Restablecer
+      user: "0979244746",
+      password: "Camila120219",
     },
     reset: {
       email: "",
@@ -12,10 +13,15 @@ let S26Login = new Vue({
     reset_password: false,
     loading: false,
   },
+  created() {
+    //Eliminar 
+    this.onSubmit()
+  },
   methods: {
     onSubmit() {
       this.loading = true;
       if (!this.valForm()) {
+        this.loading = false;
         return false;
       } else {
         axios
@@ -71,7 +77,7 @@ let S26Login = new Vue({
     },
     valForm() {
       $("#user, #password").removeClass("is-invalid");
-      if (this.form.user == "" && this.form.password == "") {
+      if (this.form.user == "" || this.form.password == "") {
         $("#user, #password").addClass("is-invalid");
         alertify.error("Escriba un usuario y una Contraseña");
         return false;

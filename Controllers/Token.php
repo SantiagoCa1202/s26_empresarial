@@ -14,14 +14,7 @@ class Token extends Controllers
   public function valToken()
   {
 
-    $code_1 = intval($_POST['code_1']);
-    $code_2 = intval($_POST['code_2']);
-    $code_3 = intval($_POST['code_3']);
-    $code_4 = intval($_POST['code_4']);
-    $code_5 = intval($_POST['code_5']);
-    $code_6 = intval($_POST['code_6']);
-
-    $token = $code_1 . $code_2 . $code_3 . $code_4 . $code_5 . $code_6;
+    $token = intval($_POST['code']);
     $arrData = $this->model->selectToken($token);
 
     if (empty($arrData)) {

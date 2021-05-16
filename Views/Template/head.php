@@ -20,7 +20,7 @@
     <link type="text/css" rel="stylesheet" href="<?= asset('css/alertify.min.css') ?>" />
     <link type="text/css" rel="stylesheet" href="<?= asset('css/themes.css') ?>">
     <link type="text/css" rel="stylesheet" href="<?= asset('css/s26.css') ?>">
-    
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/nprogress.css" />
     <?php scripts_(); ?>
 
 </head>

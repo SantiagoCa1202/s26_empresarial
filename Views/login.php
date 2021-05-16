@@ -7,7 +7,7 @@
       <form @submit.prevent="onSubmit">
         <div class="mb-3">
           <label for="user" class="form-label">Usuario</label>
-          <input type="text" class="form-control form-control-sm" id="user" v-model="form.user">
+          <input type="text" class="form-control form-control-sm" id="user" v-model="form.user" autofocus>
         </div>
         <div class="mb-3 form-password">
           <label for="password" class="form-label">Contraseña</label>
@@ -32,7 +32,7 @@
       <form @submit.prevent="onResetPassword">
         <div class="mb-4">
           <label for="email" class="form-label">Correo Electrónico</label>
-          <input type="text" class="form-control form-control-sm" id="email" v-model="reset.email" autofocus>
+          <input type="text" class="form-control form-control-sm" id="email" v-model="reset.email">
         </div>
         <div class="row">
           <div class="col-6">

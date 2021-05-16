@@ -17,12 +17,6 @@ function node($package)
   return BASE_URL . "/node_modules/" . $package;
 }
 
-//src
-function src($package)
-{
-  return BASE_URL . "/src/" . $package;
-}
-
 function head_($data = "")
 {
   $view_header = "Views/Template/head.php";
@@ -46,8 +40,12 @@ function scripts_()
 
 function data_style($name)
 {
-  $src = '<link type="text/css" rel="stylesheet" href="' . BASE_URL . '/Assets/css/style_view/' . $name . '.css">';
+  $src = "";
+  if (file_exists('Assets/css/style_view/' . $name . '.css')) {
+    $src .= '<link type="text/css" rel="stylesheet" href="' . BASE_URL . '/Assets/css/style_view/' . $name . '.css">';
+  }
   $src .= '<script src="' . BASE_URL . '/Assets/js/data/' . $name . '.js"></script>';
+
   return $src;
 }
 
