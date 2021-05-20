@@ -15,12 +15,13 @@ class Token extends Controllers
   {
 
     $token = intval($_POST['code']);
-    $arrData = $this->model->selectToken($token);
+    $idUser = intval($_SESSION['idUser']);
+    $arrData = $this->model->selectToken($token, $idUser);
 
     if (empty($arrData)) {
       $arrRes = array('status' => false, 'msg' => 'Codigo de Seguridad Incorrecto');
     } else {
-      $request_token = $this->model->updateToken();
+      $request_token = $this->model->updateToken($idUser );
       $arrRes = array('status' => true);
     }
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
@@ -28,14 +29,16 @@ class Token extends Controllers
   }
   public function newToken()
   {
-    $request_token = $this->model->updateToken();
-    $request_token = $this->model->insertToken();
+    $idUser = intval($_SESSION['idUser']);
+    $request_token = $this->model->updateToken($idUser);
+    $request_token = $this->model->insertToken($idUser);
     die();
   }
 
   public function disabledToken()
   {
-    $request_token = $this->model->updateToken();
+    $idUser = intval($_SESSION['idUser']);
+    $request_token = $this->model->updateToken($idUser);
     die();
   }
 }

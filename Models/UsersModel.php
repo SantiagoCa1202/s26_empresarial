@@ -39,29 +39,40 @@ class UsersModel extends Mysql
     $date_range = "";
     if ($this->date != '') {
       if (count($this->date) == 2) {
-        $date_range = ' AND created_at BETWEEN "'.$this->date[0].' 00:00:00" AND "'.$this->date[1].' 23:59:59" OR created_at BETWEEN "'.$this->date[1].' 00:00:00" AND "'.$this->date[0].' 23:59:59"';
+        $date_range = ' AND u.created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59" OR u.created_at BETWEEN "' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"';
       }
     }
+    $whereAdmin = "";
+    if (!$_SESSION['userData']['user_root']) {
+      $whereAdmin = "AND u.user_root != 1";
+    }
     $where = '
-      id LIKE "%' . $this->id . '%" AND
-      document LIKE "%' . $this->document . '%" AND
-      (name LIKE "%' . $this->user . '%" OR last_name LIKE "%'.$this->user.'%") AND
-      role_id LIKE "%' . $this->role_id . '%" AND 
-      establishment_id LIKE "%' . $this->establishment_id . '%" AND
-      status LIKE "%' . $this->status . '%" AND 
-      status > 0 
-      ' . $date_range . '
+      u.id LIKE "%' . $this->id . '%" AND
+      u.document LIKE "%' . $this->document . '%" AND
+      (u.name LIKE "%' . $this->user . '%" OR u.last_name LIKE "%' . $this->user . '%") AND
+      u.role_id LIKE "%' . $this->role_id . '%" AND 
+      u.establishment_id LIKE "%' . $this->establishment_id . '%" AND
+      u.status LIKE "%' . $this->status . '%" AND 
+      u.status > 0 AND 
+      e.company_id = "' . $_SESSION['userData']['establishment']['company_id'] . '"
+      ' . $date_range . $whereAdmin . '
     ';
 
-    $info = "SELECT COUNT(*) as count FROM users
-    WHERE $where ";
+    $info = "SELECT COUNT(*) as count 
+      FROM users u
+      INNER JOIN establishments e
+      ON u.establishment_id = e.id
+      WHERE $where 
+    ";
     $info_table = $this->info_table($info);
 
     $rows = "
-      SELECT *
-      FROM users
+      SELECT *, u.id as id 
+      FROM users u
+      INNER JOIN establishments e
+      ON u.establishment_id = e.id
       WHERE $where  
-      ORDER BY id DESC LIMIT 0, $this->perPage
+      ORDER BY u.id DESC LIMIT 0, $this->perPage
     ";
 
     $items = $this->select_all($rows);
@@ -84,7 +95,7 @@ class UsersModel extends Mysql
     $request = $this->select($sql);
     $shortName = explode(" ", $request['name']);
     $shortLastName = explode(" ", $request['last_name']);
-    $request['short_name'] = $shortName[0].' '.$shortLastName[0];
+    $request['short_name'] = $shortName[0] . ' ' . $shortLastName[0];
     $request['role'] = $this->Role->selectRol($request['role_id']);
     $request['establishment'] = $this->Establishment->selectEstablishment($request['establishment_id']);
     return $request;
@@ -159,7 +170,7 @@ class UsersModel extends Mysql
     $this->establishment_id = $establishment_id;
     $this->status = $status;
 
-    $sql = "SELECT * FROM users WHERE id != '$this->id' AND (name = '$this->name' OR last_name = '$this->last_name' OR document = '$this->document' OR email = '$this->email')";
+    $sql = "SELECT * FROM users WHERE id != '$this->id' AND (name = '$this->name' OR document = '$this->document' OR email = '$this->email')";
     $request = $this->select_all($sql);
 
     if (empty($request)) {
@@ -203,6 +214,20 @@ class UsersModel extends Mysql
     $this->id = $id;
 
     $sql = "UPDATE users SET status = 0 WHERE id = $this->id";
+    $request = $this->delete($sql);
+
+    if ($request) {
+      $request = 1;
+    } else {
+      $request = 0;
+    }
+    return $request;
+  }
+  public function updateDarkMode($val)
+  {
+    $sql = 'UPDATE users SET 
+      dark_mode = "' . $val . '"
+      WHERE id = ' . $_SESSION['userData']['id'];
     $request = $this->delete($sql);
 
     if ($request) {

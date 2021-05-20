@@ -1,5 +1,6 @@
 <?= head_(); ?>
+<?= header_(); ?>
 
 <h1>dashboard</h1>
-<?= header_(); ?>
+<?= dep($_SESSION) ?>
 <?= footer_(); ?>

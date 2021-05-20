@@ -4,11 +4,13 @@ class Users extends Controllers
 {
   public function __construct()
   {
+    parent::__construct();
+
     session_start();
     if (empty($_SESSION['login'])) {
       header('Location: ' . base_url() . '/login');
     }
-    parent::__construct();
+    getPermits(2);
   }
 
   public function users()
@@ -29,7 +31,29 @@ class Users extends Controllers
       'date' => !empty($_GET['date']) ? $_GET['date'] : '',
     ];
     $arrData = $this->model->selectUsers($perPage, $filter);
-
+    for ($i = 0; $i < count($arrData['items']); $i++) {
+      if (
+        $_SESSION['userData']['user_root'] == 1 &&
+        $_SESSION['userData']['role_id'] == 1 ||
+        $_SESSION['userData']['role_id'] == 1 &&
+        $arrData['items'][$i]['role_id'] != 1
+      ) {
+        $arrData['items'][$i]['btnUp'] = true;
+      } else {
+        $arrData['items'][$i]['btnUp'] = false;
+      }
+      if (
+        ($_SESSION['userData']['id'] != $arrData['items'][$i]['id']) &&
+        ($_SESSION['userData']['user_root'] == 1 &&
+          $_SESSION['userData']['role_id'] == 1) ||
+        ($_SESSION['userData']['role_id'] == 1 &&
+          $arrData['items'][$i]['role_id'] != 1)
+      ) {
+        $arrData['items'][$i]['btnDel'] = true;
+      } else {
+        $arrData['items'][$i]['btnDel'] = false;
+      }
+    }
     echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -136,7 +160,6 @@ class Users extends Controllers
     } else {
       $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
     }
-    sleep(5);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -150,8 +173,19 @@ class Users extends Controllers
     } else {
       $arrRes = array('type' => false, 'msg' => 'Error al eliminar Usuario.');
     }
-    sleep(5);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
+  public function dark_mode()
+  {
+    if (isset($_COOKIE['dark-mode'])) {
+      $val = ($_COOKIE['dark-mode'] == 0) ? 1 : 0;
+      $request = $this->model->updateDarkMode($val);
+      if ($request == 1) {
+        setcookie('dark-mode', $val, time() + (86400 * 30), "/");
+      }
+    }
     die();
   }
 }

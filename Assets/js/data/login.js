@@ -14,8 +14,6 @@ let S26Login = new Vue({
     loading: false,
   },
   created() {
-    //Eliminar 
-    this.onSubmit()
   },
   methods: {
     onSubmit() {

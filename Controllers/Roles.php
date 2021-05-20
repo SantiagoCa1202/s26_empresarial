@@ -4,11 +4,13 @@ class Roles extends Controllers
 {
   public function __construct()
   {
+    parent::__construct();
+
     session_start();
     if (empty($_SESSION['login'])) {
       header('Location: ' . base_url() . '/login');
     }
-    parent::__construct();
+    getPermits(44);
   }
 
   public function roles()
@@ -18,12 +20,13 @@ class Roles extends Controllers
 
   public function getRoles()
   {
-    $perPage = intval($_GET['perPage']);
+    $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : '10000';
     $filter = [
       'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
-      'name' => strClean($_GET['name']),
-      'description' => strClean($_GET['description']),
-      'status' => !empty($_GET['status']) ? intval($_GET['status']) : ''
+      'name' => isset($_GET['name']) ? strClean($_GET['name']) : '',
+      'description' => isset($_GET['description']) ? strClean($_GET['description']) : '',
+      'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
+      'date' => !empty($_GET['date']) ? $_GET['date'] : '',
     ];
     $arrData = $this->model->selectRoles($perPage, $filter);
     echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
@@ -82,6 +85,8 @@ class Roles extends Controllers
         } else {
           $arrRes = array('type' => 2, 'msg' => 'Datos actualizados correctamente.');
         }
+      } else if (!$request_rol) {
+        $arrRes = array('type' => 0, 'msg' => 'No se puede editar rol Administrador.');
       } else if ($request_rol == 0) {
         $arrRes = array('type' => 0, 'msg' => 'El rol ya existe.');
       } else {
@@ -103,6 +108,8 @@ class Roles extends Controllers
       $arrRes = array('type' => true, 'msg' => 'Rol Eliminado.');
     } else if ($requestDelete == 2) {
       $arrRes = array('type' => false, 'msg' => 'No es posible eliminar un rol asociado a usuarios.');
+    } else if ($requestDelete == 3) {
+      $arrRes = array('type' => false, 'msg' => 'No es posible eliminar un rol administrador.');
     } else {
       $arrRes = array('type' => false, 'msg' => 'Error al eliminar Rol.');
     }

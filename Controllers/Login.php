@@ -34,6 +34,7 @@ class Login extends Controllers
 
             $arrData = $this->model->sessionLogin($_SESSION['idUser']);
             $_SESSION['userData'] = $arrData;
+            setcookie('dark-mode', $arrData['dark_mode'], time() + (86400 * 30), "/");
             $arrRes = array('status' => true, 'msg' => 'Ok');
           } else {
             $arrRes = array('status' => false, 'msg' => 'Usuario Inactivo');

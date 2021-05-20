@@ -1,17 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
 :root {
   --s26-blue: #243a46;
+  --s26-dark-blue: #1a2830;
   --s26-blue-gray: #3a6379;
   --s26-success: #00aa70;
   --s26-info: rgb(0, 122, 255);
   --s26-white: #fafbfc;
   --s26-gray: #eff0f2;
+  --s26-black-color: #212e36;
+  --s26-black-dark-color: #1b2831;
+  --s26-blacker-color: #192229;
+  --s26-blackest-color: #121a21;
 }
 
 *, body {
   font-size: .95rem;
   font-family: 'Nunito', sans-serif;
   text-transform: capitalize;
+  transition: all .3s;
 }
 
 /* SCROLLBAR PERSONALIZADO */
@@ -80,10 +86,17 @@ input[email] {
   box-shadow: none !important;
 }
 
+/* Reset a */
+
+.rst-a {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* Config Reset Form-control DIV */
 
 div.form-control-sm {
-  padding: .35rem .5rem;
+  padding: .35rem -0.5rem;
 }
 
 .form-control:focus:not(button), .form-select:focus {
@@ -150,8 +163,19 @@ div.form-control-sm {
   font-size: 1.1rem;
 }
 
-.btn-icon:hover, .btn-times:hover, .btn-hide-menu:hover {
+.btn-icon:hover, .btn-times:hover, .btn-hide-menu:hover, .btn-icon-auto:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+.btn-icon-auto {
+  text-decoration: none;
+  color: #fff;
+  border-radius: 1rem;
+  padding: .5rem;
+}
+
+.btn-icon-auto:hover {
+  color: #fff;
 }
 
 .btn-s26-dash {
@@ -1031,6 +1055,23 @@ div.year-active {
 
 #nprogress .spinner-icon {
   display: none;
+}
+
+/* PERMISOS DE ROL */
+
+#roles-permits .modal-body {
+  max-height: 400px;
+  margin-top: 1rem;
+  padding-top: 0;
+  overflow-y: auto;
+}
+
+#roles-permits .s26-modal-dialog {
+  max-width: 750px;
+}
+
+#roles-permits .table tbody tr td {
+  border: 0;
 }
 
 @keyframes points-loader {

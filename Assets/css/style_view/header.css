@@ -10,7 +10,7 @@
   z-index: 1070;
 }
 
-.header-menu .s26-navbar-top, .header-menu .s26-navbar-top div {
+.header-menu .s26-navbar-top, .header-menu .s26-navbar-top .s26-navbar-i {
   height: 100%;
   display: flex;
   flex-wrap: wrap;

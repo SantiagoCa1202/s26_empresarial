@@ -9,6 +9,7 @@
 </head>
 
 <body>
+<?php echo hash("SHA256", 'Camila120219')?>
   <div class="cont-princ-slider">
     <div class="slier-prin">
       <div class="juegos_DWG">01</div>

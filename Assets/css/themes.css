@@ -72,11 +72,11 @@ body.s26-theme {
   box-shadow: none;
 }
 
-.s26-theme .btn-times {
+.s26-theme .btn-times, .s26-theme .s26-navbar-user ul li, .s26-theme .s26-navbar-user ul li a {
   color: var(--s26-blue);
 }
 
-.s26-theme .btn-show-sidebar, .s26-theme .modal-content, .s26-theme .s26-tarjet, .s26-theme .s26-table tbody tr:not(.skeleton-tr), .s26-theme .s26-table tbody tr td:not(.skeleton-tr td), .s26-theme .s26-nav-dropdown .s26-list-dropdown, .s26-theme #s26-date-picker .container-date-picker {
+.s26-theme .btn-show-sidebar, .s26-theme .modal-content, .s26-theme .s26-tarjet, .s26-theme .s26-table tbody tr:not(.skeleton-tr), .s26-theme .s26-table tbody tr td:not(.skeleton-tr td), .s26-theme .s26-nav-dropdown .s26-list-dropdown, .s26-theme #s26-date-picker .container-date-picker, .s26-theme .content-options-user {
   background-color: var(--bs-white);
   color: var(--s26-blue);
 }
@@ -131,4 +131,9 @@ body.s26-theme {
 .s26-tarjet-gray .s26-tarjet-icon .circle-icon {
   background-color: var(--gray);
   color: var(--bs-white);
+}
+
+body.s26-dark-theme, .s26-dark-theme .s26-navbar-top {
+  background-color: var(--s26-blacker-color);
+  color: #fff;
 }

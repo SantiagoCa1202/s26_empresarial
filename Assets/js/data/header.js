@@ -4,6 +4,8 @@ let S26Header = new Vue({
     return {
       date: "",
       active: false,
+      options_user: false,
+      dark_mode: false,
       page_user: "dashboard",
       showMenu: {
         left: "-250px",
@@ -14,14 +16,7 @@ let S26Header = new Vue({
       },
       activeSubMenu: 0,
       route: "dashboard",
-      subHome: [
-        "sales",
-        "credits",
-        "returns",
-        "external_income",
-        "calculator",
-        "close_box",
-      ],
+      subHome: ["sales", "credits", "returns", "calculator", "close_box"],
       subProducts: [
         "products",
         "products_entry",
@@ -32,6 +27,13 @@ let S26Header = new Vue({
         "stock_information",
         "suppliers_orders",
         "customer_orders",
+      ],
+      subTransactions: [
+        "expenses",
+        "temporary_expenses",
+        "transfers",
+        "deposits",
+        "external_income",
       ],
       subDocuments: ["purchases_to_providers", "credit_notes", "withholdings"],
       subWallet: ["wallet", "estadisticas", "bank_entity"],
@@ -49,6 +51,8 @@ let S26Header = new Vue({
         "info_vouchers",
         "establishments",
         "general_config",
+        "catalogue",
+        "goal_savings",
       ],
       subUsers: ["users", "roles", "permits"],
     };
@@ -69,17 +73,35 @@ let S26Header = new Vue({
       this.activeSubMenu = 1;
     } else if (this.subProducts.includes(this.route)) {
       this.activeSubMenu = 2;
-    } else if (this.subDocuments.includes(this.route)) {
+    } else if (this.subTransactions.includes(this.route)) {
       this.activeSubMenu = 3;
-    } else if (this.subWallet.includes(this.route)) {
+    } else if (this.subDocuments.includes(this.route)) {
       this.activeSubMenu = 4;
-    } else if (this.subAccounts.includes(this.route)) {
+    } else if (this.subWallet.includes(this.route)) {
       this.activeSubMenu = 5;
-    } else if (this.subBusiness.includes(this.route)) {
+    } else if (this.subAccounts.includes(this.route)) {
       this.activeSubMenu = 6;
-    } else if (this.subUsers.includes(this.route)) {
+    } else if (this.subBusiness.includes(this.route)) {
       this.activeSubMenu = 7;
+    } else if (this.subUsers.includes(this.route)) {
+      this.activeSubMenu = 8;
     }
+    let dark_mode = readCookie("dark-mode");
+    if (dark_mode == 1) {
+      $("body").addClass("s26-dark-theme");
+      this.dark_mode = true;
+    } else {
+      $("body").removeClass("s26-dark-theme");
+      this.dark_mode = false;
+    }
+    setTimeout(() => {
+      $("html").on("click", (e) => {
+        this.hideOpsUser();
+      });
+      $(".dropdown-options-user").click(function (e) {
+        e.stopPropagation();
+      });
+    }, 100);
   },
   methods: {
     menu: function (active) {
@@ -123,6 +145,26 @@ let S26Header = new Vue({
     location() {
       this.setLoading(true);
       this.menu();
+    },
+    hideOpsUser() {
+      this.options_user = false;
+    },
+    on_dark_mode() {
+      axios
+        .get("/users/dark_mode/")
+        .then((res) => {
+          let dark_mode = readCookie("dark-mode");
+          if (dark_mode == 1) {
+            $("body").addClass("s26-dark-theme");
+            this.dark_mode = true;
+          } else {
+            $("body").removeClass("s26-dark-theme");
+            this.dark_mode = false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 });
