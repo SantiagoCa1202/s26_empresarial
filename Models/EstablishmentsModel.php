@@ -35,12 +35,10 @@ class EstablishmentsModel extends Mysql
     $this->perPage = $perPage;
 
     $date_range = "";
-    if ($this->date != '') {
-      if (count($this->date) == 2) {
-        $date_range = '
-        AND u.created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59"
-        OR u.created_at BETWEEN "' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"';
-      }
+    if ($this->date != '' && count($this->date) == 2) {
+      $date_range = '
+        AND created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59"
+        OR created_at BETWEEN "' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"';
     }
 
     $where = '

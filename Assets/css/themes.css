@@ -22,7 +22,7 @@ body.s26-theme {
   transition: .3s;
 }
 
-.s26-theme .s26-navbar .menu a:hover, .s26-theme .s26-navbar .menu a:hover>i.icon-arrow, .s26-theme .s26-navbar .menu a.focus-menu, .s26-theme .focus-menu i.icon-arrow, .table {
+.s26-theme .s26-navbar .menu a:hover, .s26-theme .s26-navbar .menu a:hover>i.icon-arrow, .s26-theme .s26-navbar .menu a.focus-menu, .s26-theme .focus-menu i.icon-arrow, .table, .main-user {
   color: var(--s26-blue) !important;
 }
 
@@ -76,7 +76,7 @@ body.s26-theme {
   color: var(--s26-blue);
 }
 
-.s26-theme .btn-show-sidebar, .s26-theme .modal-content, .s26-theme .s26-tarjet, .s26-theme .s26-table tbody tr:not(.skeleton-tr), .s26-theme .s26-table tbody tr td:not(.skeleton-tr td), .s26-theme .s26-nav-dropdown .s26-list-dropdown, .s26-theme #s26-date-picker .container-date-picker, .s26-theme .content-options-user {
+.s26-theme .btn-show-sidebar, .s26-theme .modal-content, .s26-theme .s26-tarjet, .s26-theme .s26-table tbody tr:not(.skeleton-tr), .s26-theme .s26-table tbody tr td:not(.skeleton-tr td), .s26-theme .s26-nav-dropdown .s26-list-dropdown, .s26-theme .s26-date-picker .popup-date-picker, .s26-theme .content-options-user {
   background-color: var(--bs-white);
   color: var(--s26-blue);
 }

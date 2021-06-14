@@ -17,7 +17,6 @@
   font-size: .95rem;
   font-family: 'Nunito', sans-serif;
   text-transform: capitalize;
-  transition: all .3s;
 }
 
 /* SCROLLBAR PERSONALIZADO */
@@ -93,10 +92,17 @@ input[email] {
   color: inherit;
 }
 
+/* TEXTAREA  */
+
+textarea.resize-none {
+  resize: none;
+}
+
 /* Config Reset Form-control DIV */
 
-div.form-control-sm {
-  padding: .35rem -0.5rem;
+.form-control-sm {
+  height: 2em;
+  padding: .35rem .5rem;
 }
 
 .form-control:focus:not(button), .form-select:focus {
@@ -161,6 +167,7 @@ div.form-control-sm {
   width: 2.2rem;
   height: 2.2rem;
   font-size: 1.1rem;
+  cursor: pointer;
 }
 
 .btn-icon:hover, .btn-times:hover, .btn-hide-menu:hover, .btn-icon-auto:hover {
@@ -556,7 +563,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
 
 /* CUSTOM DATEPICKER S26 - CALENDAR */
 
-#s26-date-picker {
+.s26-date-picker {
   position: relative;
   height: 65px;
   cursor: pointer;
@@ -566,17 +573,17 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   user-select: none;
 }
 
-#s26-date-picker .form-control span {
+.s26-date-picker .form-control span {
   float: right;
   font-size: .89rem;
   transition: .3s
 }
 
-#s26-date-picker .form-control span:hover {
+.s26-date-picker .form-control span:hover {
   color: var(--bs-danger)
 }
 
-.container-date-picker {
+.popup-date-picker {
   position: absolute;
   top: 0;
   transform: translate3d(0, 65px, 0);
@@ -587,10 +594,10 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   border-radius: 0.5rem;
   border: 1px solid #bababc;
   box-shadow: 0 1px 2px 0 #bababc;
-  z-index: 1020;
+  z-index: 1060;
 }
 
-.popup-date-picker::before {
+.popup-date-picker-bottom::before {
   position: absolute;
   content: "";
   width: 0.71428571em;
@@ -606,6 +613,24 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   left: 50%;
   right: auto;
   bottom: auto;
+}
+
+.popup-date-picker-top::before {
+  position: absolute;
+  content: "";
+  width: 0.71428571em;
+  height: 0.71428571em;
+  background: #fff;
+  -webkit-transform: rotate( 45deg);
+  transform: rotate( 45deg);
+  z-index: 2;
+  border-right: 1px solid #bababc;
+  border-bottom: 1px solid #bababc;
+  margin-left: -0.30714286em;
+  bottom: -0.40714286em;
+  left: 50%;
+  right: auto;
+  top: auto;
 }
 
 .s26-date-picker-header {
@@ -819,7 +844,7 @@ div.year-active {
 
 /* DATEPICKER SM  */
 
-.container-date-picker-sm {
+.popup-date-picker-sm {
   height: 275px;
   width: 228px;
   border-radius: 0.25rem;
@@ -827,44 +852,44 @@ div.year-active {
   padding: .5rem 0;
 }
 
-.container-date-picker-sm .s26-date-picker-header button {
+.popup-date-picker-sm .s26-date-picker-header button {
   font-size: 1rem;
   text-shadow: 0 0.05rem 0.1rem rgb(0 0 0 / 50%);
 }
 
-.container-date-picker-sm .s26-date-picker-header button:active {
+.popup-date-picker-sm .s26-date-picker-header button:active {
   font-size: 1.2rem;
 }
 
-.container-date-picker-sm .weekdays {
+.popup-date-picker-sm .weekdays {
   padding: .5rem;
 }
 
-.container-date-picker-sm .weekdays div {
+.popup-date-picker-sm .weekdays div {
   letter-spacing: 0;
   margin: 0 auto;
   width: calc(13rem / 7);
   font-size: .85rem;
 }
 
-.container-date-picker-sm .days, .container-date-picker-sm .months {
+.popup-date-picker-sm .days, .popup-date-picker-sm .months {
   padding: .5rem;
   margin: 0;
 }
 
-.container-date-picker-sm .days div {
+.popup-date-picker-sm .days div {
   font-size: .84em;
   margin: 0.20rem;
   width: calc(11rem / 7);
   height: 1.55rem;
 }
 
-.container-date-picker-sm .today {
+.popup-date-picker-sm .today {
   border: 1px solid var(--bs-info);
   box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
 
-.container-date-picker-sm .months div {
+.popup-date-picker-sm .months div {
   margin: 0.17749450rem;
   width: calc(12.6rem / 3);
   height: 2.1rem;
@@ -872,24 +897,24 @@ div.year-active {
   border-radius: .3rem;
 }
 
-.container-date-picker-sm .years {
+.popup-date-picker-sm .years {
   width: 100%;
   height: 260px;
   margin-top: .5rem;
   overflow: auto;
 }
 
-.container-date-picker-sm .years div {
+.popup-date-picker-sm .years div {
   height: 30px;
   line-height: 30px;
   font-size: 1rem;
 }
 
-.container-date-picker-sm .years div:hover, .container-date-picker-sm .years div:focus {
+.popup-date-picker-sm .years div:hover, .popup-date-picker-sm .years div:focus {
   font-size: 1.4rem;
 }
 
-.container-date-picker-sm div.year-active {
+.popup-date-picker-sm div.year-active {
   font-size: 1.4rem;
   text-shadow: 0 0.05rem 0.13rem rgb(0 0 0 / 50%);
 }

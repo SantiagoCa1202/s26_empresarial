@@ -19,7 +19,7 @@
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(1)">
-          <a href="" @click.prevent :class="[{ 'focus-menu': activeSubMenu == 1 }]">
+          <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 1 }]">
             <i class="fas fa-home menu-icon"></i>
             Inicio
             <i class="fas fa-chevron-right icon-arrow"></i>
@@ -27,35 +27,35 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 1 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][7]['r'])) { ?>
               <li>
-                <a href="sales" :class="focusSubMenu('sales')">
+                <a href="<?= BASE_URL ?>/sales" :class="focusSubMenu('sales')">
                   Ventas
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][8]['r'])) { ?>
               <li>
-                <a href="credits" :class="focusSubMenu('credits')">
+                <a href="<?= BASE_URL ?>/credits" :class="focusSubMenu('credits')">
                   Créditos
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][9]['r'])) { ?>
               <li>
-                <a href="returns" :class="focusSubMenu('returns')">
+                <a href="<?= BASE_URL ?>/returns" :class="focusSubMenu('returns')">
                   Devoluciones
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][11]['r'])) { ?>
               <li>
-                <a href="calculator" :class="focusSubMenu('calculator')">
+                <a href="<?= BASE_URL ?>/calculator" :class="focusSubMenu('calculator')">
                   Calculadora
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][12]['r'])) { ?>
               <li>
-                <a href="close_box" :class="focusSubMenu('close_box')">
+                <a href="<?= BASE_URL ?>/close_box" :class="focusSubMenu('close_box')">
                   Cierre de Caja
                 </a>
               </li>
@@ -65,7 +65,7 @@
       <?php } ?>
       <?php if (!empty($_SESSION['permits'][13]['r'])) { ?>
         <li>
-          <a href="new_sale" :class="focusSubMenu('new_sale')">
+          <a href="<?= BASE_URL ?>/new_sale" :class="focusSubMenu('new_sale')">
             <i class="fas fa-shopping-bag menu-icon"></i>
             Facturación
           </a>
@@ -85,7 +85,7 @@
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(2)">
-          <a href="" @click.prevent :class="[{ 'focus-menu': activeSubMenu == 2 }]">
+          <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 2 }]">
             <i class="fas fa-box-open menu-icon"></i>
             Productos
             <i class="fas fa-chevron-right icon-arrow"></i>
@@ -93,63 +93,63 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 2 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][4]['r'])) { ?>
               <li>
-                <a href="products" :class="focusSubMenu('products')">
+                <a href="<?= BASE_URL ?>/products" :class="focusSubMenu('products')">
                   Productos
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][14]['r'])) { ?>
               <li>
-                <a href="products_entry" :class="focusSubMenu('products_entry')">
+                <a href="<?= BASE_URL ?>/products_entry" :class="focusSubMenu('products_entry')">
                   Entradas
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][15]['r'])) { ?>
               <li>
-                <a href="products_outlet" :class="focusSubMenu('products_outlet')">
+                <a href="<?= BASE_URL ?>/products_outlet" :class="focusSubMenu('products_outlet')">
                   Salidas
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][16]['r'])) { ?>
               <li>
-                <a href="products_returned" :class="focusSubMenu('products_returned')">
+                <a href="<?= BASE_URL ?>/products_returned" :class="focusSubMenu('products_returned')">
                   Devoluciones
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][17]['r'])) { ?>
               <li>
-                <a href="products_damaged" :class="focusSubMenu('products_damaged')">
+                <a href="<?= BASE_URL ?>/products_damaged" :class="focusSubMenu('products_damaged')">
                   Averiado
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][18]['r'])) { ?>
               <li>
-                <a href="stocktaking" :class="focusSubMenu('stocktaking')">
+                <a href="<?= BASE_URL ?>/stocktaking" :class="focusSubMenu('stocktaking')">
                   Control de Inventario
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][19]['r'])) { ?>
               <li>
-                <a href="stock_information" :class="focusSubMenu('stock_information')">
+                <a href="<?= BASE_URL ?>/stock_information" :class="focusSubMenu('stock_information')">
                   Información de Stock
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][6]['r'])) { ?>
               <li>
-                <a href="suppliers_orders" :class="focusSubMenu('suppliers_orders')">
+                <a href="<?= BASE_URL ?>/suppliers_orders" :class="focusSubMenu('suppliers_orders')">
                   Pedidos Proveedores
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][5]['r'])) { ?>
               <li>
-                <a href="customer_orders" :class="focusSubMenu('customer_orders')">
+                <a href="<?= BASE_URL ?>/customer_orders" :class="focusSubMenu('customer_orders')">
                   Pedidos Clientes
                 </a>
               </li>
@@ -167,7 +167,7 @@
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(3)">
-          <a href="" @click.prevent :class="[{ 'focus-menu': activeSubMenu == 3 }]">
+          <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 3 }]">
             <i class="fas fa-chart-bar menu-icon"></i>
             Transacciones
             <i class="fas fa-chevron-right icon-arrow"></i>
@@ -175,35 +175,35 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 3 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][20]['r'])) { ?>
               <li>
-                <a href="expenses" :class="focusSubMenu('expenses')">
+                <a href="<?= BASE_URL ?>/expenses" :class="focusSubMenu('expenses')">
                   Egresos
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][21]['r'])) { ?>
               <li>
-                <a href="temporary_expenses" :class="focusSubMenu('temporary_expenses')">
+                <a href="<?= BASE_URL ?>/temporary_expenses" :class="focusSubMenu('temporary_expenses')">
                   Egresos Temporales
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][22]['r'])) { ?>
               <li>
-                <a href="transfers" :class="focusSubMenu('transfers')">
+                <a href="<?= BASE_URL ?>/transfers" :class="focusSubMenu('transfers')">
                   Transferencias
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][23]['r'])) { ?>
               <li>
-                <a href="deposits" :class="focusSubMenu('deposits')">
+                <a href="<?= BASE_URL ?>/deposits" :class="focusSubMenu('deposits')">
                   Depositos
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][10]['r'])) { ?>
               <li>
-                <a href="external_income" :class="focusSubMenu('external_income')">
+                <a href="<?= BASE_URL ?>/external_income" :class="focusSubMenu('external_income')">
                   Ingresos Externos
                 </a>
               </li>
@@ -219,7 +219,7 @@
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(4)">
-          <a href="" @click.prevent :class="[{ 'focus-menu': activeSubMenu == 4 }]">
+          <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 4 }]">
             <i class="fas fa-file-invoice-dollar menu-icon"></i>
             Comprobantes
             <i class="fas fa-chevron-right icon-arrow"></i>
@@ -227,21 +227,21 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 4 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][24]['r'])) { ?>
               <li>
-                <a href="purchases_to_providers" :class="focusSubMenu('purchases_to_providers')">
+                <a href="<?= BASE_URL ?>/purchases_to_providers" :class="focusSubMenu('purchases_to_providers')">
                   Compras
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][25]['r'])) { ?>
               <li>
-                <a href="credit_notes" :class="focusSubMenu('credit_notes')">
+                <a href="<?= BASE_URL ?>/credit_notes" :class="focusSubMenu('credit_notes')">
                   Notas de Crédito
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][26]['r'])) { ?>
               <li>
-                <a href="withholdings" :class="focusSubMenu('withholdings')">
+                <a href="<?= BASE_URL ?>/withholdings" :class="focusSubMenu('withholdings')">
                   Retenciones
                 </a>
               </li>
@@ -251,7 +251,7 @@
       <?php } ?>
       <?php if (!empty($_SESSION['permits'][3]['r'])) { ?>
         <li>
-          <a href="customers" :class="focusSubMenu('customers')">
+          <a href="<?= BASE_URL ?>/customers" :class="focusSubMenu('customers')">
             <i class="fas fa-users menu-icon"></i>
             Clientes
           </a>
@@ -265,7 +265,7 @@
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(5)">
-          <a href="" @click.prevent :class="[{ 'focus-menu': activeSubMenu == 5 }]">
+          <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 5 }]">
             <i class="fas fa-wallet menu-icon"></i>
             Wallet
             <i class="fas fa-chevron-right icon-arrow"></i>
@@ -273,21 +273,21 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 5 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][27]['r'])) { ?>
               <li>
-                <a href="wallet" :class="focusSubMenu('wallet')">
+                <a href="<?= BASE_URL ?>/wallet" :class="focusSubMenu('wallet')">
                   Wallet
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][28]['r'])) { ?>
               <li>
-                <a href="estadisticas" :class="focusSubMenu('estadisticas')">
+                <a href="<?= BASE_URL ?>/estadisticas" :class="focusSubMenu('estadisticas')">
                   Estadísticas
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][29]['r'])) { ?>
               <li>
-                <a href="bank_entity" :class="focusSubMenu('bank_entity')">
+                <a href="<?= BASE_URL ?>/bank_entity" :class="focusSubMenu('bank_entity')">
                   Info. Entidades Bancarias
                 </a>
               </li>
@@ -305,7 +305,7 @@
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(6)">
-          <a href="" @click.prevent :class="[{ 'focus-menu': activeSubMenu == 6 }]">
+          <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 6 }]">
             <i class="fas fa-receipt menu-icon"></i>
             Cuentas
             <i class="fas fa-chevron-right icon-arrow"></i>
@@ -313,35 +313,35 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 6 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][30]['r'])) { ?>
               <li>
-                <a href="accounts_to_pay" :class="focusSubMenu('accounts_to_pay')">
+                <a href="<?= BASE_URL ?>/accounts_to_pay" :class="focusSubMenu('accounts_to_pay')">
                   Ctas. Por Pagar
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][31]['r'])) { ?>
               <li>
-                <a href="accounts_to_receivable" :class="focusSubMenu('accounts_to_receivable')">
+                <a href="<?= BASE_URL ?>/accounts_to_receivable" :class="focusSubMenu('accounts_to_receivable')">
                   Ctas. Por Cobrar
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][32]['r'])) { ?>
               <li>
-                <a href="accounts_info" :class="focusSubMenu('accounts_info')">
+                <a href="<?= BASE_URL ?>/accounts_info" :class="focusSubMenu('accounts_info')">
                   Info. de Cuentas
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][33]['r'])) { ?>
               <li>
-                <a href="checks" :class="focusSubMenu('checks')">
+                <a href="<?= BASE_URL ?>/checks" :class="focusSubMenu('checks')">
                   Cheques
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][34]['r'])) { ?>
               <li>
-                <a href="vouchers" :class="focusSubMenu('vouchers')">
+                <a href="<?= BASE_URL ?>/vouchers" :class="focusSubMenu('vouchers')">
                   Vouchers
                 </a>
               </li>
@@ -351,7 +351,7 @@
       <?php } ?>
       <?php if (!empty($_SESSION['permits'][35]['r'])) { ?>
         <li>
-          <a href="tax_returns">
+          <a href="<?= BASE_URL ?>/tax_returns">
             <i class="fas fa-landmark menu-icon"></i>
             Declaraciones
           </a>
@@ -370,7 +370,7 @@
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(7)">
-          <a href="" @click.prevent :class="[{ 'focus-menu': activeSubMenu == 7 }]">
+          <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 7 }]">
             <i class="fas fa-store menu-icon"></i>
             Mi Negocio
             <i class="fas fa-chevron-right icon-arrow"></i>
@@ -378,54 +378,54 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 7 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][36]['r'])) { ?>
               <li>
-                <a href="provider" :class="focusSubMenu('provider')">
+                <a href="<?= BASE_URL ?>/provider" :class="focusSubMenu('provider')">
                   Proveedores
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][37]['r'])) { ?>
               <li>
-                <a href="debts" :class="focusSubMenu('debts')"> Deudas </a>
+                <a href="<?= BASE_URL ?>/debts" :class="focusSubMenu('debts')"> Deudas </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][39]['r'])) { ?>
               <li>
-                <a href="images" :class="focusSubMenu('images')">
+                <a href="<?= BASE_URL ?>/images" :class="focusSubMenu('images')">
                   Imagenes
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][41]['r'])) { ?>
               <li>
-                <a href="info_vouchers" :class="focusSubMenu('info_vouchers')">
+                <a href="<?= BASE_URL ?>/info_vouchers" :class="focusSubMenu('info_vouchers')">
                   Info. de Comprobantes
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][42]['r'])) { ?>
               <li>
-                <a href="establishments" :class="focusSubMenu('establishments')">
+                <a href="<?= BASE_URL ?>/establishments" :class="focusSubMenu('establishments')">
                   Establecimientos
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][38]['r'])) { ?>
               <li>
-                <a href="goal_savings" :class="focusSubMenu('goal_savings')">
+                <a href="<?= BASE_URL ?>/goal_savings" :class="focusSubMenu('goal_savings')">
                   Ahorro Meta
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][40]['r'])) { ?>
               <li>
-                <a href="catalogue" :class="focusSubMenu('catalogue')">
+                <a href="<?= BASE_URL ?>/catalogue" :class="focusSubMenu('catalogue')">
                   Catálogo
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][43]['r'])) { ?>
               <li>
-                <a href="general_config" :class="focusSubMenu('general_config')">
+                <a href="<?= BASE_URL ?>/general_config" :class="focusSubMenu('general_config')">
                   Configuración General
                 </a>
               </li>
@@ -448,14 +448,14 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 8 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][2]['r'])) { ?>
               <li>
-                <a href="users" :class="focusSubMenu('users')" @click="location">
+                <a href="<?= BASE_URL ?>/users" :class="focusSubMenu('users')" @click="location">
                   Usuarios
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][44]['r'])) { ?>
               <li>
-                <a href="roles" :class="focusSubMenu('roles')" @click="location">
+                <a href="<?= BASE_URL ?>/roles" :class="focusSubMenu('roles')" @click="location">
                   Roles
                 </a>
               </li>

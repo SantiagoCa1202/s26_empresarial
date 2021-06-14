@@ -20,14 +20,14 @@
     </div>
     <div class="navbar-top-center s26-navbar-i">
       <?php if (!empty($_SESSION['permits'][1]['r'])) { ?>
-        <a class="btn-icon" href="dashboard">
+        <a class="btn-icon" href="<?= BASE_URL ?>/dashboard">
           <i class="fas fa-home"></i>
         </a>
       <?php } ?>
     </div>
     <div class="navbar-top-right s26-navbar-i">
       <div class="text-capitalize">
-        <a href="<?= BASE_URL ?>/my_profile" class=" btn-icon-auto">
+        <a href="<?= BASE_URL ?>/users/myaccount" class=" btn-icon-auto">
           <?= $_SESSION['userData']['short_name'] ?>
         </a>
       </div>
@@ -39,7 +39,7 @@
         <i class="fas fa-bell"></i>
       </button>
       <div class="dropdown-options-user">
-        <a href="" @click.prevent="options_user = !options_user" class="btn-icon">
+        <a @click.prevent="options_user = !options_user" class="btn-icon">
           <i class="fas fa-user"></i>
         </a>
         <transition name="slide-fade">
@@ -61,9 +61,9 @@
               <nav class="s26-navbar-user">
                 <ul class="menu-user">
                   <li>
-                    <a href="<?= BASE_URL ?>/my_profile">
+                    <a href="<?= BASE_URL ?>/users/myaccount">
                       <i class="fas fa-user-cog"></i>
-                      <div class="lbl-li-user">Perfil</div>
+                      <div class="lbl-li-user">Gestionar cuenta</div>
                     </a>
                   </li>
                   <li>
@@ -105,122 +105,3 @@
   </div>
 </header>
 <?= data_style('header'); ?>
-<style>
-  .header-menu div.dropdown-options-user {
-    margin: 0;
-    padding: 0;
-    position: relative;
-  }
-
-  .content-options-user {
-    position: absolute;
-    width: 280px;
-    top: 80%;
-    right: 10%;
-    border: 1px solid #d5d5d5;
-    border-radius: .5rem;
-    box-shadow: 0px 2px 6px #bebebe;
-    padding: .5rem .5rem;
-
-  }
-
-  .content-header {
-    border-bottom: 1px solid #bebebe;
-    height: 60px;
-    display: flex;
-    padding: .5rem 0;
-    margin-bottom: 1rem;
-  }
-
-  .icon-user,
-  .tag-user {
-    height: 100%;
-
-  }
-
-  .content-header .tag-user div {
-    height: 50%;
-  }
-
-  .content-header .icon-user {
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .content-header .icon-user i {
-    font-size: 1.5rem;
-  }
-
-  .tag-user .tag-user-name {
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
-
-  .tag-user .tag-user-role {
-    opacity: .7;
-  }
-
-  .s26-navbar-user .menu-user {
-    padding: 0;
-  }
-
-  .s26-navbar-user ul {
-    list-style: none;
-  }
-
-  .s26-navbar-user ul li {
-    width: 100%;
-    padding: .5rem 1rem;
-    border-radius: .5rem;
-    margin-bottom: .5rem;
-    transition: all .3s;
-  }
-
-  .s26-navbar-user ul li,
-  .s26-navbar-user ul li a {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    text-decoration: none;
-  }
-
-  .s26-navbar-user ul li a i {
-    font-size: 1.2rem;
-    background-color: #e4e6eb;
-    border-radius: 50px;
-    width: 40px;
-    height: 40px;
-    padding: .65rem 0;
-    text-align: center;
-  }
-
-  .s26-navbar-user ul li a .lbl-li-user {
-    padding: 0 .8rem;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .s26-navbar-user ul li:hover {
-    background: rgb(36 58 70 / 7%);
-    cursor: pointer;
-  }
-
-  li a div.lbl-li-user.container-dark-mode {
-    display: flex;
-    width: 162px;
-    padding-right: 0;
-    margin-right: 0;
-  }
-
-
-  .container-dark-mode div.lbl-dark-mode {
-    padding: 0;
-    margin: 0;
-  }
-
-  .container-dark-mode div.s26-checkbox-switch {
-    margin: 0 .9rem;
-  }
-</style>

@@ -1,7 +1,5 @@
 <?php
-require_once('DatabasesModel.php');
-require_once('TypeofshopsModel.php');
-
+require_once('SystemModel.php');
 class CompaniesModel extends Mysql
 {
   public $id;
@@ -22,8 +20,7 @@ class CompaniesModel extends Mysql
   public function __construct()
   {
     parent::__construct();
-    $this->Database = new DatabasesModel;
-    $this->Typetrade = new TypeofshopsModel;
+    $this->System = new SystemModel;
   }
 
   public function selectCompanies(int $perPage, array $filter)
@@ -46,12 +43,10 @@ class CompaniesModel extends Mysql
     $this->perPage = $perPage;
 
     $date_range = "";
-    if ($this->date != '') {
-      if (count($this->date) == 2) {
-        $date_range = '
-        AND u.created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59"
-        OR u.created_at BETWEEN "' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"';
-      }
+    if ($this->date != '' && count($this->date) == 2) {
+      $date_range = '
+        AND created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59"
+        OR created_at BETWEEN "' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"';
     }
 
     $where = '
@@ -87,8 +82,8 @@ class CompaniesModel extends Mysql
     $items = $this->select_all($rows);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['data_base'] = $this->Company->selectDatabase($items[$i]['data_base_id']);
-      $items[$i]['type_trade'] = $this->Typetrade->selectTypetrade($items[$i]['type_trade_id']);
+      $items[$i]['data_base'] = $this->System->selectDatabase($items[$i]['data_base_id']);
+      $items[$i]['type_trade'] = $this->System->selectTypetrade($items[$i]['type_trade_id']);
     }
     return [
       'items' => $items,
@@ -101,8 +96,8 @@ class CompaniesModel extends Mysql
     $this->id = $id;
     $sql = "SELECT * FROM companies WHERE id = $this->id";
     $request = $this->select($sql);
-    $request['data_base'] = $this->Database->selectDatabase($request['data_base_id']);
-    $request['type_trade'] = $this->Typetrade->selectTypetrade($request['type_trade_id']);
+    $request['data_base'] = $this->System->selectDatabase($request['data_base_id']);
+    $request['type_trade'] = $this->System->selectTypetrade($request['type_trade_id']);
     return $request;
   }
 }

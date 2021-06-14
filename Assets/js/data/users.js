@@ -109,6 +109,7 @@ Vue.component("s26-form-user", {
         phone: "",
         role_id: "",
         establishment_id: "",
+        create_notifications_users: 2,
         status: 1,
         created_at: "",
       },
@@ -143,6 +144,7 @@ Vue.component("s26-form-user", {
           this.form.phone = res.data.phone;
           this.form.role_id = res.data.role_id;
           this.form.establishment_id = res.data.establishment_id;
+          this.form.create_notifications_users = res.data.create_notifications_users;
           this.form.status = res.data.status;
           let date = new Date(res.data.created_at);
           this.form.created_at = new Intl.DateTimeFormat("es-ES", {
@@ -164,6 +166,7 @@ Vue.component("s26-form-user", {
       axios
         .post("/users/setUser", this.form)
         .then((res) => {
+          console.log(res)
           if (res.data.type == 1) {
             this.onReset();
             alertify.success(res.data.msg);
@@ -238,10 +241,16 @@ Vue.component("s26-form-user", {
         return false;
       }
 
+      if (this.form.create_notifications_users == "") {
+        $("#form-create_notifications_users").addClass("is-invalid").focus();
+        return false;
+      }
+
       if (this.form.status == "") {
         $("#form-status").addClass("is-invalid").focus();
         return false;
       }
+      
       if (
         (this.form.new_password == "" || this.form.confirm_password == "") &&
         this.id == 0
@@ -279,19 +288,13 @@ Vue.component("s26-form-user", {
         <div class="s26-modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              {{ id !== 0 ? 'Editar Usuario' : 'Nuevo Usuario' }}
+              {{ id !== 0 ? 'Editar Usuario ' + id : 'Nuevo Usuario' }}
             </h5>
             <button type="button" class="btn-close" @click="hideModal"></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="onSubmit">
               <div class="row">
-                <div class="col-12 col-sm-6" v-if="id !== 0">
-                  <div class="mb-4">
-                    <label class="form-label">Id</label>
-                    <div class="form-control form-control-sm">{{ form.id }}</div>
-                  </div>
-                </div>
                 <div class="col-6">
                   <s26-form-input 
                     label="Cédula" 
@@ -318,7 +321,7 @@ Vue.component("s26-form-user", {
                     :message="msg_error">
                   </s26-form-input>
                 </div>
-                <div :class="[(id !== 0 ) ? 'col-6' : 'col-12' ]">
+                <div class="col-6">
                   <s26-form-input 
                     label="Apellidos" 
                     size="sm" 
@@ -331,7 +334,7 @@ Vue.component("s26-form-user", {
                     :message="msg_error">
                   </s26-form-input>
                 </div>
-                <div class="col-8">
+                <div class="col-6">
                   <s26-form-input 
                     label="Email" 
                     size="sm" 
@@ -357,7 +360,7 @@ Vue.component("s26-form-user", {
                     :message="msg_error">
                   </s26-form-input>
                 </div>
-                <div class="col-5">
+                <div class="col-8">
                     <s26-select-establishment 
                       id="form-establishment" 
                       v-model="form.establishment_id"
@@ -365,7 +368,7 @@ Vue.component("s26-form-user", {
                     >
                     </s26-select-establishment>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                   <s26-select-role 
                     id="form-role" 
                     v-model="form.role_id"
@@ -375,8 +378,18 @@ Vue.component("s26-form-user", {
                 </div>
                 <div class="col-3">
                     <s26-select-status 
+                      lbl="Estado"
                       id="form-status" 
                       v-model="form.status"
+                      s26_required
+                    >
+                    </s26-select-status>
+                </div>
+                <div class="col-3">
+                    <s26-select-status 
+                      lbl="Crear Notif."
+                      id="form-create_notifications_users" 
+                      v-model="form.create_notifications_users"
                       s26_required
                     >
                     </s26-select-status>

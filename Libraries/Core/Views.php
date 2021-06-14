@@ -1,17 +1,20 @@
-<?php 
-  class Views
+<?php
+class Views
+{
+  function getView($controller, $view, $data = "")
   {
-    function getView($controller, $view, $data="")
-    {
-      $controller = get_class($controller);
+    $controller = get_class($controller);
 
-      if($controller == "Dashboard")
-      {
-        $view = "Views/".$view.".php";
-      }else{
-        $view = "Views/".$view.".php";
+    if ($controller == "Dashboard") {
+      $view = "Views/" . $view . ".php";
+    } else {
+      if (file_exists("Views/" . $view . ".php")) {
+        $view = "Views/" . $view . ".php";
+      } else {
+        $view = "Views/" . $controller . "/" . $view . ".php";
       }
-      require_once($view);
     }
+
+    require_once($view);
   }
-?>
+}

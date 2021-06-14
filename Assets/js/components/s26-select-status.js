@@ -7,6 +7,7 @@ Vue.component("s26-select-status", {
     message: String,
     autofocus: Boolean,
     s26_required: Boolean,
+    lbl: String,
   },
   computed: {
     inputListeners: function () {
@@ -29,7 +30,7 @@ Vue.component("s26-select-status", {
   },
   template: `
     <div class="mb-4">
-      <label class="form-label">Estado</label>
+      <label class="form-label">{{ lbl }}</label>
       <select
         :id="id"
         class="form-select form-select-sm"

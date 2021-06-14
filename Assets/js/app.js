@@ -1,4 +1,5 @@
-let BASE_URL = "http://localhost/s26_empresarial";
+// let BASE_URL = "http://localhost/s26_empresarial";
+let BASE_URL = "http://192.168.0.104/s26_empresarial";
 axios.defaults.baseURL = BASE_URL;
 
 function val_inputs() {

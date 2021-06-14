@@ -20,31 +20,34 @@ class Roles extends Controllers
 
   public function getRoles()
   {
-    $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : '10000';
-    $filter = [
-      'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
-      'name' => isset($_GET['name']) ? strClean($_GET['name']) : '',
-      'description' => isset($_GET['description']) ? strClean($_GET['description']) : '',
-      'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
-      'date' => !empty($_GET['date']) ? $_GET['date'] : '',
-    ];
-    $arrData = $this->model->selectRoles($perPage, $filter);
-    echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
-
+    if ($_SESSION['permitsModule']['r']) {
+      $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : '10000';
+      $filter = [
+        'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
+        'name' => isset($_GET['name']) ? strClean($_GET['name']) : '',
+        'description' => isset($_GET['description']) ? strClean($_GET['description']) : '',
+        'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
+        'date' => !empty($_GET['date']) ? $_GET['date'] : '',
+      ];
+      $arrData = $this->model->selectRoles($perPage, $filter);
+      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+    }
     die();
   }
 
   public function getRol(int $id)
   {
-    $id = intval(strClean($id));
-    if ($id > 0) {
-      $arrData = $this->model->selectRol($id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
+    if ($_SESSION['permitsModule']['r']) {
+      $id = intval(strClean($id));
+      if ($id > 0) {
+        $arrData = $this->model->selectRol($id);
+        if (empty($arrData)) {
+          $arrRes = 0;
+        } else {
+          $arrRes = $arrData;
+        }
+        echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
       }
-      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
   }
@@ -61,21 +64,25 @@ class Roles extends Controllers
       ($status == 2 || $status == 1)
     ) {
       if ($id == 0) {
-        //Crear Rol
-        $request_rol = $this->model->insertRol(
-          $rol,
-          $description,
-          $status,
-        );
+        if ($_SESSION['permitsModule']['w']) {
+          //Crear Rol
+          $request_rol = $this->model->insertRol(
+            $rol,
+            $description,
+            $status,
+          );
+        }
         $type = 1;
       } else {
-        // Actualizar 
-        $request_rol = $this->model->updateRol(
-          $id,
-          $rol,
-          $description,
-          $status,
-        );
+        if ($_SESSION['permitsModule']['u']) {
+          // Actualizar 
+          $request_rol = $this->model->updateRol(
+            $id,
+            $rol,
+            $description,
+            $status,
+          );
+        }
         $type = 2;
       }
 
@@ -102,18 +109,20 @@ class Roles extends Controllers
 
   public function delRol(int $id)
   {
-    $id = intval($id);
-    $requestDelete = $this->model->deleteRol($id);
-    if ($requestDelete == 1) {
-      $arrRes = array('type' => true, 'msg' => 'Rol Eliminado.');
-    } else if ($requestDelete == 2) {
-      $arrRes = array('type' => false, 'msg' => 'No es posible eliminar un rol asociado a usuarios.');
-    } else if ($requestDelete == 3) {
-      $arrRes = array('type' => false, 'msg' => 'No es posible eliminar un rol administrador.');
-    } else {
-      $arrRes = array('type' => false, 'msg' => 'Error al eliminar Rol.');
+    if ($_SESSION['permitsModule']['d']) {
+      $id = intval($id);
+      $requestDelete = $this->model->deleteRol($id);
+      if ($requestDelete == 1) {
+        $arrRes = array('type' => true, 'msg' => 'Rol Eliminado.');
+      } else if ($requestDelete == 2) {
+        $arrRes = array('type' => false, 'msg' => 'No es posible eliminar un rol asociado a usuarios.');
+      } else if ($requestDelete == 3) {
+        $arrRes = array('type' => false, 'msg' => 'No es posible eliminar un rol administrador.');
+      } else {
+        $arrRes = array('type' => false, 'msg' => 'Error al eliminar Rol.');
+      }
+      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
-    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
 }

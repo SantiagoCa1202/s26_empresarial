@@ -1,7 +1,15 @@
 Vue.component("s26-date-picker", {
   props: {
+    id: String,
     enable: String,
     size: String,
+    label: String,
+    s26_required: Boolean,
+    message: {
+      type: String,
+      default: "",
+    },
+    select_all_dates: Boolean
   },
   data: function () {
     return {
@@ -36,6 +44,10 @@ Vue.component("s26-date-picker", {
       isActive: false,
       slider: false,
       calendar_mode: "unico",
+      position: {
+        top: "0",
+      },
+      popup: "bottom",
     };
   },
   mounted() {
@@ -52,11 +64,16 @@ Vue.component("s26-date-picker", {
     this.renderCalendar();
   },
   created() {
-    window.addEventListener("click", (e) => {
-      if (!this.$el.contains(e.target)) {
+    setTimeout(() => {
+      $(
+        `html, .s26-modal, .s26-modal-content, .s26-popup:not(#s26-date-picker-${this.id})`
+      ).on("click", (e) => {
         this.isActive = false;
-      }
-    });
+      });
+      $(`#s26-date-picker-${this.id}`).click(function (e) {
+        e.stopPropagation();
+      });
+    }, 100);
   },
   methods: {
     renderCalendar() {
@@ -239,7 +256,7 @@ Vue.component("s26-date-picker", {
       }
     },
     disabled_date(data) {
-      if (!this.calendar) {
+      if (!this.calendar && !this.select_all_dates) {
         let currentDate = new Date(this.today.day);
         let date = new Date(data);
         if (date.getTime() <= currentDate.getTime()) {
@@ -261,13 +278,24 @@ Vue.component("s26-date-picker", {
     active_date_picker() {
       this.isActive = this.isActive ? false : true;
       this.renderCalendar();
+      let s26DatePicker = document.getElementById(this.id);
+      if (s26DatePicker.getBoundingClientRect().bottom >= 350) {
+        this.position.top = "-320px";
+        this.popup = "top";
+      } else {
+        this.position.top = 0;
+        this.popup = "bottom";
+      }
     },
     val_date(n) {
       if (this.date_range.length == 1) {
         let date_one = new Date(this.date_range[0]);
         date_one.setDate(date_one.getDate() + 1);
 
-        this.value_date = `${date_one.toLocaleDateString()}  ~ `;
+        this.value_date =
+          this.enable == "unique"
+            ? `${date_one.toLocaleDateString()}`
+            : `${date_one.toLocaleDateString()}  ~ `;
       } else if (this.date_range.length == 2) {
         let date_two = new Date(this.date_range[1]);
         date_two.setDate(date_two.getDate() + 1);
@@ -284,28 +312,34 @@ Vue.component("s26-date-picker", {
     },
   },
   template: `
-  <div id="s26-date-picker">
+  <div  :id="'s26-date-picker-' + id"class="s26-date-picker s26-popup">
     <div class="mb-4">
-      <label for="id" class="form-label">Fecha</label>
+      <label for="id" class="form-label" v-if="label !== '' && label"> 
+        {{ label }} 
+      </label>
       <div
-        class="form-control - form-control-sm"
+        :id="id"
+        class="form-control form-control-sm"
         tabindex="0"
         @click="active_date_picker"
         @keyup.enter="active_date_picker"
-      >
+        :s26-required = "s26_required"
+        >
         {{ value_date }}
         <span v-if="date_range.length > 0" @click="on_select_date(null)">
           <i class="fas fa-times"></i>
         </span>
       </div>
+      <p class="invalid-feedback" v-if="s26_required">{{ message }} </p>
     </div>
     <transition name="slide-fade">
       <div
         :class="[
-          'container-date-picker',
-          size ? 'container-date-picker-' + size : '',
           'popup-date-picker',
+          size ? 'popup-date-picker-' + size : '',
+          'popup-date-picker-' + popup,
         ]"
+        :style="position"
         v-if="isActive"
         tabindex="0"
         
@@ -316,22 +350,35 @@ Vue.component("s26-date-picker", {
         <transition name="fade" mode="out-in">
           <div class="s26-date-picker-header" v-if="showDate !== 'years'">
             <div class="s26-date-picker-header__prev">
-              <button class="btn-piker" @click="prevMonth">
+              <button 
+                type="button"
+                class="btn-piker" 
+                @click="prevMonth"
+              >
                 <i class="fas fa-angle-left"></i>
               </button>
             </div>
             <div class="s26-date-picker-header__value">
               <div class="s26-slider">
-                <button ref="btnCurrentDate" @click="funcShowDate">
+                <button 
+                  type="button"
+                  ref="btnCurrentDate" 
+                  @click="funcShowDate"
+                >
                   {{ currentDate }}
                 </button>
-                <button @click="funcShowDate" v-if="slider">
+                <button 
+                  type="button"
+                  @click="funcShowDate" 
+                  v-if="slider"
+                >
                   {{ currentDate }}
                 </button>
               </div>
             </div>
             <div class="s26-date-picker-header__next">
               <button
+                type="button"
                 class="btn-piker"
                 @click="nextMonth"
               >
