@@ -17,4 +17,15 @@ class Views
 
     require_once($view);
   }
+
+  function exportData($file, $data = "")
+  {
+
+    if (file_exists("Export/" . $file . ".php")) {
+      $export = "Export/" . $file . ".php";
+      require_once($export);
+    } else {
+      return false;
+    }
+  }
 }

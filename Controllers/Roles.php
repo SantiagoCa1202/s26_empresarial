@@ -125,4 +125,23 @@ class Roles extends Controllers
     }
     die();
   }
+
+  public function exportRoles()
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $perPage = intval($_GET['perPage']);
+      $filter = [
+        'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
+        'name' => isset($_GET['name']) ? strClean($_GET['name']) : '',
+        'description' => isset($_GET['description']) ? strClean($_GET['description']) : '',
+        'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
+        'date' => !empty($_GET['date']) ? $_GET['date'] : '',
+      ];
+
+      $data['data'] = $this->model->selectRoles($perPage, $filter);
+      $data['type'] = $_GET['type'];
+      $this->views->exportData("roles", $data);
+    }
+    die();
+  }
 }

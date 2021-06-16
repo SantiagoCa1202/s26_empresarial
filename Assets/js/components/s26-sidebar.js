@@ -3,6 +3,7 @@ Vue.component("s26-sidebar", {
     title: String,
     icon: String,
     value: {},
+    url_export: Function,
   },
   data: function () {
     return {
@@ -11,6 +12,15 @@ Vue.component("s26-sidebar", {
   },
   created() {},
   methods: {
+    exportData(type) {
+      let url = `${this.url_export}&type=${type}`;
+
+      if (type == "excel") {
+        window.location.href = url;
+      } else {
+        window.open(url);
+      }
+    },
     hideSidebar() {
       this.btnShowSidebar = { opacity: 1 };
       this.$emit("input", false);
@@ -60,14 +70,29 @@ Vue.component("s26-sidebar", {
             >
               Actualizar
             </button>
+            <slot name="actions"> </slot>
+          </div>
+        </div>
+        <div class="container accordion" v-if="this.url_export !== ''">
+          <h4 class="title">Exportar</h4>
+          <div class="container">
+            <button
+              type="button"
+              class="btn btn-success form-control mb-2"
+              @click="exportData('excel')"
+            >
+              <i class="far fa-file-excel"></i>
+              Excel 
+            </button>
             <button
               type="button"
               class="btn btn-warning form-control mb-2"
-              @click="$emit('export')"
+              @click="exportData('print')"
             >
-              Exportar
+              <i class="fas fa-print"></i>
+              Imprimir
             </button>
-            <slot name="actions"> </slot>
+            <slot name="export"></slot>
           </div>
         </div>
       </main>

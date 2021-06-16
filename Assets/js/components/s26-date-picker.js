@@ -9,7 +9,8 @@ Vue.component("s26-date-picker", {
       type: String,
       default: "",
     },
-    select_all_dates: Boolean
+    select_all_dates: Boolean,
+    value: String,
   },
   data: function () {
     return {
@@ -325,8 +326,8 @@ Vue.component("s26-date-picker", {
         @keyup.enter="active_date_picker"
         :s26-required = "s26_required"
         >
-        {{ value_date }}
-        <span v-if="date_range.length > 0" @click="on_select_date(null)">
+        {{ value != '' ? value_date : '' }}
+        <span v-if="date_range.length > 0 && value !== ''" @click="on_select_date(null)">
           <i class="fas fa-times"></i>
         </span>
       </div>

@@ -52,7 +52,7 @@ class UsersModel extends Mysql
     $this->perPage = $perPage;
 
 
-    $date_range = ($this->date != '' && count($this->date) == 2) ? 
+    $date_range = ($this->date != '' && count($this->date) == 2) ?
       ' AND u.created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "
       ' . $this->date[1] . ' 23:59:59" OR u.created_at BETWEEN "
       ' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"' : '';
@@ -83,7 +83,7 @@ class UsersModel extends Mysql
     $info_table = $this->info_table($info);
 
     $rows = "
-      SELECT *, u.id as id, u.phone as phone 
+      SELECT *, u.id as id, u.phone as phone, u.created_at as created_at
       FROM users u
       INNER JOIN establishments e
       ON u.establishment_id = e.id
@@ -198,7 +198,7 @@ class UsersModel extends Mysql
 
     if (empty($request)) {
       if ($this->password !== "") {
-        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, password = ?, phone = ?, role_id = ?, establishment_id = ?, create_notifications_users = ? status = ? WHERE id = $this->id";
+        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, password = ?, phone = ?, role_id = ?, establishment_id = ?, create_notifications_users = ?, status = ? WHERE id = $this->id";
         $arrData = array(
           $this->name,
           $this->last_name,

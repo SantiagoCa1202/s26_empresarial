@@ -29,6 +29,7 @@ let S26RolesView = new Vue({
       idRow: null,
       activeSidebar: true,
       action: "",
+      url_export: "",
     };
   },
   created() {
@@ -55,6 +56,7 @@ let S26RolesView = new Vue({
         .catch((err) => {
           console.log(err);
         });
+      this.url_export = url_get("/roles/exportRoles/", params);
     },
     onReset() {
       for (fil in this.filter) {

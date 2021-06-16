@@ -43,6 +43,7 @@ let S26UsersView = new Vue({
       idRow: null,
       activeSidebar: true,
       action: "",
+      url_export: "",
     };
   },
   created() {
@@ -65,13 +66,13 @@ let S26UsersView = new Vue({
           params,
         })
         .then((res) => {
-          console.log(res);
           this.items = res.data.items;
           this.rows = res.data.info.count;
         })
         .catch((err) => {
           console.log(err);
         });
+      this.url_export = url_get("/users/exportUsers/", params);
     },
     onReset() {
       for (fil in this.filter) {
@@ -144,7 +145,8 @@ Vue.component("s26-form-user", {
           this.form.phone = res.data.phone;
           this.form.role_id = res.data.role_id;
           this.form.establishment_id = res.data.establishment_id;
-          this.form.create_notifications_users = res.data.create_notifications_users;
+          this.form.create_notifications_users =
+            res.data.create_notifications_users;
           this.form.status = res.data.status;
           let date = new Date(res.data.created_at);
           this.form.created_at = new Intl.DateTimeFormat("es-ES", {
@@ -166,7 +168,7 @@ Vue.component("s26-form-user", {
       axios
         .post("/users/setUser", this.form)
         .then((res) => {
-          console.log(res)
+          console.log(res);
           if (res.data.type == 1) {
             this.onReset();
             alertify.success(res.data.msg);
@@ -250,7 +252,7 @@ Vue.component("s26-form-user", {
         $("#form-status").addClass("is-invalid").focus();
         return false;
       }
-      
+
       if (
         (this.form.new_password == "" || this.form.confirm_password == "") &&
         this.id == 0
@@ -304,6 +306,7 @@ Vue.component("s26-form-user", {
                     v-model="form.document" 
                     maxlength="10" 
                     number 
+                    length
                     s26_required 
                     :message="msg_error">
                   </s26-form-input>
@@ -356,6 +359,7 @@ Vue.component("s26-form-user", {
                     v-model="form.phone" 
                     maxlength="10" 
                     number 
+                    length
                     s26_required 
                     :message="msg_error">
                   </s26-form-input>
@@ -488,7 +492,6 @@ Vue.component("s26-watch-user", {
       axios
         .get("/users/getUser/" + id)
         .then((res) => {
-          console.log(res);
           this.form.id = res.data.id;
           this.form.name = res.data.name;
           this.form.last_name = res.data.last_name;
@@ -594,7 +597,7 @@ Vue.component("s26-watch-user", {
             <div class="mb-4">
               <label class="form-label">Estado</label>
               <div class="form-control form-control-sm">
-                {{ form.status }}
+                {{ form.status == 1 ? "Activo" : "Inactivo" }}
               </div>
             </div>
           </div>

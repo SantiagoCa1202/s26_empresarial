@@ -1,5 +1,6 @@
 // let BASE_URL = "http://localhost/s26_empresarial";
-let BASE_URL = "http://192.168.0.104/s26_empresarial";
+// let BASE_URL = "http://192.168.0.104/s26_empresarial";
+let BASE_URL = "http://192.168.100.6/s26_empresarial";
 axios.defaults.baseURL = BASE_URL;
 
 function val_inputs() {
@@ -71,6 +72,22 @@ function readCookie(name) {
   }
 
   return null;
+}
+
+function url_get(url, params) {
+  let params_get = "";
+  for (param in params) {
+    if (Array.isArray(params[param])) {
+      for (let i = 0; i < params[param].length; i++) {
+        params_get += `${param}[]=${params[param][i]}&`;
+      }
+    } else {
+      params_get += `${param}=${params[param]}&`;
+    }
+  }
+  params_get = params_get.substring(0, params_get.length - 1);
+  let url_get = `${BASE_URL}${url}?${params_get}`;
+  return url_get;
 }
 
 val_inputs();

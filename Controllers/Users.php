@@ -15,7 +15,6 @@ class Users extends Controllers
 
   public function users()
   {
-    session_regenerate_id(true);
     $this->views->getView($this, "users");
   }
 
@@ -25,7 +24,7 @@ class Users extends Controllers
       $perPage = intval($_GET['perPage']);
       $filter = [
         'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
-        'document' => !empty($_GET['document']) ? intval($_GET['document']) : '',
+        'document' => !empty($_GET['document']) ? strClean($_GET['document']) : '',
         'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
         'role_id' => !empty($_GET['role_id']) ? intval($_GET['role_id']) : '',
         'establishment_id' => !empty($_GET['establishment_id']) ? intval($_GET['establishment_id']) : '',
@@ -189,6 +188,27 @@ class Users extends Controllers
         $arrRes = array('type' => false, 'msg' => 'Error al eliminar Usuario.');
       }
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
+
+  public function exportUsers()
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $perPage = intval($_GET['perPage']);
+      $filter = [
+        'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
+        'document' => !empty($_GET['document']) ? strClean($_GET['document']) : '',
+        'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
+        'role_id' => !empty($_GET['role_id']) ? intval($_GET['role_id']) : '',
+        'establishment_id' => !empty($_GET['establishment_id']) ? intval($_GET['establishment_id']) : '',
+        'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
+        'date' => !empty($_GET['date']) ? $_GET['date'] : '',
+      ];
+
+      $data['data'] = $this->model->selectUsers($perPage, $filter);
+      $data['type'] = $_GET['type'];
+      $this->views->exportData("users", $data);
     }
     die();
   }

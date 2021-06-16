@@ -22,6 +22,7 @@ Vue.component("s26-form-input", {
     s26_required: Boolean,
     autofocus: Boolean,
     autocomplete: String,
+    length: Boolean,
   },
   data: function () {
     return {};
@@ -30,7 +31,13 @@ Vue.component("s26-form-input", {
   methods: {},
   template: `
     <div class="mb-3">
-      <label :for="id" class="form-label" v-if="label"> {{ label }} </label>
+      <label :for="id" class="form-label" v-if="label"> 
+        {{ label }} 
+        
+      </label>
+      <span v-if="length && value.length > 0" :class="['fw-bold float-end', value.length == maxlength || value.length == minlength ? 'text-success' : 'text-danger']">
+          {{ length ? value.length : '' }}
+        </span>
       <input 
         :type="type" 
         :class="['form-control form-control-' + size, variant ]"

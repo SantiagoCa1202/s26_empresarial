@@ -246,6 +246,86 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   padding-right: 0;
 }
 
+/* CUSTOM SELECT SEARCH  */
+
+.s26-custom-select {
+  position: relative;
+  cursor: pointer;
+}
+
+.s26-custom-select .s26-select-value {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.s26-select-value .icon-sort-down-select {
+  position: absolute;
+  right: 10px;
+  transition: .3s;
+}
+
+.s26-select-value .icon-sort-down-select i {
+  font-size: 1.2rem;
+}
+
+.icon-sort-down-select.active {
+  transform: rotate(-180deg) translateY(-2px);
+}
+
+.s26-select-container {
+  background: #fff;
+  position: absolute;
+  width: 100%;
+  height: 0px;
+  margin-top: 5px;
+  top: 55px !important;
+  border-radius: .2rem;
+  overflow: auto;
+  transition: .2s;
+}
+
+.s26-select-container.active {
+  height: 168px;
+  box-shadow: 0 1px 3px 2px rgba(0, 0, 0, .15);
+  border: 1px solid #ced4da;
+  z-index: 1060;
+}
+
+.s26-select-container-input-search {
+  width: 100%;
+  padding: .5rem;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.s26-select-container-input-search .s26-btn-search {
+  position: absolute;
+  border: none;
+  background: none;
+  right: 10px;
+  color: rgba(0, 0, 0, .5);
+  transition: .2s;
+}
+
+.s26-select-container-input-search .s26-btn-search:hover, .s26-select-container-input-search .s26-btn-search:focus {
+  color: var(--bs-primary);
+  outline: none;
+}
+
+.s26-select-options {
+  padding: .3rem .8rem;
+}
+
+.s26-select-options:hover, .s26-select-options:focus, .s26-select-options.focus {
+  background-color: var(--bs-info);
+  color: #fff;
+  transition: .2s;
+}
+
 /* CUSTOM CHECKBOX SWITCH */
 
 .s26-checkbox-switch label {
