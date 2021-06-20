@@ -164,9 +164,10 @@ Vue.component("s26-form-user", {
       if (!this.valForm()) {
         return false;
       }
+      let formData = json_to_formData(this.form);
       show_loader_points();
       axios
-        .post("/users/setUser", this.form)
+        .post("/users/setUser", formData)
         .then((res) => {
           console.log(res);
           if (res.data.type == 1) {
@@ -286,7 +287,7 @@ Vue.component("s26-form-user", {
       class="s26-modal" 
       tabindex="-1"
     >
-      <div class="s26-modal-dialog s26-modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="s26-modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
@@ -521,7 +522,7 @@ Vue.component("s26-watch-user", {
     class="s26-modal" 
     tabindex="-1"
     >
-      <div class="s26-modal-dialog s26-modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered">
       <div class="s26-modal-content">
       <div class="modal-header">
         <h5 class="modal-title">

@@ -79,6 +79,10 @@ input[email] {
   background-color: var(--s26-blue-gray);
 }
 
+.s26-text-blue {
+  color: var(--s26-blue)
+}
+
 /* Config Reset */
 
 .btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-warning, .btn-info, .btn-light, .btn-dark, .btn-link, .form-control:focus, .custom-select:focus {
@@ -151,6 +155,17 @@ textarea.resize-none {
 
 .pointer {
   cursor: pointer;
+}
+
+.s26-align-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.s26-align-y-center {
+  display: flex;
+  align-items: center;
 }
 
 /* CUSTOM BTN S26 */
@@ -279,7 +294,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   width: 100%;
   height: 0px;
   margin-top: 5px;
-  top: 55px !important;
+  top: 55px;
   border-radius: .2rem;
   overflow: auto;
   transition: .2s;
@@ -324,6 +339,70 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   background-color: var(--bs-info);
   color: #fff;
   transition: .2s;
+}
+
+/* CUSTOM INPUT SEARCH */
+
+.s26-container-search {
+  border: 1px solid #ced4da;
+  border-radius: .2rem;
+  display: flex;
+  align-items: center;
+  transition: .3s;
+}
+
+.s26-container-search.focus {
+  border-color: var(--s26-info);
+  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%) !important;
+}
+
+.s26-container-search button {
+  display: flex;
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+  align-items: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  font-size: 1rem;
+  border: 0;
+  background: none;
+  color: #bebebe;
+  transition: .3s;
+}
+
+.s26-container-search .s26-btn {
+  width: 12%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.s26-container-search .s26-btn-search button:hover, .s26-container-search .s26-btn-search button:focus {
+  color: var(--bs-primary);
+  outline: none;
+}
+
+.s26-container-search .s26-btn-cancel button:hover, .s26-container-search .s26-btn-cancel button:focus {
+  color: var(--bs-danger);
+  outline: none;
+}
+
+.s26-container-search .s26-input-search {
+  width: 90%;
+}
+
+.s26-container-search .s26-input-search input {
+  border: 0;
+  width: 100%;
+  height: 100%;
+  padding: .35rem .5rem;
+}
+
+.s26-container-search .s26-input-search input:focus {
+  outline: none;
 }
 
 /* CUSTOM CHECKBOX SWITCH */
@@ -1070,15 +1149,8 @@ div.year-active {
   background: rgba(0, 0, 0, .3);
 }
 
-.s26-modal.fade .s26-modal-dialog {
-  transition: transform .3s ease-out;
-  transform: translate(0, -50px);
-}
-
-.s26-modal-dialog-centered {
-  display: flex;
-  align-items: center;
-  min-height: calc(100% - 1rem);
+.modal-dialog-centered {
+  padding-top: 50px;
 }
 
 .s26-modal-content {
@@ -1093,6 +1165,10 @@ div.year-active {
   border-radius: .3rem;
   outline: 0;
   box-shadow: 0px 2px 4px 0px #606060;
+}
+
+.modal-md {
+  max-width: 720px;
 }
 
 /* S26 LOADING POINTS */
@@ -1171,12 +1247,71 @@ div.year-active {
   overflow-y: auto;
 }
 
-#roles-permits .s26-modal-dialog {
-  max-width: 750px;
-}
-
 #roles-permits .table tbody tr td {
   border: 0;
+}
+
+/* IMAGES  */
+
+.container-img {
+  position: relative;
+}
+
+.min-img {
+  transition: .3s;
+}
+
+.min-img.checked {
+  transition: .1s;
+  border: 3px solid var(--bs-primary)
+}
+
+.min-img:hover:not(.hover-none),
+.min-img:focus:not(.hover-none) {
+  cursor: pointer;
+  transform: scale(1.05);
+  box-shadow: 0px 3px 6px 0px rgb(0 0 0 / 22%);
+}
+
+.header-select-photo {
+  position: sticky;
+  top: 0;
+  background-color: var(--bs-white);
+  z-index: 1000;
+}
+
+.list-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.list-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+
+.list-enter, .list-leave-to
+/* .list-leave-active below version 2.1.8 */
+
+  {
+  opacity: 0;
+}
+
+.popover-info-img-left::before {
+  position: absolute;
+  content: "";
+  width: 0.71428571em;
+  height: 0.71428571em;
+  background: #fff;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  z-index: 2;
+  border-left: 1px solid #bababc;
+  border-bottom: 1px solid #bababc;
+  margin-left: -0.30714286em;
+  top: 50%;
+  left: -.1rem;
+  right: auto;
+  bottom: auto;
 }
 
 @keyframes points-loader {
@@ -1185,16 +1320,6 @@ div.year-active {
   }
   40% {
     box-shadow: 0 2.5em 0 0;
-  }
-}
-
-@media (min-width: 576px) {
-  .s26-modal-dialog {
-    max-width: 500px;
-    margin: 1.75rem auto;
-  }
-  .s26-modal-sm {
-    max-width: 300px;
   }
 }
 

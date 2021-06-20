@@ -107,6 +107,15 @@ function getPermits(int $idModule)
   $_SESSION['permits'] = $permits;
   $_SESSION['permitsModule'] = $permitsModule;
 }
+
+//SUBIDA DE IMAGENES 
+function uploadPhoto(string $tmp_name, string $name)
+{
+  $destination = 'Assets/media/uploads/photos/' . $name;
+  $move = move_uploaded_file($tmp_name, $destination);
+
+  return $move;
+}
 //Eliminar exceso de espacios y caracteres especiales 
 function strClean($strString)
 {
@@ -191,4 +200,4 @@ function dateFormat($date, $type = 1)
 }
 
 // ACTIVE POST FROM AXIOS POST CONTENTS
-$_POST = json_decode(file_get_contents('php://input'), true);
+// $_POST = json_decode(file_get_contents('php://input'), true);

@@ -81,7 +81,8 @@
         !empty($_SESSION['permits'][18]['r']) ||
         !empty($_SESSION['permits'][19]['r']) ||
         !empty($_SESSION['permits'][6]['r']) ||
-        !empty($_SESSION['permits'][5]['r'])
+        !empty($_SESSION['permits'][5]['r']) ||
+        !empty($_SESSION['permits'][46]['r'])
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(2)">
@@ -151,6 +152,13 @@
               <li>
                 <a href="<?= BASE_URL ?>/customer_orders" :class="focusSubMenu('customer_orders')">
                   Pedidos Clientes
+                </a>
+              </li>
+            <?php } ?>
+            <?php if (!empty($_SESSION['permits'][5]['r'])) { ?>
+              <li>
+                <a href="<?= BASE_URL ?>/categories" :class="focusSubMenu('categories')">
+                  Categorias
                 </a>
               </li>
             <?php } ?>
@@ -390,8 +398,8 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][39]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/images" :class="focusSubMenu('images')">
-                  Imagenes
+                <a href="<?= BASE_URL ?>/photos" :class="focusSubMenu('photos')">
+                  Fotos
                 </a>
               </li>
             <?php } ?>

@@ -157,9 +157,10 @@ Vue.component("s26-form-customer", {
       if (!this.valForm()) {
         return false;
       }
+      let formData = json_to_formData(this.form);
       show_loader_points();
       axios
-        .post("/customers/setCustomer", this.form)
+        .post("/customers/setCustomer", formData)
         .then((res) => {
           if (res.data.type == 1) {
             this.onReset();
@@ -238,7 +239,7 @@ Vue.component("s26-form-customer", {
 class="s26-modal" 
 tabindex="-1"
 >
-<div class="s26-modal-dialog s26-modal-dialog-centered">
+<div class="modal-dialog modal-dialog-centered">
   <div class="s26-modal-content">
     <div class="modal-header">
       <h5 class="modal-title">
@@ -443,7 +444,7 @@ Vue.component("s26-watch-customer", {
 class="s26-modal" 
 tabindex="-1"
 >
-<div class="s26-modal-dialog s26-modal-dialog-centered">
+<div class="modal-dialog modal-dialog-centered">
 <div class="s26-modal-content">
 <div class="modal-header">
   <h5 class="modal-title">

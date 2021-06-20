@@ -129,9 +129,10 @@ Vue.component("s26-form-role", {
       if (!this.valForm()) {
         return false;
       }
+      let formData = json_to_formData(this.form);
       show_loader_points();
       axios
-        .post("/roles/setRol", this.form)
+        .post("/roles/setRol", formData)
         .then((res) => {
           if (res.data.type == 1) {
             this.onReset();
@@ -178,7 +179,7 @@ Vue.component("s26-form-role", {
       class="s26-modal" 
       tabindex="-1"
     >
-      <div class="s26-modal-dialog s26-modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="s26-modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
@@ -342,9 +343,10 @@ Vue.component("s26-roles-permits", {
     onSubmit() {
       $(".btn").attr("disabled", true);
       alertify.warning("Asignando permisos");
+      let formData = json_to_formData(this.form);
       show_loader_points();
       axios
-        .post("/permits/setPermits", this.form)
+        .post("/permits/setPermits", formData)
         .then((res) => {
           if (res.data.status) {
             alertify.success(res.data.msg);
@@ -383,7 +385,7 @@ Vue.component("s26-roles-permits", {
       class="s26-modal" 
       tabindex="-1"
     >
-      <div class="s26-modal-dialog s26-modal-dialog-centered">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="s26-modal-content">
           <div class="modal-header">
             <h5 class="modal-title">

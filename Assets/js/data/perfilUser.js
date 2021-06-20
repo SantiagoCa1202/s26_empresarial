@@ -72,7 +72,6 @@ let S26UsersInfoView = new Vue({
           params,
         })
         .then((res) => {
-          console.log(res);
           this.items = res.data.items;
           this.rows = res.data.info.count;
         })
@@ -85,7 +84,6 @@ let S26UsersInfoView = new Vue({
       axios
         .get("/users/getMyNotes/")
         .then((res) => {
-          console.log(res);
           this.items = res.data.items;
           this.rows = res.data.info.count;
         })
@@ -98,7 +96,6 @@ let S26UsersInfoView = new Vue({
       axios
         .get("/users/getNotifications/")
         .then((res) => {
-          console.log(res);
           this.items = res.data.items;
           this.rows = res.data.info.count;
         })
@@ -162,7 +159,7 @@ Vue.component("s26-info-payroll", {
     class="s26-modal" 
     tabindex="-1"
   >
-    <div class="s26-modal-dialog s26-modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="s26-modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
@@ -274,8 +271,10 @@ Vue.component("s26-form-notes", {
     onSubmit() {
       this.form.id = this.value;
       show_loader_points();
+
+      let formData = json_to_formData(this.form);
       axios
-        .post("/users/setNote", this.form)
+        .post("/users/setNote", formData)
         .then((res) => {
           if (res.data.type == 1) {
             this.onReset();
@@ -307,7 +306,7 @@ Vue.component("s26-form-notes", {
     class="s26-modal" 
     tabindex="-1"
   >
-    <div class="s26-modal-dialog s26-modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="s26-modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
@@ -353,174 +352,6 @@ Vue.component("s26-form-notes", {
         </div>
       </div>
     </div>
-  </div>
-`,
-});
-Vue.component("s26-form-select-user", {
-  props: {
-    label: String,
-    id: String,
-    message: {
-      type: String,
-      default: "",
-    },
-    size: String,
-    placeholder: String,
-    variant: {
-      type: String,
-      default: "",
-    },
-    value: {},
-    s26_required: Boolean,
-  },
-  data: function () {
-    return {
-      isActive: false,
-      selected: "",
-      options: [],
-      search: "",
-      perPage: 50,
-      rows: 0,
-      position: {
-        top: "0",
-      },
-    };
-  },
-  created() {
-    val_inputs();
-    setTimeout(() => {
-      $(
-        `html, .s26-modal, .s26-modal-content, .s26-popup:not(#s26-custom-select-${this.id})`
-      ).on("click", (e) => {
-        this.isActive = false;
-      });
-      $(`#s26-custom-select-${this.id}`).click(function (e) {
-        e.stopPropagation();
-      });
-    }, 100);
-  },
-  methods: {
-    allRows() {
-      const params = {
-        name: this.search,
-        perPage: this.perPage,
-      };
-      axios
-        .get("/users/getUsers/", {
-          params,
-        })
-        .then((res) => {
-          console.log(res);
-          this.options = res.data.items;
-          this.rows = res.data.info.count;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    activeSelect() {
-      this.isActive = !this.isActive;
-
-      if (this.isActive) {
-        let s26SelectUser = document.getElementById(this.id);
-        this.position.top =
-          s26SelectUser.getBoundingClientRect().bottom >= 500
-            ? "-148px"
-            : "55px";
-
-        setTimeout(() => {
-          $(".s26-select-container").addClass("active");
-        }, 100);
-
-        this.allRows();
-
-        $(".s26-select-container-input-search input").focus();
-        $(".s26-select-container").animate(
-          {
-            scrollTop: 0,
-          },
-          0
-        );
-      }
-    },
-    selectOption(id, value) {
-      this.isActive = false;
-      this.search = "";
-      this.perPage = 50;
-      this.$emit("input", id);
-      this.selected = value;
-    },
-    loadMore() {
-      this.perPage = this.perPage + 25;
-      this.allRows();
-    },
-  },
-  template: `
-  <div :id="'s26-custom-select-' + id" class="s26-custom-select s26-popup mb-3">
-    <label :for="id" class="form-label" v-if="label"> {{ label }} </label>
-    <div 
-      :id="id" 
-      :class="['form-control form-control-' + size,'s26-select-value', variant ]"
-      tabindex="0"
-      @click="activeSelect"
-      @keyup.13="activeSelect"
-    >
-    
-    <div> {{ value != 0 ? selected : '-- seleccionar --' }} </div>
-    <span :class="['icon-sort-down-select', {active: isActive}]">
-        <i class="fas fa-sort-down"></i>
-      </span>
-    </div>
-      <transition name="fade">
-      <div 
-        v-if="isActive"
-        class="s26-select-container"  
-        :style="position"
-      >
-        <div class="s26-select-container-input-search">
-          <input 
-            type="text" 
-            text
-            class="form-control form-control-sm" 
-            placeholder="Buscar..."
-            v-model="search"
-            @keyup.107="allRows"
-          />
-          <transition name="fade">
-            <button v-if="search != ''" title="buscar (+)" type="button" class="s26-btn-search"   @click="allRows">
-              <i class="fas fa-search"></i>
-            </button>
-          </transition>
-        </div>
-        <div class="s26-select-container-options">
-          <div 
-            :class="['s26-select-options', value == 0 ? 'focus' : '']" 
-            tabindex="0" 
-            @click="$emit('input', 0)"
-          >
-            -- seleccionar --
-          </div>
-          <div 
-            :class="['s26-select-options', value == option.id ? 'focus' : '']" 
-            tabindex="0" 
-            v-for="option in options" :key="option.id"
-            @click="selectOption(option.id, option.name)"
-          >
-            {{ option.name }} - {{ option.document }}
-          </div>
-          <button 
-            v-if="perPage < rows"
-            type="button" 
-            class="btn btn-link" 
-            @click="loadMore"
-          >
-            Cargar Mas..
-          </button>
-        </div>
-      </div>
-      </transition>
-
-    <p class="invalid-feedback" v-if="s26_required">{{ message }} </p>
   </div>
 `,
 });
@@ -576,11 +407,13 @@ Vue.component("s26-form-notifications", {
         this.msg_error = "Es necesario ingresar una fecha.";
         return false;
       }
+
+      let formData = json_to_formData(this.form);
+
       show_loader_points();
       axios
-        .post("/users/setNotification", this.form)
+        .post("/users/setNotification", formData)
         .then((res) => {
-          console.log(res);
           if (res.data.type == 1) {
             this.onReset();
             alertify.success(res.data.msg);
@@ -607,11 +440,11 @@ Vue.component("s26-form-notifications", {
     },
   },
   template: `
-  <div id="formNotes" 
+  <div id="formNotifications" 
     class="s26-modal" 
     tabindex="-1"
   >
-    <div class="s26-modal-dialog s26-modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="s26-modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
@@ -652,10 +485,9 @@ Vue.component("s26-form-notifications", {
                   id="form-description"
                   class="form-control 
                   resize-none" 
-                  cols="30"rows="5" 
+                  cols="30"rows="3" 
                   v-model="form.description"
                   s26-required
-                  :message="msg_error"
                 ></textarea>
                 <p class="invalid-feedback">{{ msg_error }} </p>
               </div>

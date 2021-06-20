@@ -35,7 +35,7 @@ Vue.component("s26-delete", {
       class="s26-modal"
       tabindex="-1"
     >
-      <div class="s26-modal-dialog modal-md s26-modal-dialog-centered">
+      <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="s26-modal-content">
           <div class="modal-header">
             <h5 class="modal-title">

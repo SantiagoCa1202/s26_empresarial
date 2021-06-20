@@ -1,7 +1,7 @@
 <?php
 //url del proyecto
 // const BASE_URL = "http://localhost/s26_empresarial";
-// const BASE_URL = "http://192.168.0.104/s26_empresarial";
+//const BASE_URL = "http://192.168.0.104/s26_empresarial";
 const BASE_URL = "http://192.168.100.6/s26_empresarial";
 
 //Zona Horaria 

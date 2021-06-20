@@ -27,6 +27,7 @@ let S26Header = new Vue({
         "stock_information",
         "suppliers_orders",
         "customer_orders",
+        "categories",
       ],
       subTransactions: [
         "expenses",
@@ -47,7 +48,7 @@ let S26Header = new Vue({
       subBusiness: [
         "provider",
         "debts",
-        "images",
+        "photos",
         "info_vouchers",
         "establishments",
         "general_config",

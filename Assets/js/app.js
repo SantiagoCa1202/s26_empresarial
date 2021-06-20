@@ -1,5 +1,5 @@
 // let BASE_URL = "http://localhost/s26_empresarial";
-// let BASE_URL = "http://192.168.0.104/s26_empresarial";
+//let BASE_URL = "http://192.168.0.104/s26_empresarial";
 let BASE_URL = "http://192.168.100.6/s26_empresarial";
 axios.defaults.baseURL = BASE_URL;
 
@@ -32,6 +32,9 @@ function val_inputs() {
         e.keyCode !== 241
       )
         return false;
+    });
+    $("input").keypress(function (e) {
+      if (e.keyCode == 13) return false;
     });
   }, 100);
 }
@@ -88,6 +91,32 @@ function url_get(url, params) {
   params_get = params_get.substring(0, params_get.length - 1);
   let url_get = `${BASE_URL}${url}?${params_get}`;
   return url_get;
+}
+
+function json_to_formData(form) {
+  let formData = new FormData();
+
+  for (let i in form) {
+    formData.append(i, form[i]);
+    if (typeof form[i] === "object") {
+      for (var e = 0; e < form[i].length; e++) {
+        let object = form[i][e];
+        formData.append("files[" + e + "]", object);
+      }
+    }
+  }
+  return formData;
+}
+
+function startFromZero(arr) {
+  var newArr = [];
+  var count = 0;
+
+  for (var i in arr) {
+    newArr[count++] = arr[i];
+  }
+
+  return newArr;
 }
 
 val_inputs();

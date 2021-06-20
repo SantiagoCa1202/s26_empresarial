@@ -13,8 +13,7 @@ let S26Login = new Vue({
     reset_password: false,
     loading: false,
   },
-  created() {
-  },
+  created() {},
   methods: {
     onSubmit() {
       this.loading = true;
@@ -22,8 +21,9 @@ let S26Login = new Vue({
         this.loading = false;
         return false;
       } else {
+        let formData = json_to_formData(this.form);
         axios
-          .post("/login/loginUser", this.form)
+          .post("/login/loginUser", formData)
           .then((res) => {
             if (res.request.readyState != 4) return;
             if (res.request.status == 200) {
@@ -51,8 +51,9 @@ let S26Login = new Vue({
         alertify.error("Escriba un Correo Válido");
         return false;
       } else {
+        let formReset = json_to_formData(this.reset);
         axios
-          .post("/login/resetPassword", this.reset)
+          .post("/login/resetPassword", formReset)
           .then((res) => {
             if (res.request.readyState != 4) return;
             if (res.request.status == 200) {

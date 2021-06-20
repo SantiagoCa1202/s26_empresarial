@@ -30,8 +30,9 @@ Vue.component("s26-security-code", {
       axios.post("/token/newToken");
     },
     onSubmit() {
+      let formData = json_to_formData(this.form);
       axios
-        .post("/token/valToken", this.form)
+        .post("/token/valToken", formData)
         .then((res) => {
           console.log(res);
           if (res.data.status) {
@@ -59,7 +60,7 @@ Vue.component("s26-security-code", {
     class="s26-modal" 
     tabindex="-1"
   >
-  <div class="s26-modal-dialog s26-modal-sm s26-modal-dialog-centered">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
       <div class="s26-modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
