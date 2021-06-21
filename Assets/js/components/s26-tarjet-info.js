@@ -24,7 +24,7 @@ Vue.component("s26-tarjet-info", {
       <div class="s26-tarjet-info">
         <h4 class="title">{{ title }}</h4>
         <div>
-          {{ content }}
+          {{ content ? content : '' }}
           <slot></slot>
         </div>
       </div>

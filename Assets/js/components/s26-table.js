@@ -13,15 +13,14 @@ Vue.component("s26-table", {
   },
   mounted() {},
   methods: {
-    load_more() {
-      if (this.value < this.rows) {
-        this.$emit("input", this.value + 1);
-      }
+    loadMore() {
+      let perPage = this.rows - this.value;
+      this.$emit("input", perPage > 25 ? this.perPage + 25 : this.rows);
       this.$emit("get");
     },
   },
   template: `
-    <section class="main" :class="{ 'mainWidth-100': !sidebar }">
+    <section :class="['main', { 'mainWidth-100': !sidebar }]">
       <div class="s26-container-table">
         <table class="s26-table" ref="s26-table">
           <thead>
@@ -48,7 +47,7 @@ Vue.component("s26-table", {
           <button 
             class="btn btn-outline-info float-end" 
             v-if="value < rows"  
-            @click="load_more"
+            @click="loadMore"
           >
             Cargar Más...
           </button>

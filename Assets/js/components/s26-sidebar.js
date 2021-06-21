@@ -73,7 +73,7 @@ Vue.component("s26-sidebar", {
             <slot name="actions"> </slot>
           </div>
         </div>
-        <div class="container accordion" v-if="this.url_export !== ''">
+        <div class="container accordion" v-if="url_export && url_export !== ''">
           <h4 class="title">Exportar</h4>
           <div class="container">
             <button

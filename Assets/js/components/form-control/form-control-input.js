@@ -256,7 +256,8 @@ Vue.component("s26-form-select-user", {
       this.selected = value;
     },
     loadMore() {
-      this.perPage = this.perPage + 25;
+      let perPage = this.rows - this.perPage;
+      this.perPage = perPage > 25 ? this.perPage + 25 : this.rows;
       this.allRows();
     },
   },
@@ -388,7 +389,6 @@ Vue.component("s26-select-icon", {
       axios
         .get("/users/getIcon/" + id)
         .then((res) => {
-          console.log(res);
           console.log(this.value);
           this.info_icon.icon = res.data.class;
           this.info_icon.name = res.data.name;
@@ -426,7 +426,8 @@ Vue.component("s26-select-icon", {
       this.info_icon.name = value;
     },
     loadMore() {
-      this.perPage = this.perPage + 25;
+      let perPage = this.rows - this.perPage;
+      this.perPage = perPage > 25 ? this.perPage + 25 : this.rows;
       this.allRows();
     },
   },
@@ -530,7 +531,6 @@ Vue.component("s26-input-photo", {
           params,
         })
         .then((res) => {
-          console.log(res);
           this.items = res.data.items;
           this.rows = res.data.info.count;
         })
@@ -591,7 +591,7 @@ Vue.component("s26-input-photo", {
       <img 
         :id="'photo-'+ id"
         v-if="value !== ''"
-        :src="info_photo.src"
+        :src="info_photo.href"
       />
     </div>
     <transition name="fade">
@@ -670,7 +670,7 @@ Vue.component("s26-input-photo", {
                     :class="['rounded w-100 min-img', 
                     selected_photos.indexOf(parseInt(item.id)) > -1 ? 'checked' : ''
                     ]" 
-                    :src="item.src" 
+                    :src="item.href" 
                     @keyup.13="selectPhoto(parseInt(item.id))"
                     tabindex="0"
                   />
@@ -767,13 +767,12 @@ Vue.component("s26-upload-photos", {
       let formData = json_to_formData(this.form);
       show_loader_points();
       axios
-        .post("/photos/setPhotos", formData, {
+        .post("/photos/uploadPhotos", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then((res) => {
-          console.log(res);
           if (res.data.status) {
             this.onReset();
             alertify.success(res.data.msg);

@@ -22,7 +22,7 @@ class PhotosModel extends Mysql
 
     $this->id = $filter['id'];
     $this->name = $filter['name'];
-    $this->description = $filter['description'];
+    $this->favorites = $filter['favorites'];
     $this->date = $filter['date'];
     $this->status = $filter['status'];
     $this->perPage = $perPage;
@@ -37,7 +37,7 @@ class PhotosModel extends Mysql
     $where = '
       id LIKE "%' . $this->id . '%" AND
       name LIKE "%' . $this->name . '%" AND
-      description LIKE "%' . $this->description . '%" AND
+      favorites LIKE "%' . $this->favorites . '%" AND
       status LIKE "%' . $this->status . '%" AND 
       status > 0 
       ' . $date_range;
@@ -58,11 +58,7 @@ class PhotosModel extends Mysql
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['src'] =  asset('media/uploads/photos/'). $items[$i]['src'];
-      $items[$i]['created_at'] = date(
-        "d/m/Y",
-        strtotime($items[$i]['created_at'])
-      );
+      $items[$i]['href'] =  asset('media/uploads/photos/') . $items[$i]['src'];
     }
     return [
       'items' => $items,
@@ -77,11 +73,7 @@ class PhotosModel extends Mysql
     $this->id = $id;
     $sql = "SELECT * FROM photos WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
-    $request['src'] =  asset('media/uploads/photos/') . $request['src'];
-    $request['created_at'] = date(
-      "d/m/Y",
-      strtotime($request['created_at'])
-    );
+    $request['href'] =  asset('media/uploads/photos/') . $request['src'];
     return $request;
   }
 
@@ -114,7 +106,7 @@ class PhotosModel extends Mysql
     int $id,
     string $name,
     string $description,
-    string $src,
+    string $status,
   ) {
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -122,20 +114,38 @@ class PhotosModel extends Mysql
     $this->id = $id;
     $this->name = $name;
     $this->description = $description;
-    $this->src = $src;
+    $this->status = $status;
 
-    $sql = "UPDATE photos SET name = ?, description = ?, src = ?, status = ? WHERE id = $this->id";
+    $sql = "UPDATE photos SET name = ?, description = ?, status = ? WHERE id = $this->id";
     $arrData = array(
       $this->name,
       $this->description,
-      $this->src
+      $this->status,
     );
 
     $request = $this->update_company($sql, $arrData, $this->db_company);
 
     return $request;
   }
+  public function addToFavorites(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
+    $this->id = $id;
+
+    $photo = $this->selectPhoto($this->id);
+    $favorite = $photo['favorites'] ? 0 : 1;
+
+    $sql = "UPDATE photos SET favorites = $favorite WHERE id = $this->id";
+    $request = $this->delete_company($sql, $this->db_company);
+
+    if ($request) {
+      $request = 1;
+    } else {
+      $request = 0;
+    }
+    return $request;
+  }
   public function deletePhoto(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];

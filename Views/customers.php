@@ -34,7 +34,19 @@
           <div class="container">
             <div class="row">
               <div class="col-12">
-                <s26-tarjet-info title="Registros" variant="primary" icon="list-ul" :content="rows" />
+                <s26-tarjet-info title="Registros" variant="primary" icon="list-ul">
+                  <span class="fw-bold text-primary">
+                    {{ perPage }}
+                  </span>
+                  &nbsp
+                  <span class="text-lowercase">
+                    de
+                  </span>
+                  &nbsp
+                  <span class="fw-bold text-primary">
+                    {{ rows }}
+                  </span>
+                </s26-tarjet-info>
               </div>
             </div>
           </div>

@@ -168,6 +168,28 @@ textarea.resize-none {
   align-items: center;
 }
 
+/* OPACITY */
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-25 {
+  opacity: 0.25;
+}
+
+.opacity-50 {
+  opacity: .50;
+}
+
+.opacity-75 {
+  opacity: .75;
+}
+
+.opacity-1 {
+  opacity: 1;
+}
+
 /* CUSTOM BTN S26 */
 
 .btn-icon, .btn-times, .btn-icon-close, .btn-hide-menu {
@@ -1266,8 +1288,7 @@ div.year-active {
   border: 3px solid var(--bs-primary)
 }
 
-.min-img:hover:not(.hover-none),
-.min-img:focus:not(.hover-none) {
+.min-img:hover:not(.hover-none), .min-img:focus:not(.hover-none) {
   cursor: pointer;
   transform: scale(1.05);
   box-shadow: 0px 3px 6px 0px rgb(0 0 0 / 22%);

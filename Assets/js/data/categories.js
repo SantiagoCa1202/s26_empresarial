@@ -54,7 +54,6 @@ let S26CategoriesView = new Vue({
           params,
         })
         .then((res) => {
-          console.log(res)
           this.items = res.data.items;
           this.rows = res.data.info.count;
         })
@@ -140,19 +139,11 @@ Vue.component("s26-form-category", {
       if (!this.valForm()) {
         return false;
       }
-      console.log(this.form);
-
       let formData = json_to_formData(this.form);
       show_loader_points();
       axios
-        .post("/categories/setCategory", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post("/categories/setCategory", formData)
         .then((res) => {
-          console.log(res);
-
           if (res.data.type == 1) {
             this.onReset();
             alertify.success(res.data.msg);
@@ -326,7 +317,7 @@ Vue.component("s26-watch-category", {
         .get("/categories/getCategory/" + id)
         .then((res) => {
           this.form = res.data;
-          this.form.photo = res.data.photo.src;
+          this.form.photo = res.data.photo.href;
           this.form.icon = res.data.icon.class;
           let date = new Date(res.data.created_at);
           this.form.created_at = new Intl.DateTimeFormat("es-ES", {
