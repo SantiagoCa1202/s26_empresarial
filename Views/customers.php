@@ -13,7 +13,7 @@
           <?php
           if ($_SESSION['permitsModule']['w']) {
           ?>
-            <button type="button" class="btn btn-s26-info form-control mb-2" @click="setIdRow(0, 'update')">
+            <button type="button" class="btn btn-info form-control mb-2" @click="setIdRow(0, 'update')">
               Nuevo
             </button>
           <?php
@@ -26,7 +26,7 @@
             <s26-form-input label="Cédula / Ruc" size="sm" id="document" type="text" v-model="filter.document" maxlength="13" @keyup="allRows" number></s26-form-input>
             <s26-form-input label="Nombre / Razón Social" size="sm" id="name" type="text" v-model="filter.name" maxlength="100" @keyup="allRows" text></s26-form-input>
             <s26-form-input label="Email" size="sm" id="email" type="text" v-model="filter.email" maxlength="100" @keyup="allRows" text></s26-form-input>
-            <s26-select-status all lbl="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
+            <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha"></s26-date-picker>
           </div>
         </template>
@@ -108,8 +108,8 @@
       ?>
         <!-- Modal Ver-->
         <transition name="slide-fade">
-          <s26-watch-customer v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-watch-customer>
+          <s26-read-customer v-model="action" :id="idRow" v-if="action == 'watch'">
+          </s26-read-customer>
         </transition>
       <?php
       }
@@ -134,10 +134,8 @@
       }
       ?>
     </div>
-    <?= data_style('customers'); ?>
   <?php
   }
   ?>
 </div>
-
 <?= footer_(); ?>

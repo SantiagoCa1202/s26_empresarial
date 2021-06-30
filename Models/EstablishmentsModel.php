@@ -23,15 +23,10 @@ class EstablishmentsModel extends Mysql
   public function selectEstablishments(int $perPage, array $filter)
   {
     $this->id = $filter['id'];
-    $this->company_id = $filter['company_id'];
-    $this->n_establishment = $filter['n_establishment'];
     $this->tradename = $filter['tradename'];
-    $this->province = $filter['province'];
     $this->city = $filter['city'];
-    $this->parish = $filter['parish'];
-    $this->address = $filter['address'];
-    $this->phone = $filter['phone'];
     $this->status = $filter['status'];
+    $this->date = $filter['date'];
     $this->perPage = $perPage;
 
     $date_range = "";
@@ -43,14 +38,8 @@ class EstablishmentsModel extends Mysql
 
     $where = '
       id LIKE "%' . $this->id . '%" AND
-      company_id LIKE "%' . $this->company_id . '%" AND
-      n_establishment LIKE "%' . $this->n_establishment . '%" AND
       tradename LIKE "%' . $this->tradename . '%" AND 
-      province LIKE "%' . $this->province . '%" AND 
       city LIKE "%' . $this->city . '%" AND 
-      parish LIKE "%' . $this->parish . '%" AND 
-      address LIKE "%' . $this->address . '%" AND 
-      phone LIKE "%' . $this->phone . '%" AND
       status LIKE "%' . $this->status . '%" AND 
       status > 0
       ' . $date_range . '

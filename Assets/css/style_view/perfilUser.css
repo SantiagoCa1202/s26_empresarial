@@ -117,7 +117,7 @@
   border-radius: 50%;
 }
 
-.icon-notification i {
+.icon-notification i, .icon-notification svg {
   font-size: 1.8rem
 }
 

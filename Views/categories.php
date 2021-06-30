@@ -7,12 +7,12 @@
     <p>Acceso Restringido</p>
   <?php } else { ?>
     <div class="row align-items">
-      <s26-sidebar title="Categorias" icon="box-tissue" @update="allRows" @reset="onReset" v-model="activeSidebar" :url_export="url_export">
+      <s26-sidebar title="Categorías" icon="box-tissue" @update="allRows" @reset="onReset" v-model="activeSidebar" :url_export="url_export">
         <template v-slot:header>
           <?php
           if ($_SESSION['permitsModule']['w']) {
           ?>
-            <button type="button" class="btn btn-s26-info form-control mb-2" @click="setIdRow(0, 'update')">
+            <button type="button" class="btn btn-info form-control mb-2" @click="setIdRow(0, 'update')">
               Nuevo
             </button>
           <?php
@@ -55,7 +55,7 @@
           <tr v-for="item in items" :key="item.id">
             <td class="length-action fs-5">
               <div class="btn-icon s26-align-center" :style="'background-color:' + item.color">
-                <i :class="item.icon.class"></i>
+                <s26-icon :icon="item.icon.class"></s26-icon>
               </div>
             </td>
             <td class="length-description">
@@ -109,8 +109,8 @@
       ?>
         <!-- Modal Ver-->
         <transition name="slide-fade">
-          <s26-watch-category v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-watch-category>
+          <s26-read-category v-model="action" :id="idRow" v-if="action == 'watch'">
+          </s26-read-category>
         </transition>
       <?php
       }
@@ -135,9 +135,6 @@
       }
       ?>
     </div>
-
-    <?= data_style('categories'); ?>
-
   <?php
   }
   ?>

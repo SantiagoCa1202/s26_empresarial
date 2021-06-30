@@ -50,7 +50,7 @@ class Permits extends Controllers
       $modules = $_POST['modules'];
       $this->model->deletePermits($intRole_id);
       foreach ($modules as $module) {
-        $module_id = $module['id'];
+        $module_id = intval($module['id']);
         $r = $module['permits']['r'];
         $w = $module['permits']['w'];
         $u = $module['permits']['u'];

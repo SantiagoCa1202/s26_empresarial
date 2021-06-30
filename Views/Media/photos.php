@@ -12,7 +12,7 @@
           <?php
           if ($_SESSION['permitsModule']['w']) {
           ?>
-            <button type="button" class="btn btn-s26-info form-control mb-2" @click="activeUploadPhoto = true">
+            <button type="button" class="btn btn-info form-control mb-2" @click="activeUploadPhoto = true">
               Subir Fotos
             </button>
           <?php

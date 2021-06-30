@@ -7,7 +7,7 @@
         <ul class="menu-user">
           <li @click.prevent="modal = 'info_user'" :class="modal == 'info_user' ? 'focus-btn-nav-user' : '' ">
             <a>
-              <i class="fa fa-id-card icon-sm"></i>
+              <s26-icon icon="id-card"></s26-icon>
               <div class="lbl-li-user">
                 Información personal
               </div>
@@ -15,7 +15,7 @@
           </li>
           <li @click.prevent="payRoll" :class="modal == 'payroll' ? 'focus-btn-nav-user' : '' ">
             <a>
-              <i class="fa fa-credit-card icon-sm"></i>
+              <s26-icon icon="credit-card"></s26-icon>
               <div class="lbl-li-user">
                 Rol de pagos
               </div>
@@ -23,7 +23,7 @@
           </li>
           <li @click.prevent="my_sales" :class="modal == 'my_sales' ? 'focus-btn-nav-user' : '' ">
             <a>
-              <i class="fa fa-shopping-bag icon-sm"></i>
+              <s26-icon icon="shopping-bag"></s26-icon>
               <div class="lbl-li-user">
                 Mis Ventas
               </div>
@@ -31,7 +31,7 @@
           </li>
           <li @click.prevent="my_notes" :class="modal == 'my_notes' ? 'focus-btn-nav-user' : '' ">
             <a>
-              <i class="fas fa-clipboard icon-sm"></i>
+              <s26-icon icon="clipboard"></s26-icon>
               <div class="lbl-li-user">
                 Mis Notas
               </div>
@@ -39,7 +39,7 @@
           </li>
           <li @click.prevent="notifications" :class="modal == 'notifications' ? 'focus-btn-nav-user' : '' ">
             <a>
-              <i class="fa fa-bell icon-sm"></i>
+              <s26-icon icon="bell"></s26-icon>
               <div class="lbl-li-user">
                 Notificaciones
               </div>
@@ -211,8 +211,8 @@
                   <td class="length-action">{{ item.amount }}</td>
                   <td class="length-action">{{ item.payment_method.name }}</td>
                   <td class="length-action">
-                    <button class="btn-info-tbl" @click="idRow = item.id">
-                      <i class="fa fa-info"></i>
+                    <button class="btn-info-tbl" @click="idRow = parseInt(item.id)">
+                      <s26-icon icon="info"></s26-icon>
                     </button>
                   </td>
                 </tr>
@@ -230,20 +230,20 @@
           <div class="info-tarjet">
             <h2 class="h5 mb-4 fw-bold">
               Mis Notas
-              <button class="btn btn-primary btn-sm ms-4" @click="idNote = 0">Nuevo</button>
+              <button class="btn btn-primary btn-sm ms-4" @click="idNote = parseInt(0)">Nuevo</button>
             </h2>
             <div class="row">
-              <div class="col-6 mb-3" v-for="item in items" v-key="item.id">
+              <div class="col-6 mb-3" v-for="item in items" :key="item.id">
                 <div class="card s26-card-notes" :style="'border-left: .4rem solid' + item.color ">
                   <div class="card-body">
                     <h3 class="card-title h6 fw-bold"> {{ item.name }} </h3>
                     <pre class="card-text">{{ item.note }}</pre>
                     <div class="card-buttons">
-                      <button class="btn-icon">
-                        <i class="fas fa-trash-alt text-danger icon-sm" @click="del_note = item.id"></i>
+                      <button class="btn-icon" @click="del_note = parseInt(item.id)">
+                        <s26-icon icon="trash-alt" class="text-danger icon-sm"></s26-icon>
                       </button>
-                      <button class="btn-icon">
-                        <i class="fas fa-edit text-primary icon-sm" @click="idNote = item.id"></i>
+                      <button class="btn-icon" @click="idNote = parseInt(item.id)">
+                        <s26-icon icon="edit" class="text-primary icon-sm"></s26-icon>
                       </button>
                     </div>
                   </div>
@@ -270,16 +270,16 @@
                 Nuevo
               </button>
               <button class="btn btn-warning btn-sm" @click="notifications">
-                <i class="fas fa-sync"></i>
+                <s26-icon icon="sync"></s26-icon>
               </button>
             </h2>
             <div class="row">
-              <div class="col-12 mb-3" v-for="item in items" v-key="item.id">
+              <div class="col-12 mb-3" v-for="item in items" :key="item.id">
                 <div class="card s26-card-notification">
                   <div class="card-body">
                     <div class="icon-notification">
                       <div class="mx-auto" :style="icon[item.icon]">
-                        <i :class="['fas', 'fa-' + item.icon, 'mx-auto']"></i>
+                        <s26-icon :icon="item.icon" class="mx-auto"></s26-icon>
                       </div>
                     </div>
                     <div class="body-notification">
@@ -291,7 +291,7 @@
                           </div>
                           <template v-if="item.issued_by.id == idUser">
                             <template v-if="item.user_id != idUser ">
-                              <i class="text-secondary fas fa-angle-right"></i>
+                              <s26-icon icon="angle-right" class="text-secondary"></s26-icon>
                               <div class="d-inline text-secondary">
                                 {{ item.userData }}
                               </div>
@@ -306,10 +306,10 @@
                         </div>
                         <div class="col-2 container-options-ntf">
                           <a :href="item.url" target="_blank" class="btn btn-link btn-sm btn-del-ntf" v-if="item.url != ''">
-                            <i class="fas fa-link"></i>
+                            <s26-icon icon="link"></s26-icon>
                           </a>
                           <button class="btn btn-danger btn-sm btn-del-ntf" v-if="item.issued_by.id == idUser" @click="del_notification = item.id">
-                            <i class="fas fa-trash-alt"></i>
+                            <s26-icon icon="trash-alt"></s26-icon>
                           </button>
                         </div>
                       </div>
@@ -341,5 +341,4 @@
   const idUser = <?= $_SESSION['idUser']; ?>;
   const create_notifications_users = <?= $_SESSION['userData']['create_notifications_users']; ?>
 </script>
-<?= data_style('perfilUser'); ?>
 <?= footer_(); ?>

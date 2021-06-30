@@ -55,23 +55,6 @@ body.s26-theme {
   box-shadow: none;
 }
 
-.s26-theme .btn-s26-info {
-  color: var(--bs-white);
-  background-color: #17a2b8;
-  border-color: #17a2b8;
-}
-
-.s26-theme .btn-s26-info:hover {
-  background-color: #137d8d;
-  border-color: #137d8d;
-}
-
-.s26-theme .btn-s26-info:focus {
-  background-color: #116875;
-  border-color: #116875;
-  box-shadow: none;
-}
-
 .s26-theme .btn-times, .s26-theme .s26-navbar-user ul li, .s26-theme .s26-navbar-user ul li a {
   color: var(--s26-blue);
 }

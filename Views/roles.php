@@ -1,4 +1,6 @@
 <?= head_(); ?>
+<?= header_(); ?>
+
 <div id="s26-roles-view" class="container-fluid s26-container" tabindex="0">
   <?php
   if (empty($_SESSION['permitsModule']['r'])) {
@@ -13,7 +15,7 @@
           <?php
           if ($_SESSION['permitsModule']['w']) {
           ?>
-            <button type="button" class="btn btn-s26-info form-control mb-2" @click="setIdRow(0, 'update')">
+            <button type="button" class="btn btn-info form-control mb-2" @click="setIdRow(0, 'update')">
               Nuevo
             </button>
           <?php
@@ -122,10 +124,8 @@
       }
       ?>
     </div>
-    <?= data_style('roles'); ?>
   <?php
   }
   ?>
 </div>
-<?= header_(); ?>
 <?= footer_(); ?>

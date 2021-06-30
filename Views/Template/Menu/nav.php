@@ -4,7 +4,7 @@
       <!-- Titulo -->
       <li class="title-menu">
         <button class="btn-hide-menu" @click="menu(false)">
-          <i class="fas fa-angle-double-left"></i>
+          <s26-icon icon="angle-double-left"></s26-icon>
         </button>
         S26 Empresarial
       </li>
@@ -20,9 +20,9 @@
       ?>
         <li class="item-submenu" @click="showSubMenu(1)">
           <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 1 }]">
-            <i class="fas fa-home menu-icon"></i>
+            <s26-icon icon="home" class="menu-icon"></s26-icon>
             Inicio
-            <i class="fas fa-chevron-right icon-arrow"></i>
+            <s26-icon icon="chevron-right" class="icon-arrow"></s26-icon>
           </a>
           <ul :class="[{ activeSubMenu: activeSubMenu == 1 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][7]['r'])) { ?>
@@ -66,7 +66,7 @@
       <?php if (!empty($_SESSION['permits'][13]['r'])) { ?>
         <li>
           <a href="<?= BASE_URL ?>/new_sale" :class="focusSubMenu('new_sale')">
-            <i class="fas fa-shopping-bag menu-icon"></i>
+            <s26-icon icon="shopping-bag" class="menu-icon"></s26-icon>
             Facturación
           </a>
         </li>
@@ -87,9 +87,9 @@
       ?>
         <li class="item-submenu" @click="showSubMenu(2)">
           <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 2 }]">
-            <i class="fas fa-box-open menu-icon"></i>
+            <s26-icon icon="box-open" class="menu-icon"></s26-icon>
             Productos
-            <i class="fas fa-chevron-right icon-arrow"></i>
+            <s26-icon icon="chevron-right" class="icon-arrow"></s26-icon>
           </a>
           <ul :class="[{ activeSubMenu: activeSubMenu == 2 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][4]['r'])) { ?>
@@ -176,9 +176,9 @@
       ?>
         <li class="item-submenu" @click="showSubMenu(3)">
           <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 3 }]">
-            <i class="fas fa-chart-bar menu-icon"></i>
+            <s26-icon icon="chart-bar" class="menu-icon"></s26-icon>
             Transacciones
-            <i class="fas fa-chevron-right icon-arrow"></i>
+            <s26-icon icon="chevron-right" class="icon-arrow"></s26-icon>
           </a>
           <ul :class="[{ activeSubMenu: activeSubMenu == 3 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][20]['r'])) { ?>
@@ -228,9 +228,9 @@
       ?>
         <li class="item-submenu" @click="showSubMenu(4)">
           <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 4 }]">
-            <i class="fas fa-file-invoice-dollar menu-icon"></i>
+            <s26-icon icon="file-invoice-dollar" class="menu-icon"></s26-icon>
             Comprobantes
-            <i class="fas fa-chevron-right icon-arrow"></i>
+            <s26-icon icon="chevron-right" class="icon-arrow"></s26-icon>
           </a>
           <ul :class="[{ activeSubMenu: activeSubMenu == 4 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][24]['r'])) { ?>
@@ -260,7 +260,7 @@
       <?php if (!empty($_SESSION['permits'][3]['r'])) { ?>
         <li>
           <a href="<?= BASE_URL ?>/customers" :class="focusSubMenu('customers')">
-            <i class="fas fa-users menu-icon"></i>
+            <s26-icon icon="users" class="menu-icon"></s26-icon>
             Clientes
           </a>
         </li>
@@ -274,9 +274,9 @@
       ?>
         <li class="item-submenu" @click="showSubMenu(5)">
           <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 5 }]">
-            <i class="fas fa-wallet menu-icon"></i>
+            <s26-icon icon="wallet" class="menu-icon"></s26-icon>
             Wallet
-            <i class="fas fa-chevron-right icon-arrow"></i>
+            <s26-icon icon="chevron-right" class="icon-arrow"></s26-icon>
           </a>
           <ul :class="[{ activeSubMenu: activeSubMenu == 5 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][27]['r'])) { ?>
@@ -314,9 +314,9 @@
       ?>
         <li class="item-submenu" @click="showSubMenu(6)">
           <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 6 }]">
-            <i class="fas fa-receipt menu-icon"></i>
+            <s26-icon icon="receipt" class="menu-icon"></s26-icon>
             Cuentas
-            <i class="fas fa-chevron-right icon-arrow"></i>
+            <s26-icon icon="chevron-right" class="icon-arrow"></s26-icon>
           </a>
           <ul :class="[{ activeSubMenu: activeSubMenu == 6 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][30]['r'])) { ?>
@@ -360,7 +360,7 @@
       <?php if (!empty($_SESSION['permits'][35]['r'])) { ?>
         <li>
           <a href="<?= BASE_URL ?>/tax_returns">
-            <i class="fas fa-landmark menu-icon"></i>
+            <s26-icon icon="landmark" class="menu-icon"></s26-icon>
             Declaraciones
           </a>
         </li>
@@ -379,14 +379,14 @@
       ?>
         <li class="item-submenu" @click="showSubMenu(7)">
           <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 7 }]">
-            <i class="fas fa-store menu-icon"></i>
+            <s26-icon icon="store" class="menu-icon"></s26-icon>
             Mi Negocio
-            <i class="fas fa-chevron-right icon-arrow"></i>
+            <s26-icon icon="chevron-right" class="icon-arrow"></s26-icon>
           </a>
           <ul :class="[{ activeSubMenu: activeSubMenu == 7 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][36]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/provider" :class="focusSubMenu('provider')">
+                <a href="<?= BASE_URL ?>/providers" :class="focusSubMenu('providers')">
                   Proveedores
                 </a>
               </li>
@@ -449,9 +449,9 @@
       ?>
         <li class="item-submenu" @click="showSubMenu(8)">
           <a @click.prevent :class="[{ 'focus-menu': activeSubMenu == 8 }]">
-            <i class="fas fa-users menu-icon"></i>
+            <s26-icon icon="users" class="menu-icon"></s26-icon>
             Usuarios
-            <i class="fas fa-chevron-right icon-arrow"></i>
+            <s26-icon icon="chevron-right" class="icon-arrow"></s26-icon>
           </a>
           <ul :class="[{ activeSubMenu: activeSubMenu == 8 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][2]['r'])) { ?>

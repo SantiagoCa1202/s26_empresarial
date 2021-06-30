@@ -83,7 +83,7 @@ class UsersModel extends Mysql
     $info_table = $this->info_table($info);
 
     $rows = "
-      SELECT *, u.id as id, u.phone as phone, u.created_at as created_at
+      SELECT *, u.id as id, u.phone as phone, u.created_at as created_at, u.status as status
       FROM users u
       INNER JOIN establishments e
       ON u.establishment_id = e.id
@@ -126,8 +126,12 @@ class UsersModel extends Mysql
     string $email,
     string $passwordHash,
     string $phone,
+    int $gender_id,
+    string $date_of_birth,
     int $role_id,
+    int $insurance,
     int $establishment_id,
+    int $user_access,
     int $create_notifications_users,
     int $status
   ) {
@@ -138,8 +142,12 @@ class UsersModel extends Mysql
     $this->email = $email;
     $this->password = $passwordHash;
     $this->phone = $phone;
+    $this->gender_id = $gender_id;
+    $this->date_of_birth = $date_of_birth;
     $this->role_id = $role_id;
+    $this->insurance = $insurance;
     $this->establishment_id = $establishment_id;
+    $this->user_access = $user_access;
     $this->create_notifications_users = $create_notifications_users;
     $this->status = $status;
 
@@ -147,7 +155,8 @@ class UsersModel extends Mysql
     $request = $this->select_all($sql);
 
     if (empty($request)) {
-      $query_insert = "INSERT INTO users (name, last_name, document, email, password, phone, role_id, establishment_id, create_notifications_users, status) VALUES (?,?,?,?,?,?,?,?,?)";
+      $query_insert = "INSERT INTO users (name, last_name, document, email, password, phone, gender_id, date_of_birth, role_id, establishment_id, insurance, create_notifications_users, user_access, status) 
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       $arrData = array(
         $this->name,
         $this->last_name,
@@ -155,9 +164,13 @@ class UsersModel extends Mysql
         $this->email,
         $this->password,
         $this->phone,
+        $this->gender_id,
+        $this->date_of_birth,
         $this->role_id,
         $this->establishment_id,
+        $this->insurance,
         $this->create_notifications_users,
+        $this->user_access,
         $this->status
       );
       $request_insert = $this->insert($query_insert, $arrData);
@@ -176,8 +189,12 @@ class UsersModel extends Mysql
     string $email,
     string $passwordHash,
     string $phone,
+    int $gender_id,
+    string $date_of_birth,
     int $role_id,
+    int $insurance,
     int $establishment_id,
+    int $user_access,
     int $create_notifications_users,
     int $status
   ) {
@@ -188,8 +205,12 @@ class UsersModel extends Mysql
     $this->email = $email;
     $this->password = $passwordHash;
     $this->phone = $phone;
+    $this->gender_id = $gender_id;
+    $this->date_of_birth = $date_of_birth;
     $this->role_id = $role_id;
+    $this->insurance = $insurance;
     $this->establishment_id = $establishment_id;
+    $this->user_access = $user_access;
     $this->create_notifications_users = $create_notifications_users;
     $this->status = $status;
 
@@ -198,7 +219,7 @@ class UsersModel extends Mysql
 
     if (empty($request)) {
       if ($this->password !== "") {
-        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, password = ?, phone = ?, role_id = ?, establishment_id = ?, create_notifications_users = ?, status = ? WHERE id = $this->id";
+        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, password = ?, phone = ?, gender_id = ?, date_of_birth = ?, role_id = ?, establishment_id = ?, insurance = ?, create_notifications_users = ?, user_access = ?, status = ? WHERE id = $this->id";
         $arrData = array(
           $this->name,
           $this->last_name,
@@ -206,22 +227,30 @@ class UsersModel extends Mysql
           $this->email,
           $this->password,
           $this->phone,
+          $this->gender_id,
+          $this->date_of_birth,
           $this->role_id,
           $this->establishment_id,
+          $this->insurance,
           $this->create_notifications_users,
+          $this->user_access,
           $this->status
         );
       } else {
-        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, phone = ?, role_id = ?, establishment_id = ?, create_notifications_users = ?, status = ? WHERE id = $this->id";
+        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, phone = ?, gender_id = ?, date_of_birth = ?, role_id = ?, establishment_id = ?, insurance = ?, create_notifications_users = ?, user_access = ?, status = ? WHERE id = $this->id";
         $arrData = array(
           $this->name,
           $this->last_name,
           $this->document,
           $this->email,
           $this->phone,
+          $this->gender_id,
+          $this->date_of_birth,
           $this->role_id,
           $this->establishment_id,
+          $this->insurance,
           $this->create_notifications_users,
+          $this->user_access,
           $this->status
         );
       }
@@ -598,7 +627,7 @@ class UsersModel extends Mysql
     $this->id = $id;
     $sql = "SELECT * FROM icons WHERE id = $this->id";
     $request = $this->select($sql);
-    
+
     return $request;
   }
 }

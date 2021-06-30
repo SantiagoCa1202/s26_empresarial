@@ -36,8 +36,8 @@ class RolesModel extends Mysql
       description LIKE "%' . $this->description . '%" AND
       status LIKE "%' . $this->status . '%" AND 
       status > 0 AND 
-      company_id = "' . $_SESSION['userData']['establishment']['company_id'] . '" OR
-      company_id IS NULL
+      (company_id = "' . $_SESSION['userData']['establishment']['company_id'] . '" OR
+      company_id IS NULL)
       ' . $date_range . $whereAdmin . '
     ';
 
@@ -66,26 +66,34 @@ class RolesModel extends Mysql
     $this->rol = $rol;
     $this->description = $description;
     $this->status = $status;
+    $this->company_id = $_SESSION['userData']['establishment']['company_id'];
 
-    $sql = 'SELECT * FROM roles 
-      WHERE name = "' . $this->rol . '" AND 
-      company_id = "' . $_SESSION['userData']['establishment']['company_id'] . '"
-    ';
-    $request = $this->select_all($sql);
+    if ($this->rol !== 'administrador') {
 
-    if (empty($request)) {
-      $query_insert = "INSERT INTO roles (name, description, status, company_id) VALUES (?,?,?,?)";
-      $arrData = array(
-        $this->rol,
-        $this->description,
-        $this->status,
-        $_SESSION['userData']['establishment']['company_id']
-      );
-      $request_insert = $this->insert($query_insert, $arrData);
-      $return = $request_insert;
+      $sql = "
+        SELECT * FROM roles 
+        WHERE name = '$this->rol' AND 
+        company_id = '$this->company_id'
+      ";
+      $request = $this->select_all($sql);
+
+      if (empty($request)) {
+        $query_insert = "INSERT INTO roles (name, description, status, company_id) VALUES (?,?,?,?)";
+        $arrData = array(
+          $this->rol,
+          $this->description,
+          $this->status,
+          $_SESSION['userData']['establishment']['company_id']
+        );
+        $request_insert = $this->insert($query_insert, $arrData);
+        $return = $request_insert;
+      } else {
+        $return = -2;
+      }
     } else {
-      $return = 0;
+      $return = -4;
     }
+
     return $return;
   }
   public function updateRol(int $id, string $rol, string $description, int $status)
@@ -94,13 +102,14 @@ class RolesModel extends Mysql
     $this->rol = $rol;
     $this->description = $description;
     $this->status = $status;
-    if ($this->id !== 1) {
+    $this->company_id = $_SESSION['userData']['establishment']['company_id'];
+    if ($this->id > 1) {
 
-      $sql = 'SELECT * FROM roles 
-      WHERE id != ' . $this->id . ' AND 
-      name = "' . $this->rol . '" AND 
-      company_id = "' . $_SESSION['userData']['establishment']['company_id'] . '" 
-      ';
+      $sql = "SELECT * FROM roles 
+        WHERE id != $this->id AND 
+        name = '$this->rol' AND 
+        company_id = '$this->company_id' 
+      ";
       $request = $this->select_all($sql);
 
       if (empty($request)) {
@@ -108,10 +117,10 @@ class RolesModel extends Mysql
         $arrData = array($this->rol, $this->description, $this->status);
         $request = $this->update($sql, $arrData);
       } else {
-        $request = 0;
+        $request = -2;
       }
     } else {
-      $request = false;
+      $request = -4;
     }
 
     return $request;
@@ -125,22 +134,17 @@ class RolesModel extends Mysql
       $request = $this->select_all($sql);
 
       if (empty($request)) {
-        $sql = 'UPDATE roles SET status = 0 
-        WHERE id = ' . $this->id . ' AND 
-        company_id = "' . $_SESSION['userData']['establishment']['company_id'] . '"
-      ';
+        $sql = '
+          UPDATE roles SET status = 0 
+          WHERE id = ' . $this->id . ' AND 
+          company_id = "' . $_SESSION['userData']['establishment']['company_id']  . '"
+        ';
         $request = $this->delete($sql);
-
-        if ($request) {
-          $request = 1;
-        } else {
-          $request = 0;
-        }
       } else {
-        $request = 2;
+        $request = -3;
       }
     } else {
-      $request = 3;
+      $request = -4;
     }
     return $request;
   }

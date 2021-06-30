@@ -66,7 +66,7 @@ class Roles extends Controllers
       if ($id == 0) {
         if ($_SESSION['permitsModule']['w']) {
           //Crear Rol
-          $request_rol = $this->model->insertRol(
+          $request = $this->model->insertRol(
             $rol,
             $description,
             $status,
@@ -76,7 +76,7 @@ class Roles extends Controllers
       } else {
         if ($_SESSION['permitsModule']['u']) {
           // Actualizar 
-          $request_rol = $this->model->updateRol(
+          $request = $this->model->updateRol(
             $id,
             $rol,
             $description,
@@ -85,24 +85,11 @@ class Roles extends Controllers
         }
         $type = 2;
       }
-
-      if ($request_rol > 0) {
-        if ($type == 1) {
-          $arrRes = array('type' => 1, 'msg' => 'Datos guardados correctamente.');
-        } else {
-          $arrRes = array('type' => 2, 'msg' => 'Datos actualizados correctamente.');
-        }
-      } else if (!$request_rol) {
-        $arrRes = array('type' => 0, 'msg' => 'No se puede editar rol Administrador.');
-      } else if ($request_rol == 0) {
-        $arrRes = array('type' => 0, 'msg' => 'El rol ya existe.');
-      } else {
-        $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos.');
-      }
     } else {
-      $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
+      $type = 0;
+      $request = -1;
     }
-
+    $arrRes = s26_res("Rol", $request, $type);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -111,16 +98,8 @@ class Roles extends Controllers
   {
     if ($_SESSION['permitsModule']['d']) {
       $id = intval($id);
-      $requestDelete = $this->model->deleteRol($id);
-      if ($requestDelete == 1) {
-        $arrRes = array('type' => true, 'msg' => 'Rol Eliminado.');
-      } else if ($requestDelete == 2) {
-        $arrRes = array('type' => false, 'msg' => 'No es posible eliminar un rol asociado a usuarios.');
-      } else if ($requestDelete == 3) {
-        $arrRes = array('type' => false, 'msg' => 'No es posible eliminar un rol administrador.');
-      } else {
-        $arrRes = array('type' => false, 'msg' => 'Error al eliminar Rol.');
-      }
+      $request = $this->model->deleteRol($id);
+      $arrRes = s26_res("Rol", $request, 3);
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();

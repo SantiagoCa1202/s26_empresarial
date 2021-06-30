@@ -37,7 +37,7 @@ class PermitsModel extends Mysql
     return $request;
   }
 
-  public function insertPermits(int $role_id, int $module_id, int $r, int $w, int $u, int $d)
+  public function insertPermits(int $role_id, int $module_id, bool $r, bool $w, bool $u, bool $d)
   {
     $this->Role_id = $role_id;
     $this->Module_id = $module_id;

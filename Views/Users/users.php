@@ -13,7 +13,7 @@
           <?php
           if ($_SESSION['permitsModule']['w']) {
           ?>
-            <button type="button" class="btn btn-s26-info form-control mb-2" @click="setIdRow(0, 'update')">
+            <button type="button" class="btn btn-info form-control mb-2" @click="setIdRow(0, 'update')">
               Nuevo
             </button>
           <?php
@@ -27,8 +27,9 @@
             <s26-form-input label="Nombres" size="sm" id="name" type="text" v-model="filter.name" maxlength="100" @keyup="allRows" text></s26-form-input>
             <s26-select-role all v-model="filter.role" @change="allRows"></s26-select-role>
             <s26-select-establishment all v-model="filter.establishment" @change="allRows"></s26-select-establishment>
-            <s26-select-status all lbl="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
+            <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha"></s26-date-picker>
+            {{ filter.date }}
           </div>
         </template>
         <template v-slot:info>
@@ -111,8 +112,8 @@
       ?>
         <!-- Modal Ver-->
         <transition name="slide-fade">
-          <s26-watch-user v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-watch-user>
+          <s26-read-user v-model="action" :id="idRow" v-if="action == 'watch'">
+          </s26-read-user>
         </transition>
       <?php
       }
@@ -145,7 +146,6 @@
       }
       ?>
     </div>
-    <?= data_style('users'); ?>
   <?php
   }
   ?>

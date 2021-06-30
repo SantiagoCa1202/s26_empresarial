@@ -115,8 +115,22 @@ textarea.resize-none {
   transition: .3s;
 }
 
-.col-form-label, label {
+.col-form-label, label, .form-control-sm, .form-control:focus, .form-icon-dollar {
   color: var(--s26-blue)
+}
+
+.s26-form-group {
+  position: relative;
+}
+
+.s26-form-group .form-control-dollars {
+  text-align: right;
+}
+
+.s26-form-group .form-icon-dollar {
+  position: absolute;
+  top: 2.4rem;
+  left: 0.5rem;
 }
 
 /* Config Reset Modal */
@@ -137,6 +151,18 @@ textarea.resize-none {
 
 #s26-security-code.modal {
   background: rgba(0, 0, 0, .3);
+}
+
+.modal-multiple-body form {
+  position: relative;
+  height: 100%;
+}
+
+.modal-multiple-body .container-level {
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  padding: 1rem;
 }
 
 /* GENERAL CLASSES */
@@ -188,6 +214,39 @@ textarea.resize-none {
 
 .opacity-1 {
   opacity: 1;
+}
+
+/* PERSONALICE ALERTIFY */
+
+div.ajs-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div.ajs-modal .ajs-dialog {
+  width: 500px;
+}
+
+div.alertify .ajs-header {
+  background: white;
+  border: 0;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--s26-blue);
+  border-radius: .3rem;
+}
+
+div.alertify .ajs-body {
+  color: var(--s26-blue);
+}
+
+div.alertify .ajs-footer {
+  background: white;
+  border: 0;
+  padding: .75rem;
+  border-radius: .3rem;
 }
 
 /* CUSTOM BTN S26 */
@@ -254,6 +313,11 @@ textarea.resize-none {
   padding: .5rem;
   box-shadow: 0 0 6px -1px var(--bs-dark);
   cursor: pointer;
+}
+
+.icon_asterisk_required {
+  position: absolute;
+  font-size: .5rem;
 }
 
 /* ELEVATED BUTTON */
@@ -357,7 +421,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   padding: .3rem .8rem;
 }
 
-.s26-select-options:hover, .s26-select-options:focus, .s26-select-options.focus {
+.s26-select-options:hover, .s26-select-options:focus, .s26-select-options.focus, .s26-select-options.focus svg {
   background-color: var(--bs-info);
   color: #fff;
   transition: .2s;
@@ -746,12 +810,13 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
 
 .s26-date-picker {
   position: relative;
-  height: 65px;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  display: flex;
+  justify-content: center
 }
 
 .s26-date-picker .form-control span {
@@ -1026,7 +1091,7 @@ div.year-active {
 /* DATEPICKER SM  */
 
 .popup-date-picker-sm {
-  height: 275px;
+  height: 255px;
   width: 228px;
   border-radius: 0.25rem;
   box-shadow: 0 1px 2px 0 #bababc;
@@ -1169,6 +1234,11 @@ div.year-active {
   overflow: hidden;
   outline: 0;
   background: rgba(0, 0, 0, .3);
+}
+
+.s26-modal .modal-body {
+  max-height: 450px;
+  overflow: auto;
 }
 
 .modal-dialog-centered {

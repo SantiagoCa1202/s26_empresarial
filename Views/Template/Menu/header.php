@@ -2,7 +2,7 @@
   <div class="s26-navbar-top">
     <div class="navbar-top-left s26-navbar-i">
       <button class="btn-icon" v-on:click="menu(true)">
-        <i class="fas fa-bars"></i>
+        <s26-icon icon="bars"></s26-icon>
       </button>
       <a class="btn-s26-dash btn-icon-auto"> S26 Empresarial </a>
       <div>|</div>
@@ -21,7 +21,7 @@
     <div class="navbar-top-center s26-navbar-i">
       <?php if (!empty($_SESSION['permits'][1]['r'])) { ?>
         <a class="btn-icon" href="<?= BASE_URL ?>/dashboard">
-          <i class="fas fa-home"></i>
+          <s26-icon icon="home"></s26-icon>
         </a>
       <?php } ?>
     </div>
@@ -36,17 +36,17 @@
         <a href="<?= BASE_URL ?>/calendar" class=" btn-icon-auto"> {{ date }} </a>
       </div>
       <button class="btn-icon">
-        <i class="fas fa-bell"></i>
+        <s26-icon icon="bell"></s26-icon>
       </button>
       <div class="dropdown-options-user">
         <a @click.prevent="options_user = !options_user" class="btn-icon">
-          <i class="fas fa-user"></i>
+          <s26-icon icon="user"></s26-icon>
         </a>
         <transition name="slide-fade">
           <div class="content-options-user" v-if="options_user">
             <div class="content-header">
               <div class="icon-user">
-                <i class="fas fa-user"></i>
+                <s26-icon icon="user"></s26-icon>
               </div>
               <div class="tag-user">
                 <div class="tag-user-name">
@@ -62,13 +62,13 @@
                 <ul class="menu-user">
                   <li>
                     <a href="<?= BASE_URL ?>/users/myaccount">
-                      <i class="fas fa-user-cog"></i>
+                      <s26-icon icon="user-cog"></s26-icon>
                       <div class="lbl-li-user">Gestionar cuenta</div>
                     </a>
                   </li>
                   <li>
                     <a @click="on_dark_mode">
-                      <i class="fas fa-moon"></i>
+                      <s26-icon icon="moon"></s26-icon>
                       <div class="lbl-li-user container-dark-mode">
                         <div class="lbl-dark-mode">
                           Modo oscuro
@@ -82,13 +82,13 @@
                   </li>
                   <li>
                     <a href="<?= BASE_URL ?>/settings">
-                      <i class="fas fa-cog"></i>
+                      <s26-icon icon="cog"></s26-icon>
                       <div class="lbl-li-user">Configuración</div>
                     </a>
                   </li>
                   <li>
                     <a href="<?= BASE_URL ?>/logout">
-                      <i class="fas fa-sign-out-alt"></i>
+                      <s26-icon icon="sign-out-alt"></s26-icon>
                       <div class="lbl-li-user">Cerrar Sesión</div>
                     </a>
                   </li>
@@ -99,9 +99,7 @@
           </div>
         </transition>
       </div>
-
     </div>
     <?php require_once('nav.php') ?>
   </div>
 </header>
-<?= data_style('header'); ?>

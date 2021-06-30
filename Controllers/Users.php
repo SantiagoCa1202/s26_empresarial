@@ -87,9 +87,13 @@ class Users extends Controllers
     $password = strClean($_POST['new_password']);
     $confirm_password = strClean($_POST['confirm_password']);
     $phone = strClean($_POST['phone']);
+    $gender_id = intval($_POST['gender_id']);
+    $date_of_birth = strClean($_POST['date_of_birth'][0]);
     $role_id = intval($_POST['role_id']);
     $establishment_id = intval($_POST['establishment_id']);
+    $insurance = intval($_POST['insurance']);
     $create_notifications_users = intval($_POST['create_notifications_users']);
+    $user_access = intval($_POST['user_access']);
     $status = intval($_POST['status']);
     $request = "";
     if (
@@ -98,9 +102,12 @@ class Users extends Controllers
       valString($document, 10, 10) &&
       (filter_var($email, FILTER_VALIDATE_EMAIL)) &&
       valString($phone, 9, 10) &&
+      (val_date($date_of_birth)) &&
       ($role_id > 0) &&
       ($establishment_id > 0) &&
+      ($insurance == 1 || $insurance == 2) &&
       ($status == 1 || $status == 2) &&
+      ($user_access == 1 || $user_access == 2) &&
       ($create_notifications_users == 1 || $create_notifications_users == 2)
     ) {
       if ($id == 0) {
@@ -119,8 +126,12 @@ class Users extends Controllers
               $email,
               $passwordHash,
               $phone,
+              $gender_id,
+              $date_of_birth,
               $role_id,
+              $insurance,
               $establishment_id,
+              $user_access,
               $create_notifications_users,
               $status
             );
@@ -150,8 +161,12 @@ class Users extends Controllers
             $email,
             $passwordHash,
             $phone,
+            $gender_id,
+            $date_of_birth,
             $role_id,
+            $insurance,
             $establishment_id,
+            $user_access,
             $create_notifications_users,
             $status
           );

@@ -1,6 +1,21 @@
 <?= head_(); ?>
 <?= header_(); ?>
 
-<h1>dashboard</h1>
+<div id="s26-dashboard"></div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<?php
+
+
+
+?>
+<br>
+<br>
+<br>
+<br>
 <?= dep($_SESSION) ?>
 <?= footer_(); ?>

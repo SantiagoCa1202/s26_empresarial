@@ -57,24 +57,24 @@ class Photos extends Controllers
   {
     if ($_SESSION['permitsModule']['w']) {
       $upload_photos = [];
-      if (isset($_FILES["files"]) && $_FILES["files"]["name"][0]) {
-        for ($i = 0; $i < count($_FILES["files"]["name"]); $i++) {
+      if (isset($_FILES["upload_photos_data"]) && $_FILES["upload_photos_data"]["name"][0]) {
+        for ($i = 0; $i < count($_FILES["upload_photos_data"]["name"]); $i++) {
           $name = isset($_POST['name_' . $i]) ? strClean($_POST['name_' . $i]) : '';
           $description = isset($_POST['description_' . $i]) ?
             strClean($_POST['description_' . $i]) : '';
 
           if (
-            $_FILES["files"]["type"][$i] == "image/jpeg" ||
-            $_FILES["files"]["type"][$i] == "image/pjpeg" ||
-            $_FILES["files"]["type"][$i] == "image/png"
+            $_FILES["upload_photos_data"]["type"][$i] == "image/jpeg" ||
+            $_FILES["upload_photos_data"]["type"][$i] == "image/pjpeg" ||
+            $_FILES["upload_photos_data"]["type"][$i] == "image/png"
           ) {
 
-            if ($_FILES['files']['name'][$i] != '') {
-              $type = $_FILES["files"]["type"][$i];
+            if ($_FILES['upload_photos_data']['name'][$i] != '') {
+              $type = $_FILES["upload_photos_data"]["type"][$i];
               $photo_type = explode("/", $type);
               $photo_name = 'photo_' . md5(date('d-m-y H:m:s') . $i) . '.' . $photo_type[1];
 
-              $upload = uploadPhoto($_FILES["files"]["tmp_name"][$i], $photo_name);
+              $upload = uploadPhoto($_FILES["upload_photos_data"]["tmp_name"][$i], $photo_name);
               if ($upload) {
                 //Subir Foto
                 $request = $this->model->insertPhoto(
@@ -92,7 +92,7 @@ class Photos extends Controllers
       }
       if (count($upload_photos) > 0) {
         $success = count($upload_photos);
-        $error = count($_FILES["files"]["name"]) - count($upload_photos);
+        $error = count($_FILES["upload_photos_data"]["name"]) - count($upload_photos);
 
         $arrRes = array(
           'status' => true,

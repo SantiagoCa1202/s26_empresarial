@@ -11,11 +11,11 @@
         </div>
         <div class="mb-3 form-password">
           <label for="password" class="form-label">Contraseña</label>
-          <input type="password" class="form-control form-control-sm" id="password" v-model="form.password">
-          <button class="btn btn-link" v-if="form.password != ''" @click="password = !password">Ver</button>
+          <input :type="!password ? 'text' : 'password'" class="form-control form-control-sm" id="password" v-model="form.password">
+          <button type="button" class="btn btn-link" v-if="form.password != ''" @click="password = !password">Ver</button>
         </div>
         <div class="mb-3">
-          <button type="submit" class="btn btn-s26-success form-control">
+          <button type="submit" class="btn btn-success form-control">
             Iniciar Sesión
           </button>
         </div>
@@ -50,8 +50,8 @@
     </div>
   </transition>
   <transition name="fade">
-    <s26-loading v-if="loading" />
+    <s26-loader-spinner v-if="loading" />
   </transition>
 </div>
-<?= data_style('login'); ?>
+
 <?php footer_(); ?>

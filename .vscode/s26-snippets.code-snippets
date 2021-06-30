@@ -1,0 +1,88 @@
+{
+  "Estructure Vue": {
+    "prefix": "s26-vue",
+    "body": [
+      "<template>\r",
+      "\t<div id='$1'>\r",
+      "\t\t$2\r",
+      "\t</div>\r",
+      "</template>\r",
+      "<script>\r",
+      "export default {\r",
+      "\t$3\r",
+      "}\r",
+      "</script>\r"
+    ],
+    "description": "Add Vue Estructure"
+  },
+  "Default Modal": {
+    "prefix": "s26-modal",
+    "body": [
+      "<s26-modal id='$1' @hideModal='hideModal'>\r",
+      "\t<template v-slot:header>$2</template>\r",
+      "\t<template v-slot:body>$3</template>\r",
+      "\t<template v-slot:footer>$4</template>\r",
+      "</s26-modal>\r"
+    ],
+    "description": "Add Modal Default"
+  },
+  "Input Textarea": {
+    "prefix": "s26-textarea",
+    "body": [
+      "<s26-textarea\r",
+      "\tid='$1' \r",
+      "\tlabel='$2' \r",
+      "\trows='$3' \r",
+      "\tv-model='$4' \r",
+      ">\r",
+      "</s26-textarea>\r"
+    ],
+    "description": "S26 Textarea"
+  },
+  "S26 icon": {
+    "prefix": "s26-icon",
+    "body": ["<s26-icon icon='$1'></s26-icon>"],
+    "description": "S26 Icon"
+  },
+  "S26 Input Read": {
+    "prefix": "s26-input-read",
+    "body": [
+      "<s26-input-read\r",
+      "\tlabel='$1'\r",
+      "\t:content='$2'\r",
+      ">\r",
+      "</s26-input-read>\r"
+    ],
+    "description": "S26 Input Read Only"
+  },
+  "S26 Textarea Read": {
+    "prefix": "s26-textarea-read",
+    "body": [
+      "<s26-textarea-read\r",
+      "\tlabel='$1'\r",
+      "\t:content='$2'\r",
+      "\trows='$3'\r",
+      ">\r",
+      "</s26-textarea-read>"
+    ],
+    "description": "S26 Textarea Read Only"
+  },
+  "S26 Default Imput": {
+    "prefix": "s26-form-input",
+    "body": [
+      "<s26-form-input\r",
+      "\tlabel='$1'\r",
+      "\tsize='$2'\r",
+      "\tid='$3'\r",
+      "\ttype='$4'\r",
+      "\tv-model='$5'\r",
+      "\tmaxlength='$6'\r",
+      "\ttext\r",
+      "\ts26_required\r",
+      "\t:message='$7'\r",
+      ">\r",
+      "</s26-form-input>"
+    ],
+    "description": "S26 Default Input"
+  }
+}
