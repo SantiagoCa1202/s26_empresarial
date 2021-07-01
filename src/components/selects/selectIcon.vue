@@ -70,7 +70,7 @@
         </div>
       </div>
     </transition>
-    <p class="invalid-feedback" v-if="s26_required">{{ message }}</p>
+    <p class="invalid-feedback" v-if="s26_required">Seleccione un icono</p>
   </div>
 </template>
 <script>
@@ -78,10 +78,6 @@ export default {
   props: {
     label: String,
     id: String,
-    message: {
-      type: String,
-      default: "",
-    },
     size: String,
     placeholder: String,
     variant: {
@@ -109,6 +105,9 @@ export default {
   },
   created() {
     setTimeout(() => {
+      if (this.value != 0) {
+        this.getIcon(this.value);
+      }
       $(
         `html, .s26-modal, .s26-modal-content, .s26-popup:not(#s26-custom-select-${this.id})`
       ).on("click", (e) => {

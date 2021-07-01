@@ -8,6 +8,9 @@ const s26ReadOnly = /*#__PURE__*/ {
 import readUser from "./readUser.vue";
 Vue.component("s26-read-user", readUser);
 
+import readRol from "./readRol.vue";
+Vue.component("s26-read-role", readRol);
+
 import readPayroll from "./readPayroll.vue";
 Vue.component("s26-info-payroll", readPayroll);
 

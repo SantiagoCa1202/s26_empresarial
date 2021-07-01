@@ -18,3 +18,4 @@
   // El Registro Ya Existe = -2
   // Registro Vinculado a otras tablas = -3
   // No Se Puede Actualizar / Ingresar o Eliminar Este Registro (Registro Especials) = -4
+  // No tiene permiso para realizar esta acción = -5

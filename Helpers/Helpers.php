@@ -145,6 +145,8 @@ function s26_res($name, $res, $type = 0)
     $arrRes = array('type' => 0, 'msg' => 'No se puede realizar esta acción, registro vinculado a otras tablas.');
   } else if ($res == -4) {
     $arrRes = array('type' => 0, 'msg' => 'No se puede realizar esta acción, registro especial, se enviara un informe a servicio técnico.');
+  } else if ($res == -5) {
+    $arrRes = array('type' => 0, 'msg' => 'No tiene permiso para realizar esta acción.');
   } else {
     $arrRes = array('type' => 0, 'msg' => 'Error del Sistema, comunique a servicio al técnico.');
   }

@@ -1,8 +1,12 @@
 <template>
   <div class="container-img-estructure">
     <div class="select-img-photo" @click="activeSelectPhoto = true">
-      {{ value == "" ? "Seleccionar Foto 1000x1000" : "" }}
-      <img :id="'photo-' + id" v-if="value !== ''" :src="info_photo.href" />
+      {{ value == "" || value == 0 ? "Seleccionar Foto 1000x1000" : "" }}
+      <img
+        :id="'photo-' + id"
+        v-if="value !== '' && value != 0"
+        :src="info_photo.href"
+      />
     </div>
     <transition name="fade">
       <button
@@ -24,9 +28,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
           <div class="s26-modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">
-                Seleccionar Foto
-              </h5>
+              <h5 class="modal-title">Seleccionar Foto</h5>
               <button
                 type="button"
                 class="btn-close"
@@ -37,7 +39,7 @@
               <div class="row">
                 <div class="col-12 mb-1 pt-3 shadow-sm header-select-photo">
                   <div class="row">
-                    <div class="col-1">
+                    <div class="col-5">
                       <button
                         type="button"
                         class="btn btn-primary"
@@ -45,8 +47,6 @@
                       >
                         <s26-icon icon="cloud-upload-alt"></s26-icon>
                       </button>
-                    </div>
-                    <div class="col-1">
                       <button
                         type="button"
                         class="btn btn-outline-primary"
@@ -54,8 +54,6 @@
                       >
                         <s26-icon icon="sync-alt"></s26-icon>
                       </button>
-                    </div>
-                    <div class="col-3">
                       <button
                         type="button"
                         class="btn btn-outline-primary"
@@ -190,7 +188,12 @@ export default {
     };
   },
   created() {
-    this.allRows();
+    setTimeout(() => {
+      if (this.value != 0) {
+        this.getPhoto(this.value);
+      }
+      this.allRows();
+    }, 100);
   },
   methods: {
     allRows() {

@@ -86,8 +86,6 @@ export default {
         description: "",
         status: 1,
       },
-      msg_error: "",
-      code: false,
     };
   },
   created() {

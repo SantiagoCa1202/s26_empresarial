@@ -73,7 +73,9 @@ class PhotosModel extends Mysql
     $this->id = $id;
     $sql = "SELECT * FROM photos WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
-    $request['href'] =  asset('media/uploads/photos/') . $request['src'];
+    if ($request) {
+      $request['href'] =  asset('media/uploads/photos/') . $request['src'];
+    }
     return $request;
   }
 

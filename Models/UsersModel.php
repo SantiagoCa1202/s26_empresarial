@@ -173,10 +173,9 @@ class UsersModel extends Mysql
         $this->user_access,
         $this->status
       );
-      $request_insert = $this->insert($query_insert, $arrData);
-      $return = $request_insert;
+      $return = $this->insert($query_insert, $arrData);
     } else {
-      $return = 0;
+      $return = -2;
     }
     return $return;
   }
@@ -257,7 +256,7 @@ class UsersModel extends Mysql
 
       $request = $this->update($sql, $arrData);
     } else {
-      $request = 0;
+      $request = -2;
     }
 
     return $request;
@@ -270,11 +269,6 @@ class UsersModel extends Mysql
     $sql = "UPDATE users SET status = 0 WHERE id = $this->id";
     $request = $this->delete($sql);
 
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
 
@@ -285,11 +279,6 @@ class UsersModel extends Mysql
       WHERE id = ' . $_SESSION['userData']['id'];
     $request = $this->delete($sql);
 
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
 
@@ -478,11 +467,6 @@ class UsersModel extends Mysql
     $sql = "UPDATE notes SET status = 0 WHERE id = $this->id AND user_id = $this->idUser";
     $request = $this->delete_company($sql, $this->db_company);
 
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
 
@@ -588,11 +572,6 @@ class UsersModel extends Mysql
     $sql = "UPDATE notifications SET status = 0 WHERE id = $this->id AND issued_by = $this->idUser";
     $request = $this->delete_company($sql, $this->db_company);
 
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
 

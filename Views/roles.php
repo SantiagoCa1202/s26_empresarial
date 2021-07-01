@@ -68,6 +68,15 @@
             <td class="length-action">
               <s26-dropdown v-if="item.id != 1">
                 <?php
+                if ($_SESSION['permitsModule']['r']) {
+                ?>
+                  <li class="list-group-item border-0" @click="setIdRow(item.id, 'watch')">
+                    Ver
+                  </li>
+                <?php
+                }
+                ?>
+                <?php
                 if ($_SESSION['permitsModule']['u']) {
                 ?>
                   <li class="list-group-item border-0" @click="setIdRow(item.id, 'update')">
@@ -93,6 +102,17 @@
           </tr>
         </template>
       </s26-table>
+      <?php
+      if ($_SESSION['permitsModule']['r']) {
+      ?>
+        <!-- Modal Nuevo Rol-->
+        <transition name="slide-fade">
+          <s26-read-role v-model="action" :id="idRow" v-if="action == 'watch'" @update="allRows">
+          </s26-read-role>
+        </transition>
+      <?php
+      }
+      ?>
       <?php
       if ($_SESSION['permitsModule']['u'] || $_SESSION['permitsModule']['w']) {
       ?>

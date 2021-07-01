@@ -25,8 +25,8 @@
             <s26-form-input label="Id" size="sm" id="Id" type="text" v-model="filter.id" maxlength="11" @keyup="allRows" number autofocus></s26-form-input>
             <s26-form-input label="Cédula" size="sm" id="document" type="text" v-model="filter.document" maxlength="10" @keyup="allRows" number></s26-form-input>
             <s26-form-input label="Nombres" size="sm" id="name" type="text" v-model="filter.name" maxlength="100" @keyup="allRows" text></s26-form-input>
-            <s26-select-role all v-model="filter.role" @change="allRows"></s26-select-role>
-            <s26-select-establishment all v-model="filter.establishment" @change="allRows"></s26-select-establishment>
+            <s26-select-role id="filter-role" all v-model="filter.role" @change="allRows"></s26-select-role>
+            <s26-select-establishment id="filter-establishment" all v-model="filter.establishment" @change="allRows"></s26-select-establishment>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha"></s26-date-picker>
             {{ filter.date }}

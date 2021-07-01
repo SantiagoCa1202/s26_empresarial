@@ -84,8 +84,8 @@ class Users extends Controllers
     $last_name = strClean($_POST['last_name']);
     $document = strClean($_POST['document']);
     $email = strClean($_POST['email']);
-    $password = strClean($_POST['new_password']);
-    $confirm_password = strClean($_POST['confirm_password']);
+    $password = isset($_POST['new_password']) ? strClean($_POST['new_password']) : '';
+    $confirm_password = isset($_POST['confirm_password']) ? strClean($_POST['confirm_password']) : '';
     $phone = strClean($_POST['phone']);
     $gender_id = intval($_POST['gender_id']);
     $date_of_birth = strClean($_POST['date_of_birth'][0]);
@@ -117,30 +117,31 @@ class Users extends Controllers
           ($password === $confirm_password)
         ) {
           $passwordHash = hash("SHA256", $password);
-          if ($_SESSION['permitsModule']['w']) {
-            //Crear Usuario
-            $request = $this->model->insertUser(
-              $name,
-              $last_name,
-              $document,
-              $email,
-              $passwordHash,
-              $phone,
-              $gender_id,
-              $date_of_birth,
-              $role_id,
-              $insurance,
-              $establishment_id,
-              $user_access,
-              $create_notifications_users,
-              $status
-            );
-          }
         } else {
-          $request = -1;
+          $passwordHash = "";
         }
-
-        $type = 1;
+        if ($_SESSION['permitsModule']['w']) {
+          //Crear Usuario
+          $request = $this->model->insertUser(
+            $name,
+            $last_name,
+            $document,
+            $email,
+            $passwordHash,
+            $phone,
+            $gender_id,
+            $date_of_birth,
+            $role_id,
+            $insurance,
+            $establishment_id,
+            $user_access,
+            $create_notifications_users,
+            $status
+          );
+          $type = 1;
+        } else {
+          $request = -5;
+        }
       } else {
         if (
           valString($password, 12, 100) &&
@@ -170,24 +171,16 @@ class Users extends Controllers
             $create_notifications_users,
             $status
           );
-        }
-        $type = 2;
-      }
-
-      if ($request > 0) {
-        if ($type == 1) {
-          $arrRes = array('type' => 1, 'msg' => 'Datos guardados correctamente.');
+          $type = 2;
         } else {
-          $arrRes = array('type' => 2, 'msg' => 'Datos actualizados correctamente.');
+          $request = -5;
         }
-      } else if ($request == 0) {
-        $arrRes = array('type' => 0, 'msg' => 'El Usuario ya existe.');
-      } else {
-        $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos.');
       }
     } else {
-      $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
+      $type = 0;
+      $request = -1;
     }
+    $arrRes = s26_res("Usuario", $request, $type);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -196,14 +189,12 @@ class Users extends Controllers
   {
     if ($_SESSION['permitsModule']['d']) {
       $id = intval($id);
-      $requestDelete = $this->model->deleteUser($id);
-      if ($requestDelete == 1) {
-        $arrRes = array('type' => true, 'msg' => 'Usuario Eliminado.');
-      } else {
-        $arrRes = array('type' => false, 'msg' => 'Error al eliminar Usuario.');
-      }
-      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+      $request = $this->model->deleteUser($id);
+    } else {
+      $request = -5;
     }
+    $arrRes = s26_res("Usuario", $request, 3);
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
 
@@ -250,11 +241,7 @@ class Users extends Controllers
     $id = (intval($idUser) > 0) ? intval($idUser) : $_SESSION['idUser'];
     if ($id > 0) {
       $arrData = $this->model->selectPayroll($id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -265,11 +252,7 @@ class Users extends Controllers
     $row_id = $idRow;
     if ($row_id > 0) {
       $arrData = $this->model->selectPayRecord($row_id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -285,11 +268,7 @@ class Users extends Controllers
     ];
 
     $arrData = $this->model->selectPayRecords($perPage, $filter);
-    if (empty($arrData)) {
-      $arrRes = 0;
-    } else {
-      $arrRes = $arrData;
-    }
+    $arrRes = (empty($arrData)) ? 0 : $arrData;
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -299,11 +278,7 @@ class Users extends Controllers
     $row_id = $idRow;
     if ($row_id > 0) {
       $arrData = $this->model->selectMyNote($row_id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -314,11 +289,7 @@ class Users extends Controllers
     $id = $_SESSION['idUser'];
 
     $arrData = $this->model->selectMyNotes($id);
-    if (empty($arrData)) {
-      $arrRes = 0;
-    } else {
-      $arrRes = $arrData;
-    }
+    $arrRes = (empty($arrData)) ? 0 : $arrData;
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -356,19 +327,11 @@ class Users extends Controllers
         );
         $type = 2;
       }
-
-      if ($request > 0) {
-        if ($type == 1) {
-          $arrRes = array('type' => 1, 'msg' => 'Datos guardados correctamente.');
-        } else {
-          $arrRes = array('type' => 2, 'msg' => 'Datos actualizados correctamente.');
-        }
-      } else {
-        $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos.');
-      }
     } else {
-      $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
+      $type = 0;
+      $request = -1;
     }
+    $arrRes = s26_res("Nota", $request, $type);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -378,12 +341,8 @@ class Users extends Controllers
     $id = intval($id);
     $idUser = intval($_SESSION['idUser']);
 
-    $requestDelete = $this->model->deleteNote($id, $idUser);
-    if ($requestDelete == 1) {
-      $arrRes = array('type' => true, 'msg' => 'Nota Eliminada.');
-    } else {
-      $arrRes = array('type' => false, 'msg' => 'Error al eliminar nota.');
-    }
+    $request = $this->model->deleteNote($id, $idUser);
+    $arrRes = s26_res("Nota", $request, 3);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -445,19 +404,11 @@ class Users extends Controllers
         $expiration_date,
       );
       $type = 1;
-
-      if ($request > 0) {
-        if ($type == 1) {
-          $arrRes = array('type' => 1, 'msg' => 'Datos guardados correctamente.');
-        } else {
-          $arrRes = array('type' => 2, 'msg' => 'Datos actualizados correctamente.');
-        }
-      } else {
-        $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos.');
-      }
     } else {
-      $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
+      $type = 0;
+      $request = -1;
     }
+    $arrRes = s26_res("Notificación", $request, $type);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -467,12 +418,8 @@ class Users extends Controllers
     $id = intval($id);
     $idUser = intval($_SESSION['idUser']);
 
-    $requestDelete = $this->model->deleteNotification($id, $idUser);
-    if ($requestDelete == 1) {
-      $arrRes = array('type' => true, 'msg' => 'Notificación Eliminada.');
-    } else {
-      $arrRes = array('type' => false, 'msg' => 'Error al eliminar notificación.');
-    }
+    $request = $this->model->deleteNotification($id, $idUser);
+    $arrRes = s26_res("Notificación", $request, 3);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }

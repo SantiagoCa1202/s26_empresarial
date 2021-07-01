@@ -60,21 +60,6 @@ let json_to_formData = (form) => {
   return formData;
 };
 
-let readCookie = (name) => {
-  var nameEQ = name + "=";
-  var ca = document.cookie.split(";");
-
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) == 0) {
-      return decodeURIComponent(c.substring(nameEQ.length, c.length));
-    }
-  }
-
-  return null;
-};
-
 let show_loader_points = () => {
   $("body").append(`<div class="s26-loading-points"></div>`);
   $(".s26-loading-points").append(`<div class="points-loader"></div>`);
@@ -389,11 +374,37 @@ let val_form = (form) => {
   }
   return true;
 };
+
+///////////////// CREADOR DE COOKIE
+let create_cookie = (name, id, path = "") => {
+  document.cookie =
+    `${name}=` + encodeURIComponent(id) + `; path=/s26_empresarial/${path}`;
+};
+///////////////// ELIMINAR COOKIE
+let delete_cookie = (name, path = "") => {
+  document.cookie = `${name}=;max-age=2; path=/s26_empresarial/${path};`;
+};
+///////////////// LEER COOKIE
+let readCookie = (name) => {
+  let nameEQ = name + "=";
+  let ca = document.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) {
+      return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+  }
+  return null;
+};
+
 export default {
   val_inputs,
   val_form,
   val_date,
   json_to_formData,
+  create_cookie,
+  delete_cookie,
   readCookie,
   show_loader_points,
   hide_loader_points,

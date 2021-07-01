@@ -1,10 +1,13 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
-    <label :for="id" class="form-label">
+    <label :for="id" class="form-label w-100">
       Usuario
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
+      <a @click="getRow" class="text-primary float-end pointer" v-if="!all">
+        <s26-icon icon="link"></s26-icon>
+      </a>
     </label>
     <div
       :id="id"
@@ -153,6 +156,10 @@ export default {
       let perPage = this.rows - this.perPage;
       this.perPage = perPage > 25 ? this.perPage + 25 : this.rows;
       this.allRows();
+    },
+    getRow() {
+      s26.create_cookie("id", this.value, "users");
+      window.open(BASE_URL + "/users", "_blank");
     },
   },
 };

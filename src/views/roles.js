@@ -30,16 +30,17 @@ if (element) {
         rows: 0,
         items: [],
         perPage: 25,
-        idRow: null,
+        idRow: "",
         activeSidebar: true,
         action: "",
         url_export: "",
       };
     },
     created() {
-      setTimeout(() => {
-        this.allRows();
-      }, 100);
+      if (s26.readCookie("id")) {
+        this.setIdRow(s26.readCookie("id"), "watch");
+      }
+      this.allRows();
     },
     methods: {
       allRows() {
@@ -73,6 +74,9 @@ if (element) {
       setIdRow(id, type) {
         this.idRow = parseInt(id);
         this.action = type;
+        if (!s26.readCookie("id") && type == "watch") {
+          s26.create_cookie("id", id, "roles");
+        }
       },
     },
   });

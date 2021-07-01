@@ -48,9 +48,7 @@
             </div>
           </div>
           <div class="p-2 h-50 s26-align-center">
-            <div
-              class="w-100 h-100 rounded s26-align-center"
-            >
+            <div class="w-100 h-100 rounded s26-align-center">
               <img :src="form.photo" class="rounded w-100" />
             </div>
           </div>
@@ -105,6 +103,7 @@ export default {
     },
     hideModal() {
       this.$emit("input", null);
+      s26.delete_cookie("id", "categories");
     },
   },
 };

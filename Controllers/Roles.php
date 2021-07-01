@@ -71,8 +71,10 @@ class Roles extends Controllers
             $description,
             $status,
           );
+          $type = 1;
+        } else {
+          $request = -5;
         }
-        $type = 1;
       } else {
         if ($_SESSION['permitsModule']['u']) {
           // Actualizar 
@@ -82,8 +84,10 @@ class Roles extends Controllers
             $description,
             $status,
           );
+          $type = 2;
+        } else {
+          $request = -5;
         }
-        $type = 2;
       }
     } else {
       $type = 0;
@@ -99,9 +103,11 @@ class Roles extends Controllers
     if ($_SESSION['permitsModule']['d']) {
       $id = intval($id);
       $request = $this->model->deleteRol($id);
-      $arrRes = s26_res("Rol", $request, 3);
-      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    } else {
+      $request = -5;
     }
+    $arrRes = s26_res("Rol", $request, 3);
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
 
