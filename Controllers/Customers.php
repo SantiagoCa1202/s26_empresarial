@@ -61,7 +61,7 @@ class Customers extends Controllers
   {
     $id = intval($_POST['id']);
     $document = strClean($_POST['document']);
-    $name = strClean($_POST['name']);
+    $full_name = strClean($_POST['full_name']);
     $address = !empty($_POST['address']) ? strClean($_POST['address']) : $_SESSION['userData']['establishment']['city'];
     $phone = !empty($_POST['phone']) ? strClean($_POST['phone']) : '999999999';
     $mobile = !empty($_POST['mobile']) ? strClean($_POST['mobile']) : '9999999999';
@@ -71,7 +71,7 @@ class Customers extends Controllers
     $request = "";
     if (
       valString($document, 10, 13) &&
-      valString($name) &&
+      valString($full_name) &&
       valString($address, 5, 100) &&
       valString($phone, 9, 9) &&
       valString($mobile, 10, 10) &&
@@ -83,7 +83,7 @@ class Customers extends Controllers
           //Crear Usuario
           $request = $this->model->insertCustomer(
             $document,
-            $name,
+            $full_name,
             $address,
             $phone,
             $mobile,
@@ -91,9 +91,10 @@ class Customers extends Controllers
             $time_limit,
             $status
           );
+          $type = 1;
+        } else {
+          $request = -5;
         }
-
-        $type = 1;
       } else {
 
         if ($_SESSION['permitsModule']['u']) {
@@ -101,7 +102,7 @@ class Customers extends Controllers
           $request = $this->model->updateCustomer(
             $id,
             $document,
-            $name,
+            $full_name,
             $address,
             $phone,
             $mobile,
@@ -109,24 +110,16 @@ class Customers extends Controllers
             $time_limit,
             $status
           );
-        }
-        $type = 2;
-      }
-
-      if ($request > 0) {
-        if ($type == 1) {
-          $arrRes = array('type' => 1, 'msg' => 'Datos guardados correctamente.');
+          $type = 2;
         } else {
-          $arrRes = array('type' => 2, 'msg' => 'Datos actualizados correctamente.');
+          $request = -5;
         }
-      } else if ($request == 0) {
-        $arrRes = array('type' => 0, 'msg' => 'El Cliente ya existe.');
-      } else {
-        $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos.');
       }
     } else {
-      $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
+      $type = 0;
+      $request = -1;
     }
+    $arrRes = s26_res("Cliente", $request, $type);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -135,14 +128,12 @@ class Customers extends Controllers
   {
     if ($_SESSION['permitsModule']['d']) {
       $id = intval($id);
-      $requestDelete = $this->model->deleteCustomer($id);
-      if ($requestDelete == 1) {
-        $arrRes = array('type' => true, 'msg' => 'Cliente Eliminado.');
-      } else {
-        $arrRes = array('type' => false, 'msg' => 'Error al eliminar Cliente.');
-      }
-      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+      $request = $this->model->deleteCustomer($id);
+    } else {
+      $request = -5;
     }
+    $arrRes = s26_res("Cliente", $request, 3);
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
 

@@ -113,7 +113,6 @@ export default {
     onSubmit() {
       this.form.id = this.id;
       if (!s26.val_form("formRole")) {
-        console.log(this);
         this.$alertify.error(
           "Es Necesario Llenar todos los campos requeridos."
         );

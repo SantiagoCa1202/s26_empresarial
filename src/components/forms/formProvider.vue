@@ -316,7 +316,6 @@ export default {
         status: 1,
         created_at: "",
       },
-      code: false,
     };
   },
   created() {
@@ -331,7 +330,6 @@ export default {
       this.axios
         .get("/providers/getProvider/" + id)
         .then((res) => {
-          console.log(res)
           this.form = res.data;
           let date = new Date(res.data.created_at);
           this.form.created_at = new Intl.DateTimeFormat("es-ES", {

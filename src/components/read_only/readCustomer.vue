@@ -18,7 +18,7 @@
           </s26-input-read>
         </div>
         <div class="col-12">
-          <s26-input-read label="Nombres" :content="form.name">
+          <s26-input-read label="Nombres" :content="form.full_name">
           </s26-input-read>
         </div>
         <div class="col-6">
@@ -69,18 +69,7 @@ export default {
   },
   data: function () {
     return {
-      form: {
-        id: "",
-        name: "",
-        document: "",
-        address: "",
-        time_limit: "",
-        phone: "",
-        mobile: "",
-        email: "",
-        status: 1,
-        created_at: "",
-      },
+      form: {},
     };
   },
   created() {
@@ -93,15 +82,7 @@ export default {
       this.axios
         .get("/customers/getCustomer/" + id)
         .then((res) => {
-          this.form.id = res.data.id;
-          this.form.name = res.data.full_name;
-          this.form.document = res.data.document;
-          this.form.address = res.data.address;
-          this.form.time_limit = res.data.time_limit;
-          this.form.phone = res.data.phone;
-          this.form.mobile = res.data.mobile;
-          this.form.email = res.data.email;
-          this.form.status = res.data.status;
+          this.form = res.data;
           let date = new Date(res.data.created_at);
           this.form.created_at = new Intl.DateTimeFormat("es-ES", {
             dateStyle: "full",
@@ -115,6 +96,7 @@ export default {
     },
     hideModal() {
       this.$emit("input", null);
+      s26.delete_cookie("id", "customers");
     },
   },
 };
