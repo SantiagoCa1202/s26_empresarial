@@ -47,6 +47,9 @@ if (element) {
       };
     },
     created() {
+      if (s26.readCookie("id")) {
+        this.setIdRow(s26.readCookie("id"), "watch");
+      }
       this.allRows();
     },
     methods: {
@@ -82,6 +85,9 @@ if (element) {
       setIdRow(id, type) {
         this.idRow = parseInt(id);
         this.action = type;
+        if (!s26.readCookie("id") && type == "watch") {
+          s26.create_cookie("id", id, "providers");
+        }
       },
     },
   });

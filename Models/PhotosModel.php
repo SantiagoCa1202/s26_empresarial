@@ -141,11 +141,6 @@ class PhotosModel extends Mysql
     $sql = "UPDATE photos SET favorites = $favorite WHERE id = $this->id";
     $request = $this->delete_company($sql, $this->db_company);
 
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
   public function deletePhoto(int $id)
@@ -157,11 +152,6 @@ class PhotosModel extends Mysql
     $sql = "UPDATE photos SET status = 0 WHERE id = $this->id";
     $request = $this->delete_company($sql, $this->db_company);
 
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
 }

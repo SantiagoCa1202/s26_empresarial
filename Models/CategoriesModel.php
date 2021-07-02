@@ -98,7 +98,6 @@ class CategoriesModel extends Mysql
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $return = "";
     $this->name = $name;
     $this->description = $description;
     $this->photo = $photo;
@@ -119,12 +118,11 @@ class CategoriesModel extends Mysql
         $this->color,
         $this->status
       );
-      $request_insert = $this->insert_company($query_insert, $arrData, $this->db_company);
-      $return = $request_insert;
+      $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     } else {
-      $return = 0;
+      $request = -2;
     }
-    return $return;
+    return $request;
   }
 
   public function updateCategory(
@@ -164,7 +162,7 @@ class CategoriesModel extends Mysql
 
       $request = $this->update_company($sql, $arrData, $this->db_company);
     } else {
-      $request = 0;
+      $request = -2;
     }
     return $request;
   }
@@ -178,11 +176,6 @@ class CategoriesModel extends Mysql
     $sql = "UPDATE categories SET status = 0 WHERE id = $this->id";
     $request = $this->delete_company($sql, $this->db_company);
 
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
 }

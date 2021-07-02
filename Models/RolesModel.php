@@ -62,7 +62,6 @@ class RolesModel extends Mysql
 
   public function insertRol(string $rol, string $description, int $status)
   {
-    $return = "";
     $this->rol = $rol;
     $this->description = $description;
     $this->status = $status;
@@ -85,16 +84,15 @@ class RolesModel extends Mysql
           $this->status,
           $_SESSION['userData']['establishment']['company_id']
         );
-        $request_insert = $this->insert($query_insert, $arrData);
-        $return = $request_insert;
+        $request = $this->insert($query_insert, $arrData);
       } else {
-        $return = -2;
+        $request = -2;
       }
     } else {
-      $return = -4;
+      $request = -4;
     }
 
-    return $return;
+    return $request;
   }
   public function updateRol(int $id, string $rol, string $description, int $status)
   {

@@ -140,7 +140,6 @@ class ProvidersModel extends Mysql
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $return = "";
     $this->document = $document;
     $this->business_name = $business_name;
     $this->tradename = $tradename;
@@ -188,12 +187,11 @@ class ProvidersModel extends Mysql
         $this->city,
         $this->address
       );
-      $request_insert = $this->insert_company($query_insert, $arrData, $this->db_company);
-      $return = $request_insert;
+      $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     } else {
-      $return = 0;
+      $request = -2;
     }
-    return $return;
+    return $request;
   }
 
   public function updateProvider(
@@ -269,7 +267,7 @@ class ProvidersModel extends Mysql
 
       $request = $this->update_company($sql, $arrData, $this->db_company);
     } else {
-      $request = 0;
+      $request = -2;
     }
 
     return $request;
@@ -284,11 +282,6 @@ class ProvidersModel extends Mysql
     $sql = "UPDATE providers SET status = 0 WHERE id = $this->id";
     $request = $this->delete_company($sql, $this->db_company);
 
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
 
@@ -324,7 +317,6 @@ class ProvidersModel extends Mysql
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $return = "";
     $this->provider_id = $provider_id;
     $this->account_number = $account_number;
     $this->bank_entity = $bank_entity;
@@ -354,12 +346,11 @@ class ProvidersModel extends Mysql
         $this->account_type
       );
 
-      $request_insert = $this->insert_company($query_insert, $arrData, $this->db_company);
-      $return = $request_insert;
+      $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     } else {
-      $return = 0;
+      $request = -2;
     }
-    return $return;
+    return $request;
   }
 
   public function updateBankEntity(
@@ -404,7 +395,7 @@ class ProvidersModel extends Mysql
 
       $request = $this->update_company($sql, $arrData, $this->db_company);
     } else {
-      $request = 0;
+      $request = -2;
     }
 
     return $request;
@@ -438,26 +429,21 @@ class ProvidersModel extends Mysql
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $return = "";
     $this->provider_id = $provider_id;
     $this->category_id = $category_id;
 
-    if (empty($request)) {
-      $query_insert = "INSERT INTO providers_categories (
+    $query_insert = "INSERT INTO providers_categories (
         provider_id,
         category_id
       ) VALUES (?,?)";
-      $arrData = array(
-        $this->provider_id,
-        $this->category_id
-      );
+    $arrData = array(
+      $this->provider_id,
+      $this->category_id
+    );
 
-      $request_insert = $this->insert_company($query_insert, $arrData, $this->db_company);
-      $return = $request_insert;
-    } else {
-      $return = 0;
-    }
-    return $return;
+    $request = $this->insert_company($query_insert, $arrData, $this->db_company);
+
+    return $request;
   }
 
   public function deleteCategories(int $id)
@@ -468,12 +454,6 @@ class ProvidersModel extends Mysql
 
     $sql = "DELETE FROM providers_categories WHERE provider_id = $this->id";
     $request = $this->delete_company($sql, $this->db_company);
-
-    if ($request) {
-      $request = 1;
-    } else {
-      $request = 0;
-    }
     return $request;
   }
 }

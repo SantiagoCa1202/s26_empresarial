@@ -33,7 +33,7 @@ export default {
       this.axios
         .post("/" + this.post_delete)
         .then((res) => {
-          if (res.data.type == 1) {
+          if (res.data.type == 2) {
             this.$alertify.success(res.data.msg);
           } else {
             this.$alertify.error(res.data.msg);

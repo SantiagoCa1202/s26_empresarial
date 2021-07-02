@@ -190,8 +190,6 @@ export default {
         status: 1,
         created_at: "",
       },
-      msg_error: "",
-      code: false,
     };
   },
   created() {
@@ -236,6 +234,7 @@ export default {
     },
     hideModal() {
       this.$emit("input", null);
+      s26.delete_cookie("id", "providers");
     },
   },
 };

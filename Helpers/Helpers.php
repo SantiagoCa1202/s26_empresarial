@@ -131,11 +131,11 @@ function s26_res($name, $res, $type = 0)
     }
   } else if ($res == 0) {
     if ($type == 1) {
-      $arrRes = array('type' => 1, 'msg' => 'Error al Eliminar ' . $name);
+      $arrRes = array('type' => 0, 'msg' => 'Error al Eliminar ' . $name);
     } else if ($type == 2) {
-      $arrRes = array('type' => 2, 'msg' => 'Error al Eliminar ' . $name);
+      $arrRes = array('type' => 0, 'msg' => 'Error al Eliminar ' . $name);
     } else if ($type == 3) {
-      $arrRes = array('type' => 2, 'msg' => 'Error al Eliminar ' . $name);
+      $arrRes = array('type' => 0, 'msg' => 'Error al Eliminar ' . $name);
     }
   } else if ($res == -1) {
     $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar ' . $name . '. Compruebe que los datos ingresados sean correctos');
@@ -147,6 +147,8 @@ function s26_res($name, $res, $type = 0)
     $arrRes = array('type' => 0, 'msg' => 'No se puede realizar esta acción, registro especial, se enviara un informe a servicio técnico.');
   } else if ($res == -5) {
     $arrRes = array('type' => 0, 'msg' => 'No tiene permiso para realizar esta acción.');
+  } else if ($res == -6) {
+    $arrRes = array('type' => 0, 'msg' => 'El Registro ya existe, restauralo desde la papelera.');
   } else {
     $arrRes = array('type' => 0, 'msg' => 'Error del Sistema, comunique a servicio al técnico.');
   }

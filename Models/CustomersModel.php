@@ -111,27 +111,31 @@ class CustomersModel extends Mysql
     $this->time_limit = $time_limit;
     $this->status = $status;
 
-    $sql = "SELECT * FROM customers WHERE full_name = '$this->name' OR document = '$this->document'";
-    $request = $this->select_all_company($sql, $this->db_company);
+    if ($this->name !== 'consumidor final' && $this->document !== '9999999999') {
 
-    if (empty($request)) {
-      $query_insert = "INSERT INTO customers (document, full_name, address, phone, mobile, email, time_limit, status) VALUES (?,?,?,?,?,?,?,?)";
-      $arrData = array(
-        $this->document,
-        $this->name,
-        $this->address,
-        $this->phone,
-        $this->mobile,
-        $this->email,
-        $this->time_limit,
-        $this->status
-      );
-      $request_insert = $this->insert_company($query_insert, $arrData, $this->db_company);
-      $return = $request_insert;
+      $sql = "SELECT * FROM customers WHERE full_name = '$this->name' OR document = '$this->document'";
+      $request = $this->select_all_company($sql, $this->db_company);
+
+      if (empty($request)) {
+        $query_insert = "INSERT INTO customers (document, full_name, address, phone, mobile, email, time_limit, status) VALUES (?,?,?,?,?,?,?,?)";
+        $arrData = array(
+          $this->document,
+          $this->name,
+          $this->address,
+          $this->phone,
+          $this->mobile,
+          $this->email,
+          $this->time_limit,
+          $this->status
+        );
+        $request = $this->insert_company($query_insert, $arrData, $this->db_company);
+      } else {
+        $request = -2;
+      }
     } else {
-      $return = 0;
+      $request = -4;
     }
-    return $return;
+    return $request;
   }
 
   public function updateCustomer(
@@ -158,28 +162,34 @@ class CustomersModel extends Mysql
     $this->time_limit = $time_limit;
     $this->status = $status;
 
-    $sql = "SELECT * FROM customers WHERE id != '$this->id' AND (full_name = '$this->name' OR document = '$this->document')";
-    $request = $this->select_all_company($sql, $this->db_company);
+    if (
+      $this->name !== 'consumidor final' && $this->document !== '9999999999' && $this->id !== 1
+    ) {
 
-    if (empty($request)) {
+      $sql = "SELECT * FROM customers WHERE id != '$this->id' AND (full_name = '$this->name' OR document = '$this->document')";
+      $request = $this->select_all_company($sql, $this->db_company);
 
-      $sql = "UPDATE customers SET document = ?, full_name = ?, address = ?,  phone = ?, mobile = ?, email = ?, time_limit = ?, status = ? WHERE id = $this->id";
-      $arrData = array(
-        $this->document,
-        $this->name,
-        $this->address,
-        $this->phone,
-        $this->mobile,
-        $this->email,
-        $this->time_limit,
-        $this->status
-      );
+      if (empty($request)) {
 
-      $request = $this->update_company($sql, $arrData, $this->db_company);
+        $sql = "UPDATE customers SET document = ?, full_name = ?, address = ?,  phone = ?, mobile = ?, email = ?, time_limit = ?, status = ? WHERE id = $this->id";
+        $arrData = array(
+          $this->document,
+          $this->name,
+          $this->address,
+          $this->phone,
+          $this->mobile,
+          $this->email,
+          $this->time_limit,
+          $this->status
+        );
+
+        $request = $this->update_company($sql, $arrData, $this->db_company);
+      } else {
+        $request = -2;
+      }
     } else {
-      $request = 0;
+      $request = -4;
     }
-
     return $request;
   }
 
@@ -189,13 +199,11 @@ class CustomersModel extends Mysql
 
     $this->id = $id;
 
-    $sql = "UPDATE customers SET status = 0 WHERE id = $this->id";
-    $request = $this->delete_company($sql, $this->db_company);
-
-    if ($request) {
-      $request = 1;
+    if ($this->id !== 1) {
+      $sql = "UPDATE customers SET status = 0 WHERE id = $this->id";
+      $request = $this->delete_company($sql, $this->db_company);
     } else {
-      $request = 0;
+      $request = -4;
     }
     return $request;
   }

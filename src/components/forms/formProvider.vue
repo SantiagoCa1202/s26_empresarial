@@ -344,62 +344,56 @@ export default {
     },
     onSubmit() {
       this.form.id = this.id;
-
-      let formData = s26.json_to_formData(this.form);
-      s26.show_loader_points();
-      this.axios
-        .post("/providers/setProvider", formData)
-        .then((res) => {
-          console.log(res);
-          for (let i in res.data) {
-            if (res.data[i].type == 1 || res.data[i].type == 2) {
-              this.$alertify.success(res.data[i].msg);
-            } else if (res.data[i].type == 3) {
-              this.$alertify.warning(res.data[i].msg);
-            } else {
-              this.$alertify.error(res.data[i].msg);
-            }
-          }
-          s26.hide_loader_points();
-          this.$emit("update");
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    valForm() {
-      return true;
+      this.$alertify.confirm(
+        `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Proveedor?.`,
+        () => {
+          let formData = s26.json_to_formData(this.form);
+          s26.show_loader_points();
+          this.axios
+            .post("/providers/setProvider", formData)
+            .then((res) => {
+              for (let i in res.data) {
+                if (res.data[i].type == 1 || res.data[i].type == 2) {
+                  this.onReset();
+                  this.$alertify.success(res.data[i].msg);
+                } else if (res.data[i].type == 3) {
+                  this.$alertify.warning(res.data[i].msg);
+                } else {
+                  this.$alertify.error(res.data[i].msg);
+                }
+              }
+              s26.hide_loader_points();
+              this.$emit("update");
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        },
+        () => {
+          this.$alertify.error("Acción Cancelada");
+        }
+      );
     },
     onReset() {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        const RESET_LEVEL = {
-          0: () => {
-            for (let i in this.form.trade_information) {
-              this.form.trade_information[i] = "";
-            }
-          },
-          1: () => {
-            for (let i in this.form.contacts) {
-              this.form.contacts[i] = "";
-            }
-          },
-          2: () => {
-            for (let i in this.form.current_address) {
-              this.form.current_address[i] = "";
-            }
-          },
-          3: () => {
-            for (let i in this.form.bank_accounts) {
-              this.form.bank_accounts[i] = "";
-            }
-          },
-          4: () => {
-            this.form.categories = [];
-          },
-        };
-        RESET_LEVEL[this.level_select]();
+        for (let i in this.form.trade_information) {
+          this.form.trade_information[i] = "";
+        }
+
+        for (let i in this.form.contacts) {
+          this.form.contacts[i] = "";
+        }
+
+        for (let i in this.form.current_address) {
+          this.form.current_address[i] = "";
+        }
+
+        for (let i in this.form.bank_accounts) {
+          this.form.bank_accounts[i] = "";
+        }
+        this.form.categories = [];
       }
     },
     getCategories() {
