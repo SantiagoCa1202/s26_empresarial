@@ -23,4 +23,7 @@ Vue.component("s26-read-category", readCategory);
 import readProvider from "./readProvider.vue";
 Vue.component("s26-read-provider", readProvider);
 
+import readPhoto from "./readPhoto.vue";
+Vue.component("s26-read-photo", readPhoto);
+
 export default s26ReadOnly;

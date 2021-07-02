@@ -52,6 +52,10 @@ import {
   faSortDown,
   faTruckLoading,
   faAsterisk,
+  faEye,
+  faArrowAltCircleDown,
+  faStar,
+  faImages,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -106,7 +110,11 @@ library.add(
   faProjectDiagram,
   faSortDown,
   faTruckLoading,
-  faAsterisk
+  faAsterisk,
+  faEye,
+  faArrowAltCircleDown,
+  faStar,
+  faImages
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

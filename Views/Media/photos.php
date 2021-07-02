@@ -22,7 +22,7 @@
         <template v-slot:search>
           <div class="container">
             <s26-form-input label="Nombre" size="sm" id="name" type="text" v-model="filter.name" maxlength="100" @keyup="allRows"></s26-form-input>
-            <s26-select-status all lbl="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
+            <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha"></s26-date-picker>
             <button :class="['btn mt-2 w-100', filter.favorites == 1 ? 'btn-warning' : 'btn-outline-warning']" @click="filterFavorites">Favoritos</button>
           </div>
@@ -60,7 +60,7 @@
                 ?>
                   <div class="col-2 s26-align-center">
                     <button type="button" class="btn btn-link" style="color: #fcbf12" @click="setIdRow(item.id, 'watch')">
-                      <i class="far fa-eye"></i>
+                      <s26-icon icon='eye'></s26-icon>
                     </button>
                   </div>
                 <?php
@@ -69,7 +69,7 @@
                 ?>
                   <div class="col-2 s26-align-center">
                     <button type="button" class="btn btn-link" @click="setIdRow(item.id, 'update')">
-                      <i class="far fa-edit"></i>
+                      <s26-icon icon='edit'></s26-icon>
                     </button>
                   </div>
                 <?php
@@ -78,7 +78,7 @@
                 ?>
                   <div class="col-2 s26-align-center">
                     <button type="button" class="btn btn-link text-danger" @click="setIdRow(item.id, 'delete')">
-                      <i class="far fa-trash-alt"></i>
+                      <s26-icon icon='trash-alt'></s26-icon>
                     </button>
                   </div>
                 <?php
@@ -87,7 +87,7 @@
                 ?>
                   <div class="col-2 s26-align-center">
                     <a :href="item.href" class="btn btn-link" :download="item.src">
-                      <i class="far fa-arrow-alt-circle-down fs-6"></i>
+                      <s26-icon icon='arrow-alt-circle-down' class="fs-6"></s26-icon>
                     </a>
                   </div>
                 <?php
@@ -96,8 +96,10 @@
                 ?>
                   <div class="col-4">
                     <button type="button" class="btn btn-link float-end" @click="addToFavorites(item.id)">
-                      <i class="fas fa-star text-warning fs-6" v-if="item.favorites == 1"></i>
-                      <i class="far fa-star text-secondary" v-else></i>
+                      <s26-icon icon='star' class="text-warning fs-6" v-if="item.favorites == 1">
+                      </s26-icon>
+                      <s26-icon icon='star' class="text-secondary" v-else>
+                      </s26-icon>
                     </button>
                   </div>
                 <?php
@@ -119,8 +121,8 @@
       ?>
         <!-- Modal Ver-->
         <transition name="slide-fade">
-          <s26-watch-photo v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-watch-photo>
+          <s26-read-photo v-model="action" :id="idRow" v-if="action == 'watch'">
+          </s26-read-photo>
         </transition>
       <?php
       }
@@ -136,7 +138,7 @@
       ?>
         <!-- Modal Editar-->
         <transition name="slide-fade">
-          <s26-update-photo v-if="action == 'update'" v-model="action" :id="idRow" @update="allRows" />
+          <s26-form-photo v-if="action == 'update'" v-model="action" :id="idRow" @update="allRows" />
         </transition>
       <?php
       }
@@ -150,12 +152,8 @@
       }
       ?>
     </div>
-
-    <?= data_style('photos'); ?>
-
   <?php
   }
   ?>
 </div>
-
 <?= footer_(); ?>

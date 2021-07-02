@@ -77,7 +77,7 @@
                 style="top: -4%; right: -1.5%"
                 @click="remove_photo(index)"
               >
-                <i class="fas fa-times"></i>
+                <s26-icon icon="times"></s26-icon>
               </button>
             </transition>
           </div>

@@ -101,7 +101,6 @@ class Photos extends Controllers
       } else {
         $arrRes = array('status' => false, 'msg' => 'Error al Subir Fotos.');
       }
-
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -120,8 +119,6 @@ class Photos extends Controllers
         valString($description, 0, 1000) &&
         ($status == 1 || $status == 2)
       ) {
-
-
         if ($_SESSION['permitsModule']['u']) {
           // Actualizar
           $request = $this->model->updatePhoto(
@@ -130,16 +127,15 @@ class Photos extends Controllers
             $description,
             $status
           );
-        }
-
-        if ($request > 0) {
-          $arrRes = array('type' => 1, 'msg' => 'Datos actualizados correctamente.');
+          $type = 2;
         } else {
-          $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos.');
+          $request = -5;
         }
       } else {
-        $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
+        $type = 0;
+        $request = -1;
       }
+      $arrRes = s26_res("Foto", $request, $type);
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -164,14 +160,12 @@ class Photos extends Controllers
   {
     if ($_SESSION['permitsModule']['d']) {
       $id = intval($id);
-      $requestDelete = $this->model->deletePhoto($id);
-      if ($requestDelete == 1) {
-        $arrRes = array('type' => true, 'msg' => 'Foto Eliminada.');
-      } else {
-        $arrRes = array('type' => false, 'msg' => 'Error al eliminar Foto.');
-      }
-      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+      $request = $this->model->deletePhoto($id);
+    } else {
+      $request = -5;
     }
+    $arrRes = s26_res("Foto", $request, 3);
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
 }
