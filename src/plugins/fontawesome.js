@@ -56,6 +56,8 @@ import {
   faArrowAltCircleDown,
   faStar,
   faImages,
+  faBuilding,
+  faExpand,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -114,7 +116,9 @@ library.add(
   faEye,
   faArrowAltCircleDown,
   faStar,
-  faImages
+  faImages,
+  faBuilding,
+  faExpand
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

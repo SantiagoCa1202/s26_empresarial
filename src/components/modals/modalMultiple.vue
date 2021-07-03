@@ -29,7 +29,18 @@
               {{ levels[level_select] }}.
             </div>
           </transition>
-          <button type="button" class="btn-close" @click="hideModal"></button>
+          <div class="actions-s26-modal">
+            <button type="button" class="btn btn-link btn-action" v-if="expand">
+              <s26-icon icon="expand"></s26-icon>
+            </button>
+            <button
+              type="button"
+              class="btn btn-link btn-action"
+              @click="hideModal"
+            >
+              <s26-icon icon="times"></s26-icon>
+            </button>
+          </div>
         </div>
         <div
           v-if="!body_none"
@@ -160,6 +171,7 @@ export default {
     title: String,
     readOnly: Boolean,
     form: String,
+    expand: Boolean,
   },
   data() {
     return {
@@ -231,10 +243,21 @@ export default {
 .modal-multiple-header .modal-title {
   font-weight: bold;
 }
-.modal-multiple-header .btn-close {
+.modal-multiple-header .actions-s26-modal {
   position: absolute;
   right: 20px;
   top: 20px;
+}
+
+.actions-s26-modal .btn-action {
+  color: #bebebe;
+  transition: 0.3s;
+  padding: 0 0.5rem;
+}
+
+.actions-s26-modal .btn-action:hover,
+.actions-s26-modal .btn-action:active {
+  color: var(--bs-secondary);
 }
 .proccess-bar {
   display: flex;

@@ -13,9 +13,9 @@ class Establishments extends Controllers
     getPermits(42);
   }
 
-  public function establishment()
+  public function establishments()
   {
-    $this->views->getView($this, "establishment");
+    $this->views->getView($this, "establishments");
   }
 
   public function getEstablishments()
@@ -23,11 +23,10 @@ class Establishments extends Controllers
     if ($_SESSION['permitsModule']['r']) {
       $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : '10000';
       $filter = [
-        'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
+        'n_establishment' => !empty($_GET['n_establishment']) ? intval($_GET['n_establishment']) : '',
         'tradename' => isset($_GET['tradename']) ? strClean($_GET['tradename']) : '',
         'city' => isset($_GET['city']) ? strClean($_GET['city']) : '',
         'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
-        'date' => !empty($_GET['date']) ? $_GET['date'] : '',
       ];
       $arrData = $this->model->selectEstablishments($perPage, $filter);
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);

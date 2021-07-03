@@ -9,7 +9,7 @@
     </button>
     <div class="container-sidebar">
       <header class="sidebar-head mb-4">
-        <h1><s26-icon :icon="icon"></s26-icon> {{ title }}</h1>
+        <h1 class="fs-3"><s26-icon :icon="icon"></s26-icon> {{ title }}</h1>
         <slot name="header"> </slot>
       </header>
       <main>

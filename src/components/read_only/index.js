@@ -26,4 +26,7 @@ Vue.component("s26-read-provider", readProvider);
 import readPhoto from "./readPhoto.vue";
 Vue.component("s26-read-photo", readPhoto);
 
+import readEstablishment from "./readEstablishment.vue";
+Vue.component("s26-read-establishment", readEstablishment);
+
 export default s26ReadOnly;

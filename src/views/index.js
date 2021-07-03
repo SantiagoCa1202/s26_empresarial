@@ -15,5 +15,6 @@ import "./customers";
 import "./categories";
 import "./providers";
 import "./photos";
+import "./establishments";
 
 export default s26Views;
