@@ -82,6 +82,7 @@ export default {
       form: {},
       levels: [
         "Información de Establecimiento",
+        "Puntos de Emisión",
         "Kardex de Ventas",
         "Kardex de transacciones",
         "Información General",
