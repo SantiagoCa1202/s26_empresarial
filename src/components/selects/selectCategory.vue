@@ -1,7 +1,7 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
     <label :for="id" class="form-label w-100">
-      Establecimiento
+      Categoria
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
@@ -48,10 +48,10 @@
             tabindex="0"
             v-for="option in options"
             :key="option.id"
-            @click="selectOption(option.id, option.tradename)"
-            @keyup.13="selectOption(option.id, option.tradename)"
+            @click="selectOption(option.id, option.name)"
+            @keyup.13="selectOption(option.id, option.name)"
           >
-            {{ option.tradename }} - {{ option.n_establishment }}
+            {{ option.name }}
           </div>
           <button
             v-if="perPage < rows"
@@ -70,9 +70,7 @@
       int="true"
       v-model="value"
     />
-    <p class="invalid-feedback" v-if="s26_required">
-      Seleccione un Establecimiento
-    </p>
+    <p class="invalid-feedback" v-if="s26_required">Seleccione una Categoria</p>
   </div>
 </template>
 <script>
@@ -118,7 +116,7 @@ export default {
         perPage: this.perPage,
       };
       this.axios
-        .get("/establishments/getEstablishments/", {
+        .get("/categories/getCategories/", {
           params,
         })
         .then((res) => {
@@ -131,9 +129,9 @@ export default {
     },
     selectRow(id) {
       this.axios
-        .get("/establishments/getEstablishment/" + id)
+        .get("/categories/getCategory/" + id)
         .then((res) => {
-          this.selectOption(res.data.id, res.data.tradename);
+          this.selectOption(res.data.id, res.data.name);
         })
         .catch((err) => {
           console.log(err);
@@ -166,8 +164,8 @@ export default {
       this.allRows();
     },
     getRow() {
-      s26.create_cookie("id", this.value, "establishments");
-      window.open(BASE_URL + "/establishments", "_blank");
+      s26.create_cookie("id", this.value, "categories");
+      window.open(BASE_URL + "/categories", "_blank");
     },
   },
 };

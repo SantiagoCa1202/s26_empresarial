@@ -7,14 +7,15 @@ const s26Views = /*#__PURE__*/ {
 
 import "./login.js";
 
-import "./header.js";
-import "./roles.js";
-import "./users.js";
+import "./header";
+import "./roles";
+import "./users";
 import "./perfilUser";
 import "./customers";
 import "./categories";
 import "./providers";
 import "./photos";
 import "./establishments";
+import "./products";
 
 export default s26Views;

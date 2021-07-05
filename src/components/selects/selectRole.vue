@@ -38,8 +38,8 @@
           <div
             :class="['s26-select-options', value == 0 ? 'focus' : '']"
             tabindex="0"
-            @click="$emit('input', 0)"
-            @keyup.13="$emit('input', 0)"
+            @click="selectOption(0, all ? 'Todos' : '-- seleccionar --')"
+            @keyup.13="selectOption(0, all ? 'Todos' : '-- seleccionar --')"
           >
             {{ all ? "Todos" : "-- seleccionar --" }}
           </div>

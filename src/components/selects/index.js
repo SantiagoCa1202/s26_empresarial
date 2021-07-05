@@ -26,4 +26,10 @@ Vue.component("s26-select-bank", selectBankEntity);
 import selectGender from "./selectGender.vue";
 Vue.component("s26-select-gender", selectGender);
 
+import selectCategory from "./selectCategory.vue";
+Vue.component("s26-select-category", selectCategory);
+
+import selectProvider from "./selectProvider.vue";
+Vue.component("s26-select-provider", selectProvider);
+
 export default s26Selects;

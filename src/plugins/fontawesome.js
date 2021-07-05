@@ -58,6 +58,10 @@ import {
   faImages,
   faBuilding,
   faExpand,
+  faBoxes,
+  faMoneyBillWave,
+  faChartLine,
+  faSignInAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -118,7 +122,12 @@ library.add(
   faStar,
   faImages,
   faBuilding,
-  faExpand
+  faExpand,
+  faBoxes,
+  faMoneyBillWave,
+  faChartLine,
+  faSignOutAlt,
+  faSignInAlt
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

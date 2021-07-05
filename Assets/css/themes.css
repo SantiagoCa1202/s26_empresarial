@@ -98,6 +98,24 @@ body.s26-theme {
   color: var(--bs-white);
 }
 
+.s26-tarjet-warning .title {
+  color: var(--bs-warning)
+}
+
+.s26-tarjet-warning .s26-tarjet-icon .circle-icon {
+  background-color: var(--bs-warning);
+  color: var(--bs-white);
+}
+
+.s26-tarjet-success .title {
+  color: var(--bs-success)
+}
+
+.s26-tarjet-success .s26-tarjet-icon .circle-icon {
+  background-color: var(--bs-success);
+  color: var(--bs-white);
+}
+
 .s26-tarjet-danger .title {
   color: var(--bs-danger)
 }
@@ -107,12 +125,21 @@ body.s26-theme {
   color: var(--bs-white);
 }
 
-.s26-tarjet-gray .title {
-  color: var(--gray)
+.s26-tarjet-purple .title {
+  color: var(--bs-purple)
 }
 
-.s26-tarjet-gray .s26-tarjet-icon .circle-icon {
-  background-color: var(--gray);
+.s26-tarjet-purple .s26-tarjet-icon .circle-icon {
+  background-color: var(--bs-purple);
+  color: var(--bs-white);
+}
+
+.s26-tarjet-orange .title {
+  color: var(--bs-orange)
+}
+
+.s26-tarjet-orange .s26-tarjet-icon .circle-icon {
+  background-color: var(--bs-orange);
   color: var(--bs-white);
 }
 
