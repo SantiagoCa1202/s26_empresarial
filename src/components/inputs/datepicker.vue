@@ -32,6 +32,7 @@
     </div>
     <transition name="fade">
       <div
+        :id="'popup-date-picker-' + id"
         :class="[
           'popup-date-picker',
           size ? 'popup-date-picker-' + size : '',
@@ -464,6 +465,7 @@ export default {
         }, 50);
       }
       if (n !== "") {
+        this.date_range.sort();
         this.$emit("input", this.date_range);
         this.$emit("change");
       }
@@ -491,30 +493,40 @@ export default {
     active_date_picker() {
       this.isActive = this.isActive ? false : true;
       this.renderCalendar();
+
+      let location = $(`#${this.id}`).offset();
       let s26DatePicker = document.getElementById(this.id);
-      if (s26DatePicker.getBoundingClientRect().bottom >= 350) {
-        this.position.top = "-300px";
-        this.popup = "top";
-      } else {
-        this.position.top = 0;
-        this.popup = "bottom";
-      }
+      let html = document.querySelector("html");
+
+      setTimeout(() => {
+        if (
+          s26DatePicker.getBoundingClientRect().bottom + 260 <
+          html.getBoundingClientRect().bottom
+        ) {
+          this.popup = "bottom";
+          $(`#popup-date-picker-${this.id}`).offset({
+            top: location.top + 40,
+            left: location.left,
+          });
+        } else {
+          this.popup = "top";
+          $(`#popup-date-picker-${this.id}`).offset({
+            top: location.top - 265,
+            left: location.left,
+          });
+        }
+      }, 50);
     },
     val_date(n) {
+      let date_one = new Date(this.date_range[0]);
+      date_one.setDate(date_one.getDate() + 1);
+      date_one = date_one.toLocaleDateString();
       if (this.date_range.length == 1) {
-        let date_one = new Date(this.date_range[0]);
-        date_one.setDate(date_one.getDate() + 1);
-
-        this.value_date =
-          this.enable == "unique"
-            ? `${date_one.toLocaleDateString()}`
-            : `${date_one.toLocaleDateString()}  ~ `;
-      } else if (this.date_range.length == 2) {
-        let date_two = new Date(this.date_range[1]);
+        this.value_date = `${date_one}`;
+      } else if (this.date_range.length > 1) {
+        let date_two = new Date(this.date_range[this.date_range.length - 1]);
         date_two.setDate(date_two.getDate() + 1);
-        this.value_date = `${
-          this.value_date
-        } ${date_two.toLocaleDateString()}  `;
+        this.value_date = `${date_one} ~ ${date_two.toLocaleDateString()}  `;
       } else if (n == null) {
         this.value_date = "";
       }

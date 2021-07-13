@@ -1,11 +1,11 @@
 <template>
   <s26-modal
-    id="uploadPhotos"
+    id="uploadFiles"
     @hideModal="hideModal"
     style_body="height: 465px;"
   >
     <template v-slot:header>
-      <h5 class="modal-title">Subir Fotos</h5>
+      <h5 class="modal-title">Subir Archivos</h5>
     </template>
     <template v-slot:body>
       <div class="row px-3">
@@ -14,14 +14,14 @@
             <div class="col-12">
               <label class="btn btn-primary form-control">
                 <s26-icon icon="cloud-upload-alt"></s26-icon>
-                Seleccionar Fotos (1000 x 1000)
+                Seleccionar Archivos
                 <input
-                  id="inputUploadPhotos"
-                  accept="image/png,image/jpeg"
+                  id="inputUploadFiles"
                   type="file"
                   class="d-none"
+                  accept="application/pdf"
                   multiple
-                  @change="validate_image"
+                  @change="validate_file"
                 />
               </label>
             </div>
@@ -39,14 +39,14 @@
               border
               shadow-sm
             "
-            v-for="(item, index) in upload_photos"
-            :key="item"
+            style="height: 200px"
+            v-for="(item, index) in upload_files"
+            :key="item.name"
           >
-            <img
-              class="rounded w-50 shadow-sm min-img hover-none"
-              :src="item"
-            />
-            <div class="p-2 w-50">
+            <div class="w-25 h-100 s26-align-center" style="font-size: 5rem">
+              <s26-icon icon="file-pdf" class="text-danger"></s26-icon>
+            </div>
+            <div class="p-2 w-100">
               <div class="row">
                 <div class="col-12">
                   <s26-form-input
@@ -54,7 +54,7 @@
                     size="sm"
                     :id="'name_' + index"
                     type="text"
-                    maxlength="11"
+                    maxlength="100"
                     v-model="form['name_' + index]"
                   ></s26-form-input>
                 </div>
@@ -69,19 +69,25 @@
                   ></s26-form-input>
                 </div>
               </div>
+              <p>{{ item.name }}</p>
             </div>
             <transition name="fade">
               <button
                 type="button"
                 class="btn-icon btn-clear-img"
                 style="top: -4%; right: -1.5%"
-                @click="remove_photo(index)"
+                @click="remove_file(index)"
               >
                 <s26-icon icon="times"></s26-icon>
               </button>
             </transition>
           </div>
         </transition-group>
+        <p>
+          recomendamos guardar todos los archivos con el nombre y tipo de
+          documento.
+        </p>
+        <p>Ejemplo: Factura: 001-001-032659872</p>
       </div>
     </template>
     <template v-slot:footer>
@@ -90,7 +96,7 @@
           <div class="col-6">
             <transition name="fade">
               <button
-                v-if="upload_photos.length > 0"
+                v-if="upload_files.length > 0"
                 type="button"
                 class="btn btn-outline-danger form-control"
                 @click="onReset"
@@ -102,16 +108,16 @@
           <div class="col-6">
             <transition name="fade">
               <button
-                v-if="upload_photos.length > 0"
+                v-if="upload_files.length > 0"
                 type="button"
                 class="btn btn-primary form-control"
                 @click="onSubmit"
               >
                 Subir
                 <span class="fw-bold fs-6">
-                  {{ upload_photos.length }}
+                  {{ upload_files.length }}
                 </span>
-                {{ upload_photos.length > 1 ? "fotos" : "foto" }}
+                {{ upload_files.length > 1 ? "fotos" : "foto" }}
               </button>
             </transition>
           </div>
@@ -125,13 +131,12 @@ export default {
   data: function () {
     return {
       message: "",
-      selected_photos: [],
       items: [],
       rows: 0,
       row: 0,
-      upload_photos: [],
+      upload_files: [],
       form: {
-        upload_photos_data: [],
+        upload_files_data: [],
       },
     };
   },
@@ -141,7 +146,7 @@ export default {
       let formData = s26.json_to_formData(this.form);
       s26.show_loader_points();
       this.axios
-        .post("/photos/uploadPhotos", formData, {
+        .post("/files/uploadFiles", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -160,52 +165,65 @@ export default {
           console.log(e);
         });
     },
-    validate_image() {
-      let input_img = document.querySelector("#inputUploadPhotos");
-      if (input_img) {
-        let uploadFoto = input_img.value;
-        let fileimg = input_img.files;
+    validate_file() {
+      let input_file = document.querySelector("#inputUploadFiles");
+      if (input_file) {
+        let uploadFile = input_file.value;
+        let file = input_file.files;
         let nav = window.URL || window.webkitURL;
 
-        if (uploadFoto != "") {
-          for (let i = 0; i < fileimg.length; i++) {
-            let type = fileimg[i].type;
-            if (
-              type != "image/jpeg" &&
-              type != "image/jpg" &&
-              type != "image/png"
-            ) {
+        if (uploadFile != "") {
+          for (let i = 0; i < file.length; i++) {
+            let type = file[i].type;
+            if (type != "application/pdf") {
               this.$alertify.error(
-                'La foto: </br> <span class="fw-bold s26-text-blue">"' +
-                  fileimg[i].name +
-                  '"</span> </br> no es válida'
+                'El Archivo: </br> <span class="fw-bold s26-text-blue">"' +
+                  file[i].name +
+                  '"</span> </br> no es válido'
+              );
+            } else if (!this.searchDocument(file[i].name)) {
+              this.$alertify.error(
+                'El Archivo: </br> <span class="fw-bold s26-text-blue">"' +
+                  file[i].name +
+                  '"</span> </br> ya se encuentra cargado'
               );
             } else {
-              if (this.form.upload_photos_data.length < 10) {
-                this.upload_photos.push(nav.createObjectURL(fileimg[i]));
-                this.form.upload_photos_data.push(fileimg[i]);
+              if (this.form.upload_files_data.length < 10) {
+                this.upload_files.push({
+                  src: nav.createObjectURL(file[i]),
+                  name: file[i].name,
+                });
+                this.form.upload_files_data.push(file[i]);
               } else {
-                this.$alertify.warning("Máximo 10 Fotos");
+                this.$alertify.warning("Máximo 10 Archivos");
                 return false;
               }
             }
           }
         } else {
-          this.$alertify.warning("No se seleccionó ninguna foto");
+          this.$alertify.warning("No se seleccionó ningun archivo");
         }
-        input_img.value = "";
+        input_file.value = "";
       }
     },
-    onReset() {
-      this.upload_photos = [];
-      this.form = {};
-      this.form.upload_photos_data = [];
+    searchDocument(name) {
+      for (let i in this.upload_files) {
+        if (this.upload_files[i]["name"] == name) {
+          return false;
+        }
+      }
+      return true;
     },
-    remove_photo(id) {
-      this.upload_photos.splice(id, 1);
-      delete this.form.upload_photos_data[id];
-      this.form.upload_photos_data = s26.startFromZero(
-        this.form.upload_photos_data
+    onReset() {
+      this.upload_files = [];
+      this.form = {};
+      this.form.upload_files_data = [];
+    },
+    remove_file(id) {
+      this.upload_files.splice(id, 1);
+      delete this.form.upload_files_data[id];
+      this.form.upload_files_data = s26.startFromZero(
+        this.form.upload_files_data
       );
     },
     hideModal() {

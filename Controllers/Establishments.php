@@ -10,7 +10,7 @@ class Establishments extends Controllers
     if (empty($_SESSION['login'])) {
       header('Location: ' . base_url() . '/login');
     }
-    getPermits(42);
+    getPermits(41);
   }
 
   public function establishments()

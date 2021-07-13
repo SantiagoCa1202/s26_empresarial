@@ -1,7 +1,7 @@
 <template>
   <s26-modal-multiple
-    id="formPhoto"
-    title="Editar Foto"
+    id="formFile"
+    title="Editar Archivo"
     :levels="levels"
     body_style="min-height: 365px;"
     @onReset="onReset"
@@ -9,44 +9,37 @@
     @hideModal="hideModal"
   >
     <template v-slot:level-0>
-      <div class="col-6">
-        <div class="row">
-          <div class="col-12">
-            <s26-form-input
-              label="Nombre"
-              size="sm"
-              id="form-name"
-              type="text"
-              v-model="form.name"
-              maxlength="100"
-              s26_required
-            >
-            </s26-form-input>
-          </div>
-          <div class="col-12 mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea
-              id="form-description"
-              class="form-control resize-none"
-              cols="30"
-              rows="5"
-              v-model="form.description"
-              s26_required
-            ></textarea>
-          </div>
-          <div class="col-12">
-            <s26-select-status
-              label="Estado"
-              id="form-status"
-              v-model="form.status"
-              s26_required
-            >
-            </s26-select-status>
-          </div>
-        </div>
+      <div class="col-12">
+        <s26-form-input
+          label="Nombre"
+          size="sm"
+          id="form-name"
+          type="text"
+          v-model="form.name"
+          maxlength="100"
+          s26_required
+        >
+        </s26-form-input>
       </div>
-      <div class="col-6 h-100 s26-align-center">
-        <img :src="form.href" class="rounded shadow-sm w-100" />
+      <div class="col-12 mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea
+          id="form-description"
+          class="form-control resize-none"
+          cols="30"
+          rows="5"
+          v-model="form.description"
+          s26_required
+        ></textarea>
+      </div>
+      <div class="col-12">
+        <s26-select-status
+          label="Estado"
+          id="form-status"
+          v-model="form.status"
+          s26_required
+        >
+        </s26-select-status>
       </div>
       <div class="col-12">
         <span class="fw-bold">Creado el:</span>
@@ -88,7 +81,7 @@ export default {
   methods: {
     infoData(id) {
       this.axios
-        .get("/photos/getPhoto/" + id)
+        .get("/files/getFile/" + id)
         .then((res) => {
           this.form = res.data;
           let date = new Date(res.data.created_at);
@@ -105,12 +98,12 @@ export default {
     onSubmit() {
       this.form.id = this.id;
       this.$alertify.confirm(
-        `Desea Actualizar Foto?.`,
+        `Desea Actualizar Archivo?.`,
         () => {
           let formData = s26.json_to_formData(this.form);
           s26.show_loader_points();
           this.axios
-            .post("/photos/updatePhoto", formData)
+            .post("/files/updateFile", formData)
             .then((res) => {
               if (res.data.type > 0) {
                 this.$alertify.success(res.data.msg);

@@ -1,6 +1,6 @@
 <?php
 //url del proyecto
-const BASE_URL = "http://192.168.100.6/s26_empresarial";
+const BASE_URL = "http://192.168.0.102/s26_empresarial";
 
 //Zona Horaria 
 date_default_timezone_set('America/Guayaquil');
@@ -19,6 +19,11 @@ const SPM = ",";
 
 //Simbolo de moneda
 const SMONEY = "$";
+
+//IVA
+const _iva = 12; // 12%
+const _iva_ = _iva / 100; // 0.12
+const _iva__ = _iva / 100 + 1; // 1.12 
 
 //Datos de empresa
 const NAME_SENDER = "S26 Empresarial";

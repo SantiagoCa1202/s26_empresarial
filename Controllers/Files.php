@@ -1,24 +1,20 @@
 <?php
-
-class Photos extends Controllers
+class Files extends Controllers
 {
   public function __construct()
   {
     parent::__construct();
-
     session_start();
     if (empty($_SESSION['login'])) {
       header('Location: ' . base_url() . '/login');
     }
-    getPermits(46);
+    getPermits(47);
   }
-
-  public function photos()
+  public function files()
   {
-    $this->views->getView($this, "media/photos");
+    $this->views->getView($this, 'media/files');
   }
-
-  public function getPhotos()
+  public function getfiles()
   {
     if ($_SESSION['permitsModule']['r']) {
       $perPage = intval($_GET['perPage']);
@@ -29,19 +25,19 @@ class Photos extends Controllers
         'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
         'date' => !empty($_GET['date']) ? $_GET['date'] : '',
       ];
-      $arrData = $this->model->selectPhotos($perPage, $filter);
+      $arrData = $this->model->selectFiles($perPage, $filter);
 
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
     }
     die();
   }
 
-  public function getPhoto($id)
+  public function getfile($id)
   {
     if ($_SESSION['permitsModule']['r']) {
-      $id = intval($id);
+      $id = intval(strClean($id));
       if ($id > 0) {
-        $arrData = $this->model->selectPhoto($id);
+        $arrData = $this->model->selectFile($id);
         if (empty($arrData)) {
           $arrRes = 0;
         } else {
@@ -53,63 +49,66 @@ class Photos extends Controllers
     die();
   }
 
-  public function uploadPhotos()
+  public function uploadFiles()
   {
     if ($_SESSION['permitsModule']['w']) {
-      $upload_photos = [];
-      if (count($_FILES["upload_photos_data"]["name"]) <= 10) {
-        if (isset($_FILES["upload_photos_data"]) && $_FILES["upload_photos_data"]["name"][0]) {
-          for ($i = 0; $i < count($_FILES["upload_photos_data"]["name"]); $i++) {
+      $upload_files = [];
+
+      if (count($_FILES["upload_files_data"]["name"]) <= 10) {
+
+        if (isset($_FILES["upload_files_data"]) && $_FILES["upload_files_data"]["name"][0]) {
+          for ($i = 0; $i < count($_FILES["upload_files_data"]["name"]); $i++) {
             $name = isset($_POST['name_' . $i]) ? strClean($_POST['name_' . $i]) : '';
             $description = isset($_POST['description_' . $i]) ?
               strClean($_POST['description_' . $i]) : '';
 
             if (
-              $_FILES["upload_photos_data"]["type"][$i] == "image/jpeg" ||
-              $_FILES["upload_photos_data"]["type"][$i] == "image/pjpeg" ||
-              $_FILES["upload_photos_data"]["type"][$i] == "image/png"
+              $_FILES["upload_files_data"]["type"][$i] == "application/pdf"
             ) {
 
-              if ($_FILES['upload_photos_data']['name'][$i] != '') {
-                $type = $_FILES["upload_photos_data"]["type"][$i];
-                $photo_type = explode("/", $type);
-                $photo_name = 'photo_' . md5(date('d-m-y H:m:s') . $i) . '.' . $photo_type[1];
+              if ($_FILES['upload_files_data']['name'][$i] != '') {
+                $type = $_FILES["upload_files_data"]["type"][$i];
+                $file_type = explode("/", $type);
+                $file_name = 'file_' . md5(date('d-m-y H:m:s') . $i) . '.' . $file_type[1];
 
-                $upload = uploadPhoto($_FILES["upload_photos_data"]["tmp_name"][$i], $photo_name);
+                $type = $file_type[1] == 'pdf' ? 'pdf' : '';
+                $upload = uploadFile($_FILES["upload_files_data"]["tmp_name"][$i], $file_name);
                 if ($upload) {
                   //Subir Foto
-                  $request = $this->model->insertPhoto(
+                  $request = $this->model->insertFile(
                     $name,
                     $description,
-                    $photo_name
+                    $file_name,
+                    $type
                   );
                   if ($request > 0) {
-                    array_push($upload_photos, $i);
+                    array_push($upload_files, $i);
                   }
                 }
               }
             }
           }
-          if (count($upload_photos) > 0) {
-            $success = count($upload_photos);
-            $error = count($_FILES["upload_photos_data"]["name"]) - count($upload_photos);
+          if (count($upload_files) > 0) {
+            $success = count($upload_files);
+            $error = count($_FILES["upload_files_data"]["name"]) - count($upload_files);
 
             $arrRes = array(
               'status' => true,
               'msg' => $success . ' con éxito, ' . $error . ' con error'
             );
           } else {
-            $arrRes = array('status' => false, 'msg' => 'Error al Subir Fotos.');
+            $arrRes = array('status' => false, 'msg' => 'Error al Subir Archivos.');
           }
         }
       } else {
-        $arrRes = array('status' => false, 'msg' => 'Maximo 10 Fotos.');
+        $arrRes = array('status' => false, 'msg' => 'Maximo 10 Archivos.');
       }
+
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
   }
-  public function updatePhoto()
+  public function updateFile()
   {
     if ($_SESSION['permitsModule']['u']) {
       $id = intval($_POST['id']);
@@ -125,7 +124,7 @@ class Photos extends Controllers
       ) {
         if ($_SESSION['permitsModule']['u']) {
           // Actualizar
-          $request = $this->model->updatePhoto(
+          $request = $this->model->updateFile(
             $id,
             $name,
             $description,
@@ -139,7 +138,7 @@ class Photos extends Controllers
         $type = 0;
         $request = -1;
       }
-      $arrRes = s26_res("Foto", $request, $type);
+      $arrRes = s26_res("Archivo", $request, $type);
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -160,15 +159,15 @@ class Photos extends Controllers
     die();
   }
 
-  public function delPhoto($id)
+  public function delFile($id)
   {
     if ($_SESSION['permitsModule']['d']) {
       $id = intval($id);
-      $request = $this->model->deletePhoto($id);
+      $request = $this->model->deleteFile($id);
     } else {
       $request = -5;
     }
-    $arrRes = s26_res("Foto", $request, 3);
+    $arrRes = s26_res("Archivo", $request, 3);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }

@@ -1,7 +1,7 @@
 <template>
   <s26-modal-multiple
     id="formBuyToProviders"
-    :title="(id == 0 ? 'Nuevo ' : 'Editar ') + 'Compra'"
+    :title="(id == 0 ? 'Nueva ' : 'Editar ') + 'Compra'"
     :levels="levels"
     body_style="min-height: 375px;"
     size="lg"
@@ -14,6 +14,7 @@
         <s26-select-provider
           id="form-provider"
           v-model="form.provider_id"
+          @change="getProvider(form.provider_id)"
         ></s26-select-provider>
       </div>
       <div class="col-12 col-sm-3">
@@ -28,6 +29,7 @@
           length
           s26_required
           autofocus
+          :disabled="form.provider_id > 0 ? true : false"
         >
         </s26-form-input>
       </div>
@@ -41,6 +43,7 @@
           maxlength="100"
           minlength="5"
           s26_required
+          :disabled="form.provider_id > 0 ? true : false"
         >
         </s26-form-input>
       </div>
@@ -71,12 +74,14 @@
         <s26-select-type-document
           id="form-type_doc_id"
           v-model="form.type_doc_id"
+          s26_required
         ></s26-select-type-document>
       </div>
       <div class="col-sm-4">
         <s26-select-payment-method
           id="form-payment_method"
           v-model="form.payment_method"
+          s26_required
         ></s26-select-payment-method>
       </div>
       <div class="col-sm-4">
@@ -85,6 +90,7 @@
           enable="unique"
           size="sm"
           v-model="form.date_issue"
+          @change="form.credit_date = form.date_issue"
           label="Fecha"
           s26_required
           select_all_dates
@@ -101,17 +107,11 @@
         >
         </s26-form-input>
       </div>
-      <div class="col-12 col-sm-6">
-        <s26-form-input
-          label="Subir Ride / Documento Pdf"
-          size="sm"
-          id="form-file_ride"
-          type="file"
-          v-model="form.file_ride"
-          file
-          accept="application/pdf"
-        >
-        </s26-form-input>
+      <div class="col-sm-6">
+        <s26-select-file
+          id="form-file"
+          v-model="form.file_id"
+        ></s26-select-file>
       </div>
       <div class="col-12" v-if="id !== 0">
         <span class="fw-bold">Creado el:</span> {{ form.created_at }}
@@ -206,9 +206,8 @@
                 id="form-date_payment"
                 enable="unique"
                 size="sm"
-                v-model="form.date_payment"
+                v-model="form.credit_date"
                 label="Fecha"
-                s26_required
                 select_all_dates
               ></s26-date-picker>
             </div>
@@ -240,17 +239,46 @@
                 v-model="form.payment_method_counted"
               ></s26-select-payment-method>
             </div>
-            <div class="col-sm-12">
-              <s26-form-input
-                label="N° de Transacción"
-                size="sm"
-                id="form-n_transaction"
-                type="text"
-                v-model="form.n_transaction"
-                number
+
+            <transition name="fade">
+              <div class="col-sm-6">
+                <s26-form-input
+                  label="N° de Transacción"
+                  size="sm"
+                  id="form-n_transaction"
+                  type="text"
+                  v-model="form.n_transaction"
+                  v-if="
+                    form.payment_method_counted > 1 &&
+                    form.payment_method_counted < 6
+                  "
+                  number
+                >
+                </s26-form-input>
+              </div>
+            </transition>
+            <transition name="fade">
+              <div
+                class="col-sm-6"
+                v-if="
+                  form.payment_method_counted > 1 &&
+                  form.payment_method_counted < 6
+                "
               >
-              </s26-form-input>
-            </div>
+                <s26-select-bank
+                  label="Entidad Bancaria"
+                  size="sm"
+                  id="form-bank_entity_id"
+                  v-model="form.bank_entity_id"
+                >
+                </s26-select-bank>
+              </div>
+            </transition>
+            <transition name="fade">
+              <div class="col-12" v-if="form.payment_method_counted == 7">
+                cheque
+              </div>
+            </transition>
           </div>
         </div>
         <div
@@ -281,49 +309,39 @@
               >
               </s26-form-input>
             </div>
-            <div class="col-sm-6">
+            <div class="col-12">
               <s26-date-picker
-                id="form-credit_one"
-                enable="unique"
+                id="form-credit_date"
+                enable="multiple"
                 size="sm"
-                v-model="form.credit_one"
-                label="Fecha"
-                s26_required
+                v-model="form.credit_date"
+                label="Fechas de Pago"
                 select_all_dates
               ></s26-date-picker>
             </div>
-            <div class="col-sm-6">
-              <s26-date-picker
-                id="form-credit_two"
-                enable="unique"
-                size="sm"
-                v-model="form.credit_two"
-                label="Fecha"
-                s26_required
-                select_all_dates
-              ></s26-date-picker>
-            </div>
-            <div class="col-sm-6">
-              <s26-date-picker
-                id="form-credit_three"
-                enable="unique"
-                size="sm"
-                v-model="form.credit_three"
-                label="Fecha"
-                s26_required
-                select_all_dates
-              ></s26-date-picker>
-            </div>
-            <div class="col-sm-6">
-              <s26-date-picker
-                id="form-credit_for"
-                enable="unique"
-                size="sm"
-                v-model="form.credit_for"
-                label="Fecha"
-                s26_required
-                select_all_dates
-              ></s26-date-picker>
+            <div class="col-12">
+              <table class="w-100">
+                <thead>
+                  <tr>
+                    <th>Fecha De Pago</th>
+                    <th class="text-center">Importe Aprox.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="date in form.credit_date" :key="date">
+                    <td>{{ formatDate(date) }}</td>
+                    <td class="text-center">
+                      <s26-icon icon="dollar-sign"></s26-icon>
+                      {{
+                        parseFloat(
+                          (form.total_import - form.credit_note) /
+                            form.credit_date.length
+                        ).toFixed(2)
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -356,23 +374,21 @@ export default {
         payment_method: "",
         date_issue: "",
         n_authorization: "",
-        ride: "",
+        file_id: "",
         created_at: "",
         rise: "",
         subtotal_0: "",
         subtotal_12: "",
         iva: "",
         total: "",
+        total_import: "",
         payment_type: 1,
-        date_payment: "",
         credit_note: "",
         payment_method_counted: "",
+        bank_entity_id: "",
+        check_id: "",
         n_transaction: "",
-        credit_note: "",
-        credit_one: "",
-        credit_two: "",
-        credit_three: "",
-        credit_for: "",
+        credit_date: "",
       },
       levels: ["Información de Comprobante", "Totales", "Plazo"],
     };
@@ -384,64 +400,66 @@ export default {
   },
   methods: {
     infoData(id) {
-      $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
-      this.axios
-        .get("/users/getUser/" + id)
-        .then((res) => {
-          this.form.id = res.data.id;
-          this.form.name = res.data.name;
-          this.form.last_name = res.data.last_name;
-          this.form.document = res.data.document;
-          this.form.email = res.data.email;
-          this.form.phone = res.data.phone;
-          this.form.gender_id = res.data.gender_id;
-          this.form.date_of_birth = [res.data.date_of_birth];
-          this.form.role_id = res.data.role_id;
-          this.form.insurance = res.data.insurance;
-          this.form.establishment_id = res.data.establishment_id;
-          this.form.user_access = res.data.user_access;
-          this.form.create_notifications_users =
-            res.data.create_notifications_users;
-          this.form.status = res.data.status;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      // $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
+      // this.axios
+      //   .get("/users/getUser/" + id)
+      //   .then((res) => {
+      //     this.form.id = res.data.id;
+      //     let date = new Date(res.data.created_at);
+      //     this.form.created_at = new Intl.DateTimeFormat("es-ES", {
+      //       dateStyle: "full",
+      //       timeStyle: "short",
+      //       calendar: "ecuador",
+      //     }).format(date);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     },
     onSubmit() {
       this.form.id = this.id;
-      if (
-        (this.form.new_password != "" && this.form.new_password.length < 12) ||
-        (this.form.confirm_password != "" &&
-          this.form.confirm_password.length < 12) ||
-        this.form.new_password !== this.form.confirm_password
+      if (this.form.total == "" || this.form.total == "0.00") {
+        this.$alertify.error("Es necesario ingresar un total correcto");
+        this.$alertify.error(
+          "Total no puede estar vacio o no puede ser igual a 0.00 "
+        );
+        return;
+      } else if (this.form.payment_type < 1 || this.form.payment_type > 2) {
+        this.$alertify.error("Es necesario elegir un tipo de pago");
+        this.$alertify.error("Contado o Crédito");
+        return;
+      } else if (
+        this.form.total_import == "" ||
+        this.form.total_import == "0.00"
       ) {
-        this.$alertify.message("Las contraseñas no son iguales");
-        this.$alertify.message("La Contraseña debe tener mínimo 12 dígitos");
+        this.$alertify.error("Es necesario ingresar un Importe correcto");
+        this.$alertify.error(
+          "Importe no puede estar vacio o no puede ser igual a 0.00 "
+        );
         return;
       }
       this.$alertify.confirm(
-        `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Usuario?.`,
+        `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Compra?.`,
         () => {
           let formData = s26.json_to_formData(this.form);
           s26.show_loader_points();
           this.axios
-            .post("/users/setUser", formData)
+            .post("/BuysToProviders/setBuy", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
             .then((res) => {
               console.log(res);
-              if (res.data.type == 1) {
-                this.onReset();
-                this.$alertify.success(res.data.msg);
-              } else if (res.data.type == 2) {
-                this.$alertify.success(res.data.msg);
-              } else {
-                this.$alertify.error(res.data.msg);
+              for (let i in res.data) {
+                if (res.data[i].type == 1 || res.data[i].type == 2) {
+                  this.onReset();
+                  this.$alertify.success(res.data[i].msg);
+                } else if (res.data[i].type == 3) {
+                  this.$alertify.warning(res.data[i].msg);
+                } else {
+                  this.$alertify.error(res.data[i].msg);
+                }
               }
               s26.hide_loader_points();
               this.$emit("update");
@@ -455,6 +473,17 @@ export default {
         }
       );
     },
+    getProvider(id) {
+      this.axios
+        .get("/providers/getProvider/" + id)
+        .then((res) => {
+          this.form.document = res.data.trade_information.document;
+          this.form.business_name = res.data.trade_information.business_name;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     onReset() {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
@@ -463,6 +492,7 @@ export default {
           this.form[i] = "";
         }
       }
+      this.form.payment_type = 1;
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
     },
     total() {
@@ -480,6 +510,10 @@ export default {
         (this.form.subtotal_12 != "" ? parseFloat(this.form.subtotal_12) : 0) +
         parseFloat(iva)
       ).toFixed(2);
+      this.form.total_import = this.form.total;
+    },
+    formatDate(date) {
+      return s26.formatDate(date, "md");
     },
     hideModal() {
       this.$emit("input", null);

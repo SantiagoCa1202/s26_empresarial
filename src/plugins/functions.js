@@ -1,6 +1,10 @@
 let val_inputs = () => {
   setTimeout(() => {
     $("input[number]:not(:password)").keypress(function(e) {
+      if (e.keyCode == 46) return false;
+      if (isNaN(this.value + String.fromCharCode(e.charCode))) return false;
+    });
+    $("input[money]:not(:password)").keypress(function(e) {
       if (isNaN(this.value + String.fromCharCode(e.charCode))) return false;
     });
     $("input[text]").keypress(function(e) {
@@ -28,6 +32,7 @@ let val_inputs = () => {
       )
         return false;
     });
+
     $("input").keypress(function(e) {
       if (e.keyCode == 13) return false;
     });
@@ -110,6 +115,27 @@ let startFromZero = (arr) => {
   }
 
   return newArr;
+};
+
+let formatDate = (date, size = "sm") => {
+  let new_date = new Date(date);
+  new_date.setDate(new_date.getDate() + 1);
+  if (size == "sm") {
+    return new_date.toLocaleDateString();
+  } else if (size == "md") {
+    let options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new_date.toLocaleDateString("es-ES", options);
+  } else if (size == "xl") {
+    return new Intl.DateTimeFormat("es-ES", {
+      dateStyle: "full",
+      timeStyle: "short",
+      calendar: "ecuador",
+    }).format(new_date);
+  }
 };
 
 let validEmail = (email) => {
@@ -247,7 +273,7 @@ let val_form = (form) => {
     ) {
       let money = /^(?!0\.00)([1-9]\d{0,7})*(\.\d\d)?$|^(?!0\.00)\d{0,1}(\.\d{0,2})$/;
       if (!money.test(input.value)) {
-        invalidInput(input, `Seleccione una opción válida.`);
+        invalidInput(input, `Formato de Moneda Inválido`);
         return;
       }
     }
@@ -411,4 +437,5 @@ export default {
   url_get,
   startFromZero,
   validEmail,
+  formatDate,
 };

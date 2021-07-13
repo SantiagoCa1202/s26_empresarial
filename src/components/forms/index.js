@@ -32,6 +32,12 @@ Vue.component("s26-form-provider", formProvider);
 import formPhoto from "./formPhoto.vue";
 Vue.component("s26-form-photo", formPhoto);
 
+import formFile from "./formFile.vue";
+Vue.component("s26-form-file", formFile);
+
+import formBuyToProviders from "./formBuyToProviders.vue";
+Vue.component("s26-form-buytoproviders", formBuyToProviders);
+
 import formDelete from "./formDelete.vue";
 Vue.component("s26-delete", formDelete);
 

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['mb-3 pointer', variant ? variant : '']">
+  <div :class="['mb-3 pointer', variant ? variant : '', 's26-form-group']">
     <label class="form-label w-100" v-if="label">
       {{ label }}
       <a
@@ -10,7 +10,17 @@
         <s26-icon icon="link"></s26-icon>
       </a>
     </label>
-    <div class="form-control form-control-sm">{{ content }}</div>
+    <div
+      :class="[
+        'form-control form-control-sm',
+        money ? 'form-control-dollars' : '',
+      ]"
+    >
+      {{ content }}
+    </div>
+    <i v-if="money" class="form-icon-dollar">
+      <s26-icon icon="dollar-sign"></s26-icon>
+    </i>
   </div>
 </template>
 <script>
@@ -20,6 +30,7 @@ export default {
     content: {},
     variant: String,
     link: String,
+    money: Boolean,
   },
   methods: {
     getRow() {

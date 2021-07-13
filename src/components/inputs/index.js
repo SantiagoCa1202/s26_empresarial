@@ -11,9 +11,6 @@ Vue.component("s26-form-input", defaultInput);
 import inputSearch from "./inputSearch.vue";
 Vue.component("s26-input-search", inputSearch);
 
-import inputMoney from "./inputMoney.vue";
-Vue.component("s26-input-money", inputMoney);
-
 import inputTextarea from "./inputTextarea.vue";
 Vue.component("s26-textarea", inputTextarea);
 
@@ -31,5 +28,8 @@ Vue.component("s26-date-picker", datepicker);
 
 import inputPhoto from "./inputPhoto.vue";
 Vue.component("s26-input-photo", inputPhoto);
+
+import inputDocument from "./inputDocument.vue";
+Vue.component("s26-input-document", inputDocument);
 
 export default s26Inputs;

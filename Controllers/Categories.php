@@ -10,7 +10,7 @@ class Categories extends Controllers
     if (empty($_SESSION['login'])) {
       header('Location: ' . base_url() . '/login');
     }
-    getPermits(46);
+    getPermits(45);
   }
 
   public function categories()

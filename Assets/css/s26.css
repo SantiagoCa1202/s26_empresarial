@@ -830,8 +830,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
 }
 
 .popup-date-picker {
-  position: absolute;
-  top: 0;
+  position: fixed;
   transform: translate3d(0, 65px, 0);
   will-change: transform;
   width: 330px;

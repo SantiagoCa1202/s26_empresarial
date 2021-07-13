@@ -32,4 +32,13 @@ Vue.component("s26-select-category", selectCategory);
 import selectProvider from "./selectProvider.vue";
 Vue.component("s26-select-provider", selectProvider);
 
+import selectTypeDocument from "./selectTypeDocument.vue";
+Vue.component("s26-select-type-document", selectTypeDocument);
+
+import selectPaymentMethod from "./selectPaymentMethod.vue";
+Vue.component("s26-select-payment-method", selectPaymentMethod);
+
+import selectFile from "./selectFile.vue";
+Vue.component("s26-select-file", selectFile);
+
 export default s26Selects;

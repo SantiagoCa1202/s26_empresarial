@@ -43,6 +43,7 @@
       :name="name"
       :money="money"
       :validate="validate"
+      :disabled="disabled"
     />
     <i v-if="money" class="form-icon-dollar">
       <s26-icon icon="dollar-sign"></s26-icon>
@@ -82,6 +83,7 @@ export default {
     autocomplete: String,
     length: Boolean,
     validate: Boolean,
+    disabled: Boolean,
   },
   created() {
     setTimeout(() => {

@@ -82,7 +82,7 @@
         !empty($_SESSION['permits'][19]['r']) ||
         !empty($_SESSION['permits'][6]['r']) ||
         !empty($_SESSION['permits'][5]['r']) ||
-        !empty($_SESSION['permits'][46]['r'])
+        !empty($_SESSION['permits'][45]['r'])
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(2)">
@@ -155,7 +155,7 @@
                 </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][5]['r'])) { ?>
+            <?php if (!empty($_SESSION['permits'][45]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/categories" :class="focusSubMenu('categories')">
                   Categorias
@@ -235,7 +235,7 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 4 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][24]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/purchases_to_providers" :class="focusSubMenu('purchases_to_providers')">
+                <a href="<?= BASE_URL ?>/buysToProviders" :class="focusSubMenu('buysToProviders')">
                   Compras
                 </a>
               </li>
@@ -369,12 +369,13 @@
       if (
         !empty($_SESSION['permits'][36]['r']) ||
         !empty($_SESSION['permits'][37]['r']) ||
-        !empty($_SESSION['permits'][39]['r']) ||
-        !empty($_SESSION['permits'][41]['r']) ||
-        !empty($_SESSION['permits'][42]['r']) ||
-        !empty($_SESSION['permits'][38]['r']) ||
+        !empty($_SESSION['permits'][46]['r']) ||
+        !empty($_SESSION['permits'][47]['r']) ||
         !empty($_SESSION['permits'][40]['r']) ||
-        !empty($_SESSION['permits'][43]['r'])
+        !empty($_SESSION['permits'][41]['r']) ||
+        !empty($_SESSION['permits'][38]['r']) ||
+        !empty($_SESSION['permits'][39]['r']) ||
+        !empty($_SESSION['permits'][42]['r'])
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(7)">
@@ -396,21 +397,28 @@
                 <a href="<?= BASE_URL ?>/debts" :class="focusSubMenu('debts')"> Deudas </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][39]['r'])) { ?>
+            <?php if (!empty($_SESSION['permits'][46]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/photos" :class="focusSubMenu('photos')">
                   Fotos
                 </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][41]['r'])) { ?>
+            <?php if (!empty($_SESSION['permits'][47]['r'])) { ?>
+              <li>
+                <a href="<?= BASE_URL ?>/files" :class="focusSubMenu('files')">
+                  Archivos
+                </a>
+              </li>
+            <?php } ?>
+            <?php if (!empty($_SESSION['permits'][40]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/info_vouchers" :class="focusSubMenu('info_vouchers')">
                   Info. de Comprobantes
                 </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][42]['r'])) { ?>
+            <?php if (!empty($_SESSION['permits'][41]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/establishments" :class="focusSubMenu('establishments')">
                   Establecimientos
@@ -424,14 +432,14 @@
                 </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][40]['r'])) { ?>
+            <?php if (!empty($_SESSION['permits'][39]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/catalogue" :class="focusSubMenu('catalogue')">
                   Catálogo
                 </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][43]['r'])) { ?>
+            <?php if (!empty($_SESSION['permits'][42]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/general_config" :class="focusSubMenu('general_config')">
                   Configuración General
@@ -444,7 +452,7 @@
       <?php
       if (
         !empty($_SESSION['permits'][2]['r']) ||
-        !empty($_SESSION['permits'][44]['r'])
+        !empty($_SESSION['permits'][43]['r'])
       ) {
       ?>
         <li class="item-submenu" @click="showSubMenu(8)">
@@ -461,7 +469,7 @@
                 </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][44]['r'])) { ?>
+            <?php if (!empty($_SESSION['permits'][43]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/roles" :class="focusSubMenu('roles')" @click="location">
                   Roles

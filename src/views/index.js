@@ -17,5 +17,7 @@ import "./providers";
 import "./photos";
 import "./establishments";
 import "./products";
+import "./buysToProviders";
+import "./files";
 
 export default s26Views;

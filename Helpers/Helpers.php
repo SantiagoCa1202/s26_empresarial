@@ -117,6 +117,15 @@ function uploadPhoto(string $tmp_name, string $name)
   return $move;
 }
 
+//SUBIDA DE Archivos 
+function uploadFile(string $tmp_name, string $name)
+{
+  $destination = 'Assets/media/uploads/files/' . $name;
+  $move = move_uploaded_file($tmp_name, $destination);
+
+  return $move;
+}
+
 //RESPUESTAS DE SERVIDOR 
 function s26_res($name, $res, $type = 0)
 {

@@ -1,13 +1,13 @@
 <?= head_(); ?>
 <?= header_(); ?>
-<div id="s26-products-view" class="container-fluid s26-container" tabindex="0">
+<div id="s26-buysToProviders-view" class="container-fluid s26-container" tabindex="0">
   <?php
   if (empty($_SESSION['permitsModule']['r'])) {
   ?>
     <p>Acceso Restringido</p>
   <?php } else { ?>
     <div class="row align-items">
-      <s26-sidebar title="Productos" icon="boxes" @update="allRows" @reset="onReset" v-model="activeSidebar" :url_export="url_export">
+      <s26-sidebar title="Compras" icon="shopping-bag" @update="allRows" @reset="onReset" v-model="activeSidebar" :url_export="url_export">
         <template v-slot:header>
           <?php
           if ($_SESSION['permitsModule']['w']) {
@@ -22,16 +22,13 @@
         <template v-slot:search>
           <div class="container">
             <s26-form-input label="Id" size="sm" id="Id" type="text" v-model="filter.id" maxlength="11" @keyup="allRows" number autofocus></s26-form-input>
-            <s26-form-input label="Código Auxiliar" size="sm" id="auxiliary_code" type="text" v-model="filter.auxiliary_code" maxlength="13" @keyup="allRows" number></s26-form-input>
-            <s26-form-input label="Código Ean" size="sm" id="ean_code" type="text" v-model="filter.ean_code" maxlength="13" @keyup="allRows" number></s26-form-input>
-            <s26-form-input label="Producto" size="sm" id="name" type="text" v-model="filter.name" maxlength="100" @keyup="allRows"></s26-form-input>
-            <s26-form-input label="Serie" size="sm" id="serie" type="text" v-model="filter.serie" maxlength="100" @keyup="allRows"></s26-form-input>
-            <s26-form-input label="Marca" size="sm" id="trademark" type="text" v-model="filter.trademark" maxlength="100" @keyup="allRows"></s26-form-input>
-            <s26-select-provider id="provider" v-model="filter.provider" @change="allRows" all></s26-select-provider>
-            <s26-select-category id="category" v-model="filter.category" @change="allRows" all></s26-select-category>
-
+            <s26-form-input label="Ruc" size="sm" id="ruc" type="text" v-model="filter.ruc" maxlength="13" @keyup="allRows" number></s26-form-input>
+            <s26-form-input label="Razón Social" size="sm" id="business_name" type="text" v-model="filter.business_name" maxlength="100" @keyup="allRows"></s26-form-input>
+            <s26-form-input label="N° de Documento" size="sm" id="n_document" type="text" v-model="filter.n_document" maxlength="17" @keyup="allRows"></s26-form-input>
+            <s26-form-input label="N° de Autorización" size="sm" id="n_authorization" type="text" v-model="filter.n_authorization" maxlength="50" @keyup="allRows" number></s26-form-input>
+            <s26-select-establishment id="filter-establishment" all v-model="filter.establishment" @change="allRows"></s26-select-establishment>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
-
+            <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="Fecha de Emisión"></s26-date-picker>
           </div>
         </template>
         <template v-slot:info>
@@ -51,23 +48,6 @@
                     {{ info.rows }}
                   </span>
                 </s26-tarjet-info>
-                <s26-tarjet-info title="Stock" variant="warning" icon="chart-line">
-                  {{ info.total_stock }}
-                </s26-tarjet-info>
-                <s26-tarjet-info title="Entradas" variant="purple" icon="sign-in-alt">
-                  {{ info.total_entries }}
-                </s26-tarjet-info>
-                <s26-tarjet-info title="Salidas" variant="orange" icon="sign-out-alt">
-                  {{ info.total_outputs }}
-                </s26-tarjet-info>
-                <s26-tarjet-info title="Costo" variant="danger" icon="money-bill-wave">
-                  <s26-icon icon="dollar-sign" class="text-danger"></s26-icon>
-                  {{ info.total_cost }}
-                </s26-tarjet-info>
-                <s26-tarjet-info title="Pvp" variant="secondary" icon="money-bill-wave">
-                  <s26-icon icon="dollar-sign" class="text-secondary"></s26-icon>
-                  {{ info.total_pvp }}
-                </s26-tarjet-info>
               </div>
             </div>
           </div>
@@ -76,17 +56,21 @@
       <s26-table :fields="fields" :rows="info.rows" @get="allRows" :sidebar="activeSidebar" v-model="perPage" action>
         <template v-slot:body>
           <tr v-for="item in items" :key="item.id">
-            <td class="length-int">{{ item.ean_code }}</td>
+            <td class="length-date">{{ item.date_issue }}</td>
+            <td class="length-int">{{ item.n_document }}</td>
             <td class="length-description">
-              {{ item.name }}
+              {{ item.business_name }}
             </td>
-            <td class="length-action">{{ item.serie }}</td>
-            <td class="length-action">{{ item.trademark }}</td>
-            <td class="length-action">{{ item.provider.trade_information.alias }}</td>
-            <td class="length-action">{{ item.category.name }}</td>
-            <td :class="['length-action text-center fw-bold', item.stock <= item.min_stock ? 'text-warning' : '',item.stock == 0 ? 'text-danger' : '']">{{ item.stock }}</td>
-            <td class="length-action">{{ item.cost }}</td>
-            <td class="length-action">{{ item.pvp_1 }}</td>
+            <td class="length-action">{{ item.iva_ }}</td>
+            <td class="length-action">{{ item.total }}</td>
+            <td class="length-action">{{ item.type_doc.alias }}</td>
+            <td class="length-action text-center">
+              <a :href="item.file.href" v-if="item.file !== ''" target="_blank" :download="item.type_doc.name + '_' + item.n_document">
+                <s26-icon icon="file-pdf" class="text-danger"></s26-icon>
+              </a>
+              <s26-icon icon="file-pdf" class="text-secondary" v-else></s26-icon>
+            </td>
+            <td class="length-action text-center">{{ item.establishment.n_establishment }}</td>
             <td class="length-action">
               <s26-dropdown>
                 <?php
@@ -126,8 +110,8 @@
       ?>
         <!-- Modal Ver-->
         <transition name="slide-fade">
-          <s26-read-product v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-read-product>
+          <s26-read-buytoproviders v-model="action" :id="idRow" v-if="action == 'watch'">
+          </s26-read-buytoproviders>
         </transition>
       <?php
       }
@@ -135,7 +119,7 @@
       ?>
         <!-- Modal Nuevo-->
         <transition name="slide-fade">
-          <s26-form-product v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-product>
+          <s26-form-buytoproviders v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-buytoproviders>
         </transition>
       <?php
       }
@@ -145,7 +129,7 @@
       ?>
         <!-- Modal Eliminar -->
         <transition name="slide-fade">
-          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'products/delProduct/' + idRow"></s26-delete>
+          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'buysToProviders/delBuy/' + idRow"></s26-delete>
         </transition>
       <?php
       }

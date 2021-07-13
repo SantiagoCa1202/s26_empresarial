@@ -20,3 +20,8 @@
   // No Se Puede Actualizar / Ingresar o Eliminar Este Registro (Registro Especials) = -4
   // No tiene permiso para realizar esta acción = -5
   // Registro existente y eliminado  = -6
+
+  //ESTADO DE PAGO
+  // Por Pagar = 0
+  // Pagado = 1
+  // Vencido = 2

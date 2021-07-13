@@ -1,5 +1,4 @@
 <?php
-
 class CustomersModel extends Mysql
 {
   public $id;
