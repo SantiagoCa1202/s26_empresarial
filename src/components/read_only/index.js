@@ -29,4 +29,7 @@ Vue.component("s26-read-photo", readPhoto);
 import readEstablishment from "./readEstablishment.vue";
 Vue.component("s26-read-establishment", readEstablishment);
 
+import readBankAccount from "./readBankAccount.vue";
+Vue.component("s26-read-bank-account", readBankAccount);
+
 export default s26ReadOnly;

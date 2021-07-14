@@ -295,8 +295,8 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][29]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/bank_entity" :class="focusSubMenu('bank_entity')">
-                  Info. Entidades Bancarias
+                <a href="<?= BASE_URL ?>/bankAccounts" :class="focusSubMenu('bankAccounts')">
+                  Cuentas Bancarias
                 </a>
               </li>
             <?php } ?>

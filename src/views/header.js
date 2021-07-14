@@ -41,7 +41,7 @@ if (element) {
         "external_income",
       ],
       subDocuments: ["buys_to_providers", "credit_notes", "withholdings"],
-      subWallet: ["wallet", "estadisticas", "bank_entity"],
+      subWallet: ["wallet", "estadisticas", "bankAccounts"],
       subAccounts: [
         "accounts_to_pay",
         "accounts_to_receivable",

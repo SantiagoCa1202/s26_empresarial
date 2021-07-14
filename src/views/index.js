@@ -19,5 +19,6 @@ import "./establishments";
 import "./products";
 import "./buysToProviders";
 import "./files";
+import "./bankAccounts";
 
 export default s26Views;

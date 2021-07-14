@@ -75,7 +75,7 @@ class SystemModel extends Mysql
     $request = $this->select($sql) ?
       $this->select($sql) :
       $arr;
-
+    $request['url_logo'] = asset('media/logos_bank_entities/') . $request['logo'];
     return $request;
   }
 

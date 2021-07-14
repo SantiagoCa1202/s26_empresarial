@@ -52,7 +52,7 @@
       <section :class="['main', { 'mainWidth-100': !activeSidebar }]">
         <div class="s26-container-table">
           <div class="row mx-0">
-            <div class="col-6 col-md-3 my-2 px-2 container-img" v-for="item in items" :key="item.id" @click="">
+            <div class="col-6 col-md-3 my-2 px-2 container-img" v-for="item in items" :key="item.id">
               <img class="rounded w-100 min-img hover-none pointer" :src="item.href" tabindex="0" @click="setIdRow(item.id, 'watch')" />
               <div :class="['row mx-0 bg-white shadow-sm rounded', item.status == 2 ? 'border-bottom border-2 border-danger' : '']">
                 <?php

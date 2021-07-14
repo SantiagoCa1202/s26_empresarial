@@ -12,7 +12,7 @@
           v-if="!header_none"
           :class="['modal-multiple-header', header_class ? header_class : '']"
         >
-          <h1 class="modal-title h4">{{ title }}</h1>
+          <h1 class="modal-title h4 s26-text-blue">{{ title }}</h1>
           <div class="proccess-bar" v-if="levels.length > 1">
             <div
               class="level"
