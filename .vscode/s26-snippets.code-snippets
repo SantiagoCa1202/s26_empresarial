@@ -32,8 +32,8 @@
     "prefix": "s26-input-read",
     "body": [
       "<s26-input-read\r",
-      "\tlabel='$1'\r",
-      "\t:content='$2'\r",
+      "\tlabel=\"$1\"\r",
+      "\t:content=\"$2\"\r",
       ">\r",
       "</s26-input-read>\r"
     ],
@@ -43,9 +43,9 @@
     "prefix": "s26-textarea-read",
     "body": [
       "<s26-textarea-read\r",
-      "\tlabel='$1'\r",
-      "\t:content='$2'\r",
-      "\trows='$3'\r",
+      "\tlabel=\"$1\"\r",
+      "\t:content=\"$2\"\r",
+      "\trows=\"$3\"\r",
       ">\r",
       "</s26-textarea-read>"
     ],
@@ -193,8 +193,8 @@
       "\t\t\\$this->id = \\$id;\r",
       "\t\t# code...\r",
       "\t}\r",
-      "}\r",
+      "}\r"
     ],
     "description": "S26 Model Schemantic"
-  },
+  }
 }

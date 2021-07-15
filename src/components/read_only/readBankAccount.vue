@@ -97,7 +97,7 @@ export default {
     },
     hideModal() {
       this.$emit("input", null);
-      s26.delete_cookie("id", "banckAccounts");
+      s26.delete_cookie("id", "bankAccounts");
     },
   },
 };

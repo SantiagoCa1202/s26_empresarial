@@ -41,6 +41,9 @@ Vue.component("s26-form-buytoproviders", formBuyToProviders);
 import formBankAccount from "./formBankAccount.vue";
 Vue.component("s26-form-bank-account", formBankAccount);
 
+import formCheckBook from "./formCheckBook.vue";
+Vue.component("s26-form-check", formCheckBook);
+
 import formDelete from "./formDelete.vue";
 Vue.component("s26-delete", formDelete);
 

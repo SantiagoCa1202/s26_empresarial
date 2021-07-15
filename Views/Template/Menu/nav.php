@@ -342,7 +342,7 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][33]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/checks" :class="focusSubMenu('checks')">
+                <a href="<?= BASE_URL ?>/checkBooks" :class="focusSubMenu('checkBooks')">
                   Cheques
                 </a>
               </li>

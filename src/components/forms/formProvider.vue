@@ -213,7 +213,6 @@
       </div>
       <div class="col-12">
         <s26-select-bank
-          label="Entidad Bancaria"
           size="sm"
           id="form-bank_accounts-bank_entity_id"
           v-model="form.bank_accounts.bank_entity_id"

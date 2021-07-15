@@ -23,6 +23,9 @@ Vue.component("s26-select-icon", selectIcon);
 import selectBankEntity from "./selectBankEntity.vue";
 Vue.component("s26-select-bank", selectBankEntity);
 
+import selectBankAccount from "./selectBankAccount.vue";
+Vue.component("s26-select-bank-account", selectBankAccount);
+
 import selectGender from "./selectGender.vue";
 Vue.component("s26-select-gender", selectGender);
 

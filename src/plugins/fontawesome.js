@@ -67,6 +67,7 @@ import {
   faFileCsv,
   faFileAlt,
   faFileWord,
+  faMoneyCheckAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -138,7 +139,8 @@ library.add(
   faFileCsv,
   faFileAlt,
   faFileWord,
-  faFolderOpen
+  faFolderOpen,
+  faMoneyCheckAlt
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

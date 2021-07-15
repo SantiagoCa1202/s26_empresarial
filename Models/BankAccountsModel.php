@@ -19,14 +19,16 @@ class BankAccountsModel extends Mysql
     $this->BankEntities = new SystemModel;
   }
 
-  public function selectBankAccounts(int $perPage, string $status)
+  public function selectBankAccounts(int $perPage, string $status, $checkbook)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->status = $status;
+    $this->checkbook = $checkbook;
     $this->perPage = $perPage;
 
     $where = '
+      checkbook LIKE "%' . $this->checkbook . '%" AND 
       status LIKE "%' . $this->status . '%" AND 
       status > 0 
     ';
@@ -47,6 +49,7 @@ class BankAccountsModel extends Mysql
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
+      $items[$i]['amount'] = 10500.75;
       $items[$i]['bank_entity'] = $this->BankEntities->selectBankEntity($items[$i]['bank_entity_id']);
     }
 

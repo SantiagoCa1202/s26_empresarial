@@ -46,7 +46,7 @@ if (element) {
         "accounts_to_pay",
         "accounts_to_receivable",
         "accounts_info",
-        "checks",
+        "checkBooks",
         "vouchers",
       ],
       subBusiness: [

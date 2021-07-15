@@ -20,5 +20,6 @@ import "./products";
 import "./buysToProviders";
 import "./files";
 import "./bankAccounts";
+import "./checkBooks";
 
 export default s26Views;

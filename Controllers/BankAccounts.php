@@ -19,8 +19,9 @@ class BankAccounts extends Controllers
     if ($_SESSION['permitsModule']['r']) {
       $perPage = intval($_GET['perPage']);
       $status = !empty($_GET['status']) ? intval($_GET['status']) : '';
+      $checkbook = !empty($_GET['checkbook']) ? boolval($_GET['checkbook']) : '';
 
-      $arrData = $this->model->selectBankAccounts($perPage, $status);
+      $arrData = $this->model->selectBankAccounts($perPage, $status, $checkbook);
 
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
     }
@@ -124,7 +125,7 @@ class BankAccounts extends Controllers
       $perPage = intval($_GET['perPage']);
       $status = !empty($_GET['status']) ? intval($_GET['status']) : '';
 
-      $data['data'] = $this->model->selectBankAccounts($perPage, $status);
+      $data['data'] = $this->model->selectBankAccounts($perPage, $status, '');
       $data['type'] = $_GET['type'];
       $this->views->exportData("bankAccounts", $data);
     }

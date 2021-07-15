@@ -138,6 +138,12 @@ let formatDate = (date, size = "sm") => {
   }
 };
 
+let currency = function(number) {
+  return new Intl.NumberFormat("es-Es", {
+    minimumFractionDigits: 2,
+  }).format(number);
+};
+
 let validEmail = (email) => {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
@@ -438,4 +444,5 @@ export default {
   startFromZero,
   validEmail,
   formatDate,
+  currency,
 };

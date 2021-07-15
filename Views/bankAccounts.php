@@ -75,7 +75,7 @@
                   </div>
                   <div class="col-8 text-end">
                     <s26-icon icon="dollar-sign" class="fs-2"></s26-icon>
-                    <span class="fs-2">10000.00</span>
+                    <span class="fs-2"> {{ $s26.currency(item.amount) }} </span>
                   </div>
                 </div>
                 <div class="bank-account-footer row mx-0">

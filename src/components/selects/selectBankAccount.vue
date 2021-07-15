@@ -1,7 +1,7 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
-    <label :for="id" class="form-label w-100">
-      Archivo
+    <label :for="id" class="form-label">
+      Cuenta Bancaria
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
@@ -14,9 +14,7 @@
       @keyup.13="activeSelect(!isActive)"
     >
       <div>
-        {{
-          value != 0 && value ? selected : all ? "Todos" : "-- seleccionar --"
-        }}
+        {{ value != 0 && value ? selected : all ? "Todos" : "Seleccionar --" }}
       </div>
       <span :class="['icon-sort-down-select', { active: isActive }]">
         <s26-icon icon="sort-down"></s26-icon>
@@ -38,29 +36,18 @@
             @click="selectOption(0, all ? 'Todos' : '-- seleccionar --')"
             @keyup.13="selectOption(0, all ? 'Todos' : '-- seleccionar --')"
           >
-            {{ all ? "Todos" : "-- seleccionar --" }}
+            {{ all ? "Todos" : "Seleccionar --" }}
           </div>
           <div
             :class="['s26-select-options', value == option.id ? 'focus' : '']"
             tabindex="0"
             v-for="option in options"
             :key="option.id"
-            @click="selectOption(option.id, option.name)"
-            @keyup.13="selectOption(option.id, option.name)"
+            @click="selectOption(option.id, option.bank_entity.bank_entity)"
+            @keyup.13="selectOption(option.id, option.bank_entity)"
           >
-            <span
-              :class="[
-                option.type == 'pdf' ? 'text-danger' : '',
-                option.type == 'excel' ? 'text-success' : '',
-              ]"
-            >
-              <s26-icon :icon="'file-' + option.type" class="fs-6"> </s26-icon>
-            </span>
-            {{ option.name }}
+            {{ option.bank_entity.bank_entity }}
           </div>
-          <button type="button" class="btn btn-link btn-sm" @click="allRows">
-            Actualizar
-          </button>
           <button
             v-if="perPage < rows"
             type="button"
@@ -69,31 +56,13 @@
           >
             Cargar Mas..
           </button>
-          <button
-            type="button"
-            class="btn btn-link btn-sm"
-            @click="activeUploadFile = true"
-          >
-            Subir Archivo
-          </button>
         </div>
       </div>
     </transition>
-    <input
-      type="hidden"
-      :s26-required="s26_required"
-      int="true"
-      v-model="value"
-    />
-    <p class="invalid-feedback" v-if="s26_required">Seleccione un Archivo</p>
-    <!-- Modal Nuevo-->
-    <transition name="slide-fade">
-      <s26-upload-files
-        v-if="activeUploadFile"
-        v-model="activeUploadFile"
-        @update="allRows"
-      ></s26-upload-files>
-    </transition>
+    <input type="hidden" :s26-required="s26_required" int v-model="value" />
+    <p class="invalid-feedback" v-if="s26_required">
+      Seleccione una Cuenta Bancaria
+    </p>
   </div>
 </template>
 <script>
@@ -103,6 +72,7 @@ export default {
     value: {},
     all: Boolean,
     s26_required: Boolean,
+    checkbook: Boolean,
   },
   data: function () {
     return {
@@ -115,16 +85,15 @@ export default {
       position: {
         top: "0",
       },
-      activeUploadFile: false,
     };
   },
   created() {
     setTimeout(() => {
-      if (this.value != 0) {
+      if (this.value !== 0 && this.value) {
         this.selectRow(this.value);
       }
       $(
-        `html, .s26-modal, .s26-modal-content, .s26-custom-select:not(#s26-custom-select-${this.id})`
+        `html, .s26-modal, .s26-modal-content, .s26-popup:not(#s26-custom-select-${this.id})`
       ).on("click", (e) => {
         this.activeSelect(false);
       });
@@ -138,9 +107,10 @@ export default {
       const params = {
         name: this.search,
         perPage: this.perPage,
+        checkbook: this.checkbook,
       };
       this.axios
-        .get("/files/getFiles/", {
+        .get("/bankAccounts/getBankAccounts/", {
           params,
         })
         .then((res) => {
@@ -153,9 +123,9 @@ export default {
     },
     selectRow(id) {
       this.axios
-        .get("/files/getFile/" + id)
+        .get("/bankAccounts/getBankAccount/" + id)
         .then((res) => {
-          this.selectOption(res.data.id, res.data.name);
+          this.selectOption(res.data.id, res.data.bank_entity.bank_entity);
         })
         .catch((err) => {
           console.log(err);
@@ -165,9 +135,9 @@ export default {
       this.isActive = active;
 
       if (this.isActive) {
-        let s26SelectUser = document.getElementById(this.id);
+        let s26SelectBank = document.getElementById(this.id);
         this.position.top =
-          s26SelectUser.getBoundingClientRect().bottom + 170 >= 500
+          s26SelectBank.getBoundingClientRect().bottom >= 500
             ? "-148px"
             : "55px";
 
@@ -179,8 +149,8 @@ export default {
       this.search = "";
       this.perPage = 50;
       this.$emit("input", id);
-      this.selected = value;
       this.$emit("change");
+      this.selected = value;
     },
     loadMore() {
       let perPage = this.rows - this.perPage;
