@@ -171,9 +171,7 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
   methods: {
     totalChecks() {
@@ -191,9 +189,7 @@ export default {
               ? parseInt(res.data.info.count) + 1
               : "";
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     },
     infoData(id) {
       this.axios
@@ -202,24 +198,16 @@ export default {
           this.form = res.data;
           this.form.date_issue = [res.data.date_issue];
           this.form.date_payment = [res.data.date_payment];
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     },
     onSubmit() {
       this.form.id = this.id;
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Cheque?.`,
         () => {
-          let formData = s26.json_to_formData(this.form);
-          s26.show_loader_points();
+          let formData = $s26.json_to_formData(this.form);
+          $s26.show_loader_points();
           this.axios
             .post("/checkBooks/setCheckBook", formData)
             .then((res) => {
@@ -231,25 +219,19 @@ export default {
               } else {
                 this.$alertify.error(res.data.msg);
               }
-              s26.hide_loader_points();
+              $s26.hide_loader_points();
               this.$emit("update");
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         },
-        () => {
-          this.$alertify.error("Acción Cancelada");
-        }
+        () => this.$alertify.error("Acción Cancelada")
       );
     },
     onReset() {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        for (let i in this.form) {
-          this.form[i] = "";
-        }
+        for (let i in this.form) this.form[i] = "";
       }
       $("[s26-required]").removeClass("is-invalid");
     },

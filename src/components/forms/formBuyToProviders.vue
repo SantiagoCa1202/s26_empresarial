@@ -329,14 +329,14 @@
                 </thead>
                 <tbody>
                   <tr v-for="date in form.credit_date" :key="date">
-                    <td>{{ formatDate(date) }}</td>
+                    <td>{{ $s26.formatDate(date) }}</td>
                     <td class="text-center">
                       <s26-icon icon="dollar-sign"></s26-icon>
                       {{
-                        parseFloat(
+                        $s26.currency(
                           (form.total_import - form.credit_note) /
                             form.credit_date.length
-                        ).toFixed(2)
+                        )
                       }}
                     </td>
                   </tr>
@@ -394,9 +394,7 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
   methods: {
     infoData(id) {
@@ -405,12 +403,6 @@ export default {
       //   .get("/users/getUser/" + id)
       //   .then((res) => {
       //     this.form.id = res.data.id;
-      //     let date = new Date(res.data.created_at);
-      //     this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-      //       dateStyle: "full",
-      //       timeStyle: "short",
-      //       calendar: "ecuador",
-      //     }).format(date);
       //   })
       //   .catch((err) => {
       //     console.log(err);
@@ -441,8 +433,8 @@ export default {
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Compra?.`,
         () => {
-          let formData = s26.json_to_formData(this.form);
-          s26.show_loader_points();
+          let formData = $s26.json_to_formData(this.form);
+          $s26.show_loader_points();
           this.axios
             .post("/BuysToProviders/setBuy", formData, {
               headers: {
@@ -450,7 +442,6 @@ export default {
               },
             })
             .then((res) => {
-              console.log(res);
               for (let i in res.data) {
                 if (res.data[i].type == 1 || res.data[i].type == 2) {
                   this.onReset();
@@ -461,16 +452,12 @@ export default {
                   this.$alertify.error(res.data[i].msg);
                 }
               }
-              s26.hide_loader_points();
+              $s26.hide_loader_points();
               this.$emit("update");
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         },
-        () => {
-          this.$alertify.error("Acción Cancelada");
-        }
+        () => this.$alertify.error("Acción Cancelada")
       );
     },
     getProvider(id) {
@@ -480,17 +467,13 @@ export default {
           this.form.document = res.data.trade_information.document;
           this.form.business_name = res.data.trade_information.business_name;
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     },
     onReset() {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        for (let i in this.form) {
-          this.form[i] = "";
-        }
+        for (let i in this.form) this.form[i] = "";
       }
       this.form.payment_type = 1;
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
@@ -511,9 +494,6 @@ export default {
         parseFloat(iva)
       ).toFixed(2);
       this.form.total_import = this.form.total;
-    },
-    formatDate(date) {
-      return s26.formatDate(date, "md");
     },
     hideModal() {
       this.$emit("input", null);

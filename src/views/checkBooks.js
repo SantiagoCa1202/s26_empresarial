@@ -53,8 +53,8 @@ if (element) {
       };
     },
     created() {
-      if (s26.readCookie("id")) {
-        this.setIdRow(s26.readCookie("id"), "watch");
+      if ($s26.readCookie("id")) {
+        this.setIdRow($s26.readCookie("id"), "watch");
       }
       this.allRows();
     },
@@ -83,7 +83,7 @@ if (element) {
           .catch((err) => {
             console.log(err);
           });
-        this.url_export = s26.url_get("/checkbooks/exportCheckbBooks/", params);
+        this.url_export = $s26.url_get("/checkbooks/exportCheckbBooks/", params);
       },
       onReset() {
         for (let fil in this.filter) {
@@ -94,8 +94,8 @@ if (element) {
       setIdRow(id, type) {
         this.idRow = parseInt(id);
         this.action = type;
-        if (!s26.readCookie("id") && type == "watch") {
-          s26.create_cookie("id", id, "checkBooks");
+        if (!$s26.readCookie("id") && type == "watch") {
+          $s26.create_cookie("id", id, "checkBooks");
         }
       },
     },

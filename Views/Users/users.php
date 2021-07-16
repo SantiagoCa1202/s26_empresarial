@@ -29,7 +29,6 @@
             <s26-select-establishment id="filter-establishment" all v-model="filter.establishment" @change="allRows"></s26-select-establishment>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha"></s26-date-picker>
-            {{ filter.date }}
           </div>
         </template>
         <template v-slot:info>

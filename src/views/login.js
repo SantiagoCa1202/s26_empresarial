@@ -26,7 +26,7 @@ if (element) {
           this.loading = false;
           return false;
         } else {
-          let formData = s26.json_to_formData(this.form);
+          let formData = $s26.json_to_formData(this.form);
           this.axios
             .post("/login/loginUser", formData)
             .then((res) => {

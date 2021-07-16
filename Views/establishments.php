@@ -43,7 +43,9 @@
         <template v-slot:body>
           <tr v-for="item in items" :key="item.id">
             <td class="length-int">{{ item.id }}</td>
-            <td class="length-action text-center">{{ item.n_establishment }}</td>
+            <td class="length-action text-center">
+              {{ item.n_establishment.padStart(3,'0') }}
+            </td>
             <td class="length-description">
               {{ item.tradename }}
             </td>

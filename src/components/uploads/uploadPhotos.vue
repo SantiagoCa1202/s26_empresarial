@@ -138,8 +138,8 @@ export default {
   created() {},
   methods: {
     onSubmit() {
-      let formData = s26.json_to_formData(this.form);
-      s26.show_loader_points();
+      let formData = $s26.json_to_formData(this.form);
+      $s26.show_loader_points();
       this.axios
         .post("/photos/uploadPhotos", formData, {
           headers: {
@@ -153,7 +153,7 @@ export default {
           } else {
             this.$alertify.error(res.data.msg);
           }
-          s26.hide_loader_points();
+          $s26.hide_loader_points();
           this.$emit("update");
         })
         .catch((e) => {
@@ -204,7 +204,7 @@ export default {
     remove_photo(id) {
       this.upload_photos.splice(id, 1);
       delete this.form.upload_photos_data[id];
-      this.form.upload_photos_data = s26.startFromZero(
+      this.form.upload_photos_data = $s26.startFromZero(
         this.form.upload_photos_data
       );
     },

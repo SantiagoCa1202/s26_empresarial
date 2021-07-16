@@ -123,33 +123,24 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
   methods: {
     infoRol(id) {
       this.axios
         .get("/roles/getRol/" + id)
-        .then((res) => {
-          this.name = res.data.name;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.name = res.data.name))
+        .catch((err) => console.log(err));
     },
     infoData(id) {
       this.infoRol(this.id);
       this.axios
         .get("/permits/getPermitsRol/" + id)
         .then((res) => {
-          console.log(res);
           this.items = res.data.modules;
           this.form = res.data;
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     },
     onSubmit() {
       this.$alertify.confirm(
@@ -158,8 +149,8 @@ export default {
           $(".btn").attr("disabled", true);
           this.$alertify.warning("Asignando permisos");
 
-          let formData = s26.json_to_formData(this.form);
-          s26.show_loader_points();
+          let formData = $s26.json_to_formData(this.form);
+          $s26.show_loader_points();
           this.axios
             .post("/permits/setPermits", formData, {
               headers: {
@@ -172,16 +163,12 @@ export default {
               } else {
                 this.$alertify.error(res.data.msg);
               }
-              s26.hide_loader_points();
+              $s26.hide_loader_points();
               $(".btn").removeAttr("disabled");
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         },
-        () => {
-          this.$alertify.error("Acción Cancelada");
-        }
+        () => this.$alertify.error("Acción Cancelada")
       );
     },
     onReset() {

@@ -200,7 +200,7 @@ export default {
     },
     nextLevel() {
       if (
-        !s26.val_form(this.id + " .container-level-" + this.level_select) &&
+        !$s26.val_form(this.id + " .container-level-" + this.level_select) &&
         !this.readOnly
       ) {
         this.$alertify.error(

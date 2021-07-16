@@ -16,7 +16,7 @@
         money ? 'form-control-dollars' : '',
       ]"
     >
-      {{ content }}
+      {{ money ? $s26.currency(content) : content }}
     </div>
     <i v-if="money" class="form-icon-dollar">
       <s26-icon icon="dollar-sign"></s26-icon>
@@ -35,7 +35,7 @@ export default {
   methods: {
     getRow() {
       let strLink = this.link.split(",");
-      s26.create_cookie("id", strLink[1], strLink[0]);
+      $s26.create_cookie("id", strLink[1], strLink[0]);
       window.open(BASE_URL + "/" + strLink[0], "_blank");
     },
   },

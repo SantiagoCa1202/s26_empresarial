@@ -121,9 +121,9 @@ export default {
         return false;
       }
 
-      let formData = s26.json_to_formData(this.form);
+      let formData = $s26.json_to_formData(this.form);
 
-      s26.show_loader_points();
+      $s26.show_loader_points();
       this.axios
         .post("/users/setNotification", formData)
         .then((res) => {
@@ -135,17 +135,13 @@ export default {
           } else {
             this.$alertify.error(res.data.msg);
           }
-          s26.hide_loader_points();
+          $s26.hide_loader_points();
           this.$emit("update");
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     },
     onReset() {
-      for (let form in this.form) {
-        this.form[form] = "";
-      }
+      for (let form in this.form) this.form[form] = "";
     },
 
     hideModal() {

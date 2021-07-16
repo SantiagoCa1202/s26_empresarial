@@ -80,13 +80,13 @@
           <tr v-for="item in items" :key="item.id">
             <td class="length-int">{{ item.id }}</td>
             <td class="length-int" :title="item.bank_account.bank_entity.bank_entity">
-              {{ item.n_check }}
+              {{ (item.n_check).padStart(6, '0') }}
             </td>
-            <td class="length-date">{{ item.date_issue }}</td>
+            <td class="length-date">{{ $s26.formatDate(item.date_issue) }}</td>
             <td class="length-description">{{ item.beneficiary }}</td>
             <td class="length-action">
               <s26-icon icon="dollar-sign"></s26-icon>
-              {{ item.amount }}
+              {{ $s26.currency(item.amount) }}
             </td>
             <td class="length-action">{{ item.type }}</td>
             <td :class="[

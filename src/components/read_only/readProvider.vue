@@ -42,7 +42,8 @@
         </s26-input-read>
       </div>
       <div class="col-12" v-if="id !== 0">
-        <span class="fw-bold">Creado el:</span> {{ form.created_at }}
+        <span class="fw-bold">Creado el:</span>
+        {{ $s26.formatDate(form.created_at, "xl") }}
       </div>
     </template>
 
@@ -193,9 +194,7 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
     this.getCategories();
   },
   methods: {
@@ -203,19 +202,8 @@ export default {
       $("[s26-required]").removeClass("is-invalid");
       this.axios
         .get("/providers/getProvider/" + id)
-        .then((res) => {
-          console.log(res);
-          this.form = res.data;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.form = res.data))
+        .catch((err) => console.log(err));
     },
     getCategories() {
       const params = {
@@ -225,16 +213,12 @@ export default {
         .get("/categories/getCategories/", {
           params,
         })
-        .then((res) => {
-          this.categories = res.data.items;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.categories = res.data.items))
+        .catch((err) => console.log(err));
     },
     hideModal() {
       this.$emit("input", null);
-      s26.delete_cookie("id", "providers");
+      $s26.delete_cookie("id", "providers");
     },
   },
 };

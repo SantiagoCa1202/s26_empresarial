@@ -109,7 +109,8 @@
             </s26-select-status>
           </div>
           <div class="col-12" v-if="id !== 0">
-            <span class="fw-bold">Creado el:</span> {{ form.created_at }}
+            <span class="fw-bold">Creado el:</span>
+            {{ $s26.formatDate(form.created_at, "xl") }}
           </div>
         </div>
       </form>
@@ -157,30 +158,18 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
   methods: {
     infoData(id) {
       this.axios
         .get("/customers/getCustomer/" + id)
-        .then((res) => {
-          this.form = res.data;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.form = res.data))
+        .catch((err) => console.log(err));
     },
     onSubmit() {
       this.form.id = this.id;
-      if (!s26.val_form("formCustomer")) {
+      if (!$s26.val_form("formCustomer")) {
         this.$alertify.error(
           "Es Necesario Llenar todos los campos requeridos."
         );
@@ -189,8 +178,8 @@ export default {
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Cliente?.`,
         () => {
-          let formData = s26.json_to_formData(this.form);
-          s26.show_loader_points();
+          let formData = $s26.json_to_formData(this.form);
+          $s26.show_loader_points();
           this.axios
             .post("/customers/setCustomer", formData)
             .then((res) => {
@@ -202,22 +191,16 @@ export default {
               } else {
                 this.$alertify.error(res.data.msg);
               }
-              s26.hide_loader_points();
+              $s26.hide_loader_points();
               this.$emit("update");
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         },
-        () => {
-          this.$alertify.error("Acción Cancelada");
-        }
+        () => this.$alertify.error("Acción Cancelada")
       );
     },
     onReset() {
-      for (let i in this.form) {
-        this.form[i] = "";
-      }
+      for (let i in this.form) this.form[i] = "";
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
     },
     hideModal() {

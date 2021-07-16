@@ -99,8 +99,8 @@ export default {
   },
   created() {
     setTimeout(() => {
-      s26.val_inputs();
-    }, 100);
+      $s26.val_inputs();
+    }, 50);
   },
   methods: {
     write() {

@@ -55,16 +55,14 @@ export default {
   },
   created() {
     this.newToken();
-    setTimeout(() => {
-      $("#security-code").focus();
-    }, 100);
+    setTimeout(() => $("#security-code").focus(), 50);
   },
   methods: {
     newToken() {
       this.axios.post("/token/newToken");
     },
     onSubmit() {
-      let formData = s26.json_to_formData(this.form);
+      let formData = $s26.json_to_formData(this.form);
       this.axios
         .post("/token/valToken", formData)
         .then((res) => {
@@ -78,9 +76,7 @@ export default {
           }
           this.form.code = "";
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     },
     hideCode() {
       this.axios.post("/token/disabledToken");

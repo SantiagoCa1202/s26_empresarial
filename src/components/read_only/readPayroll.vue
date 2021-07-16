@@ -57,20 +57,14 @@ export default {
     };
   },
   created() {
-    if (this.value !== 0 && this.value !== null) {
-      this.infoData(this.value);
-    }
+    if (this.value !== 0 && this.value !== null) this.infoData(this.value);
   },
   methods: {
     infoData(id) {
       this.axios
         .get("/users/getPayRecord/" + id)
-        .then((res) => {
-          this.form = res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.form = res.data))
+        .catch((err) => console.log(err));
     },
 
     hideModal() {

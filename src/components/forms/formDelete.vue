@@ -29,7 +29,7 @@ export default {
   created() {},
   methods: {
     deleteRow() {
-      s26.show_loader_points();
+      $s26.show_loader_points();
       this.axios
         .post("/" + this.post_delete)
         .then((res) => {
@@ -38,13 +38,11 @@ export default {
           } else {
             this.$alertify.error(res.data.msg);
           }
-          s26.hide_loader_points();
+          $s26.hide_loader_points();
           this.$emit("update");
           this.$emit("input", null);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     },
   },
 };

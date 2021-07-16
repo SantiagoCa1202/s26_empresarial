@@ -21,7 +21,10 @@
           </s26-input-read>
         </div>
         <div class="col-4">
-          <s26-input-read label="N° de Cheque" :content="form.n_check">
+          <s26-input-read
+            label="N° de Cheque"
+            :content="form.n_check.padStart(6, '0')"
+          >
           </s26-input-read>
         </div>
         <div class="col-12">
@@ -33,11 +36,17 @@
           </s26-textarea-read>
         </div>
         <div class="col-4">
-          <s26-input-read label="Fecha de Emisión" :content="form.date_issue">
+          <s26-input-read
+            label="Fecha de Emisión"
+            :content="$s26.formatDate(form.date_issue)"
+          >
           </s26-input-read>
         </div>
         <div class="col-4">
-          <s26-input-read label="Fecha de Pago" :content="form.date_payment">
+          <s26-input-read
+            label="Fecha de Pago"
+            :content="$s26.formatDate(form.date_payment)"
+          >
           </s26-input-read>
         </div>
         <div class="col-4">
@@ -48,7 +57,10 @@
           </s26-input-read>
         </div>
         <div class="col-8">
-          <s26-input-read label="Creado el:" :content="form.created_at">
+          <s26-input-read
+            label="Creado el:"
+            :content="$s26.formatDate(form.created_at, 'xl')"
+          >
           </s26-input-read>
         </div>
       </div>
@@ -77,30 +89,18 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
   methods: {
     infoData(id) {
       this.axios
         .get("/checkBooks/getCheckBook/" + id)
-        .then((res) => {
-          this.form = res.data;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.form = res.data))
+        .catch((err) => console.log(err));
     },
     hideModal() {
       this.$emit("input", null);
-      s26.delete_cookie("id", "checkBooks");
+      $s26.delete_cookie("id", "checkBooks");
     },
   },
 };

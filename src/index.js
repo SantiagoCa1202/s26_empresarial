@@ -5,7 +5,14 @@ import $ from "jquery";
 window.$ = $;
 
 import s26 from "./plugins/functions";
-window.s26 = s26;
+window.$s26 = s26;
+Vue.prototype.$s26 = s26;
+
+//AXIOS
+import axios from "axios";
+import VueAxios from "vue-axios";
+Vue.use(VueAxios, axios);
+axios.defaults.baseURL = BASE_URL;
 
 // Bootstrap
 import "/Assets/css/normalize.css";
@@ -19,11 +26,7 @@ import VueAlertify from "vue-alertify";
 Vue.use(VueAlertify);
 
 // Components
-import s26Components from "./components";
-Vue.component(s26Components);
+require("./components");
 
-import sidebarTables from "./components/sidebars/sidebarTables.vue";
-Vue.component("s26-sidebar", sidebarTables);
 // Views
-import s26Views from "./views";
-Vue.component(s26Views);
+require("./views");

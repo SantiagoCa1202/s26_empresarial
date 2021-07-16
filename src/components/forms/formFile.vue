@@ -100,8 +100,8 @@ export default {
       this.$alertify.confirm(
         `Desea Actualizar Archivo?.`,
         () => {
-          let formData = s26.json_to_formData(this.form);
-          s26.show_loader_points();
+          let formData = $s26.json_to_formData(this.form);
+          $s26.show_loader_points();
           this.axios
             .post("/files/updateFile", formData)
             .then((res) => {
@@ -110,23 +110,18 @@ export default {
               } else {
                 this.$alertify.error(res.data.msg);
               }
-              s26.hide_loader_points();
+              $s26.hide_loader_points();
               this.$emit("update");
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         },
-        () => {
-          this.$alertify.error("Acción Cancelada");
-        }
+        () => this.$alertify.error("Acción Cancelada")
       );
     },
 
     onReset() {
-      for (let i in this.form) {
-        this.form[i] = "";
-      }
+      for (let i in this.form) this.form[i] = "";
+
       $("[s26-required]").removeClass("is-invalid");
     },
     hideModal() {

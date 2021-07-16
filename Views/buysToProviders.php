@@ -56,13 +56,13 @@
       <s26-table :fields="fields" :rows="info.rows" @get="allRows" :sidebar="activeSidebar" v-model="perPage" action>
         <template v-slot:body>
           <tr v-for="item in items" :key="item.id">
-            <td class="length-date">{{ item.date_issue }}</td>
+            <td class="length-date">{{ $s26.formatDate(item.date_issue) }}</td>
             <td class="length-int">{{ item.n_document }}</td>
             <td class="length-description">
               {{ item.business_name }}
             </td>
-            <td class="length-action">{{ item.iva_ }}</td>
-            <td class="length-action">{{ item.total }}</td>
+            <td class="length-action">{{ $s26.currency(item.iva_) }}</td>
+            <td class="length-action">{{ $s26.currency(item.total) }}</td>
             <td class="length-action">{{ item.type_doc.alias }}</td>
             <td class="length-action text-center">
               <a :href="item.file.href" v-if="item.file !== ''" target="_blank" :download="item.type_doc.name + '_' + item.n_document">
@@ -70,7 +70,9 @@
               </a>
               <s26-icon icon="file-pdf" class="text-secondary" v-else></s26-icon>
             </td>
-            <td class="length-action text-center">{{ item.establishment.n_establishment }}</td>
+            <td class="length-action text-center">
+              {{ item.establishment.n_establishment.padStart(3,'0') }}
+            </td>
             <td class="length-action">
               <s26-dropdown>
                 <?php

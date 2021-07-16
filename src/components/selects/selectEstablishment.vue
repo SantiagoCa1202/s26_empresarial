@@ -166,7 +166,7 @@ export default {
       this.allRows();
     },
     getRow() {
-      s26.create_cookie("id", this.value, "establishments");
+      $s26.create_cookie("id", this.value, "establishments");
       window.open(BASE_URL + "/establishments", "_blank");
     },
   },

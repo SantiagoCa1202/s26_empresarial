@@ -1,4 +1,4 @@
-let val_inputs = () => {
+const val_inputs = () => {
   setTimeout(() => {
     $("input[number]:not(:password)").keypress(function(e) {
       if (e.keyCode == 46) return false;
@@ -38,7 +38,7 @@ let val_inputs = () => {
     });
   }, 100);
 };
-function buildFormData(formData, data, parentKey) {
+const buildFormData = (formData, data, parentKey) => {
   if (
     data &&
     typeof data === "object" &&
@@ -57,15 +57,15 @@ function buildFormData(formData, data, parentKey) {
 
     formData.append(parentKey, value);
   }
-}
+};
 
-let json_to_formData = (form) => {
+const json_to_formData = (form) => {
   const formData = new FormData();
   buildFormData(formData, form);
   return formData;
 };
 
-let show_loader_points = () => {
+const show_loader_points = () => {
   $("body").append(`<div class="s26-loading-points"></div>`);
   $(".s26-loading-points").append(`<div class="points-loader"></div>`);
   $(".s26-loading-points").css({
@@ -78,7 +78,7 @@ let show_loader_points = () => {
   }, 100);
 };
 
-let hide_loader_points = () => {
+const hide_loader_points = () => {
   $(".s26-loading-points").css({
     opacity: "0",
   });
@@ -90,7 +90,7 @@ let hide_loader_points = () => {
   }, 100);
 };
 
-let url_get = (url, params) => {
+const url_get = (url, params) => {
   let params_get = "";
   for (let param in params) {
     if (Array.isArray(params[param])) {
@@ -106,7 +106,7 @@ let url_get = (url, params) => {
   return url_get;
 };
 
-let startFromZero = (arr) => {
+const startFromZero = (arr) => {
   let newArr = [];
   let count = 0;
 
@@ -117,39 +117,40 @@ let startFromZero = (arr) => {
   return newArr;
 };
 
-let formatDate = (date, size = "sm") => {
+const formatDate = (date, size = "sm") => {
   let new_date = new Date(date);
   new_date.setDate(new_date.getDate() + 1);
   if (size == "sm") {
-    return new_date.toLocaleDateString();
+    let arrDate = date.split("-");
+    return arrDate[2] + "/" + arrDate[1] + "/" + arrDate[0]; // 20/07/2021
   } else if (size == "md") {
     let options = {
       year: "numeric",
       month: "long",
       day: "numeric",
     };
-    return new_date.toLocaleDateString("es-ES", options);
+    return new_date.toLocaleDateString("es-ES", options); // 16 De Julio De 2021
   } else if (size == "xl") {
     return new Intl.DateTimeFormat("es-ES", {
       dateStyle: "full",
       timeStyle: "short",
       calendar: "ecuador",
-    }).format(new_date);
+    }).format(new_date); // Jueves, 15 De Julio De 2021, 1:11
   }
 };
 
-let currency = function(number) {
+const currency = function(number) {
   return new Intl.NumberFormat("es-Es", {
     minimumFractionDigits: 2,
   }).format(number);
 };
 
-let validEmail = (email) => {
+const validEmail = (email) => {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
 };
 
-let val_date = (sDate) => {
+const val_date = (sDate) => {
   var val_date = sDate.split("-");
   var d = val_date[2];
   var m = val_date[1];
@@ -164,7 +165,7 @@ let val_date = (sDate) => {
   );
 };
 
-let val_form = (form) => {
+const val_form = (form) => {
   let invalidInput = (input, string) => {
     $(input)
       .addClass("is-invalid")
@@ -408,16 +409,16 @@ let val_form = (form) => {
 };
 
 ///////////////// CREADOR DE COOKIE
-let create_cookie = (name, id, path = "") => {
+const create_cookie = (name, id, path = "") => {
   document.cookie =
     `${name}=` + encodeURIComponent(id) + `; path=/s26_empresarial/${path}`;
 };
 ///////////////// ELIMINAR COOKIE
-let delete_cookie = (name, path = "") => {
+const delete_cookie = (name, path = "") => {
   document.cookie = `${name}=;max-age=2; path=/s26_empresarial/${path};`;
 };
 ///////////////// LEER COOKIE
-let readCookie = (name) => {
+const readCookie = (name) => {
   let nameEQ = name + "=";
   let ca = document.cookie.split(";");
   for (let i = 0; i < ca.length; i++) {

@@ -68,10 +68,10 @@ if (element) {
           .catch((err) => {
             console.log(err);
           });
-        this.url_export = s26.url_get("/files/exportFiles/", params);
+        this.url_export = $s26.url_get("/files/exportFiles/", params);
       },
       addToFavorites(id) {
-        s26.show_loader_points();
+        $s26.show_loader_points();
         this.axios
           .post("/files/addToFavorites/" + id)
           .then((res) => {
@@ -80,7 +80,7 @@ if (element) {
             } else {
               this.$alertify.error(res.data.msg);
             }
-            s26.hide_loader_points();
+            $s26.hide_loader_points();
             this.allRows();
           })
           .catch((e) => {

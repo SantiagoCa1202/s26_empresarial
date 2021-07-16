@@ -5,22 +5,6 @@ const s26Components = /*#__PURE__*/ {
   NAME,
 };
 
-import $ from "jquery";
-window.$ = $;
-
-import s26 from "../plugins/functions";
-window.s26 = s26;
-
-//AXIOS
-import axios from "axios";
-import VueAxios from "vue-axios";
-Vue.use(VueAxios, axios);
-axios.defaults.baseURL = BASE_URL;
-
-//ALERTIFY
-import VueAlertify from "vue-alertify";
-
-Vue.use(VueAlertify);
 import "./modals";
 import "./loaders";
 import "./forms";

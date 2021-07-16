@@ -92,7 +92,7 @@ if (element) {
         this.activeSubMenu = 8;
       }
       setTimeout(() => {
-        let dark_mode = s26.readCookie("dark-mode");
+        let dark_mode = $s26.readCookie("dark-mode");
         if (dark_mode == 1) {
           $("body").addClass("s26-dark-theme");
           this.dark_mode = true;
@@ -157,7 +157,7 @@ if (element) {
         this.axios
           .get("/users/dark_mode/")
           .then((res) => {
-            let dark_mode = s26.readCookie("dark-mode");
+            let dark_mode = $s26.readCookie("dark-mode");
             if (dark_mode == 1) {
               $("body").addClass("s26-dark-theme");
               this.dark_mode = true;

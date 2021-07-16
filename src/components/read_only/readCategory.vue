@@ -31,7 +31,7 @@
             </div>
             <div class="col-12">
               <span class="fw-bold"> Creado el: </span>
-              {{ form.created_at }}
+              {{ $s26.formatDate(form.created_at, "xl") }}
             </div>
           </div>
         </div>
@@ -78,9 +78,7 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
   methods: {
     infoData(id) {
@@ -90,20 +88,12 @@ export default {
           this.form = res.data;
           this.form.photo = res.data.photo.href;
           this.form.icon = res.data.icon.class;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     },
     hideModal() {
       this.$emit("input", null);
-      s26.delete_cookie("id", "categories");
+      $s26.delete_cookie("id", "categories");
     },
   },
 };

@@ -1,9 +1,7 @@
 <template>
   <s26-modal id="formNotes" @hideModal="hideModal">
     <template v-slot:header>
-      <h5 class="modal-title">
-        {{ value !== 0 ? "Editar " : "Nueva " }} Nota
-      </h5>
+      <h5 class="modal-title">{{ value !== 0 ? "Editar " : "Nueva " }} Nota</h5>
     </template>
     <template v-slot:body>
       <form @submit.prevent>
@@ -43,7 +41,7 @@
             </div>
           </div>
           <div class="col-12 mb-4" v-if="value !== 0">
-            {{ form.created_at }}
+            {{ $s26.formatDate(form.created_at) }}
           </div>
         </div>
       </form>
@@ -82,32 +80,20 @@ export default {
     };
   },
   created() {
-    if (this.value !== 0 && this.value !== null) {
-      this.infoData(this.value);
-    }
+    if (this.value !== 0 && this.value !== null) this.infoData(this.value);
   },
   methods: {
     infoData(id) {
       this.axios
         .get("/users/getMyNote/" + id)
-        .then((res) => {
-          this.form = res.data;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.form = res.data))
+        .catch((err) => console.log(err));
     },
     onSubmit() {
       this.form.id = this.value;
-      s26.show_loader_points();
+      $s26.show_loader_points();
 
-      let formData = s26.json_to_formData(this.form);
+      let formData = $s26.json_to_formData(this.form);
       this.axios
         .post("/users/setNote", formData)
         .then((res) => {
@@ -119,12 +105,10 @@ export default {
           } else {
             this.$alertify.error(res.data.msg);
           }
-          s26.hide_loader_points();
+          $s26.hide_loader_points();
           this.$emit("update");
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     },
     onReset() {
       this.form.name = "";

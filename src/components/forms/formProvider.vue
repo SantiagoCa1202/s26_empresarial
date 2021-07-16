@@ -75,7 +75,8 @@
         </s26-select-status>
       </div>
       <div class="col-12" v-if="id !== 0">
-        <span class="fw-bold">Creado el:</span> {{ form.created_at }}
+        <span class="fw-bold">Creado el:</span>
+        {{ $s26.formatDate(form.created_at, "xl") }}
       </div>
     </template>
     <template v-slot:level-1>
@@ -318,9 +319,8 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
+
     this.getCategories();
   },
   methods: {
@@ -328,26 +328,16 @@ export default {
       $("[s26-required]").removeClass("is-invalid");
       this.axios
         .get("/providers/getProvider/" + id)
-        .then((res) => {
-          this.form = res.data;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.form = res.data))
+        .catch((err) => console.log(err));
     },
     onSubmit() {
       this.form.id = this.id;
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Proveedor?.`,
         () => {
-          let formData = s26.json_to_formData(this.form);
-          s26.show_loader_points();
+          let formData = $s26.json_to_formData(this.form);
+          $s26.show_loader_points();
           this.axios
             .post("/providers/setProvider", formData)
             .then((res) => {
@@ -361,37 +351,28 @@ export default {
                   this.$alertify.error(res.data[i].msg);
                 }
               }
-              s26.hide_loader_points();
+              $s26.hide_loader_points();
               this.$emit("update");
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         },
-        () => {
-          this.$alertify.error("Acción Cancelada");
-        }
+        () => this.$alertify.error("Acción Cancelada")
       );
     },
     onReset() {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        for (let i in this.form.trade_information) {
+        for (let i in this.form.trade_information)
           this.form.trade_information[i] = "";
-        }
 
-        for (let i in this.form.contacts) {
-          this.form.contacts[i] = "";
-        }
+        for (let i in this.form.contacts) this.form.contacts[i] = "";
 
-        for (let i in this.form.current_address) {
+        for (let i in this.form.current_address)
           this.form.current_address[i] = "";
-        }
 
-        for (let i in this.form.bank_accounts) {
-          this.form.bank_accounts[i] = "";
-        }
+        for (let i in this.form.bank_accounts) this.form.bank_accounts[i] = "";
+
         this.form.categories = [];
       }
     },
@@ -403,12 +384,8 @@ export default {
         .get("/categories/getCategories/", {
           params,
         })
-        .then((res) => {
-          this.categories = res.data.items;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.categories = res.data.items))
+        .catch((err) => console.log(err));
     },
     selectCategory(id) {
       let idCat = parseInt(id);

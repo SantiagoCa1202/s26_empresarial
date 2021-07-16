@@ -109,7 +109,8 @@
         ></s26-date-picker>
       </div>
       <div class="col-12" v-if="id !== 0">
-        <span class="fw-bold">Creado el:</span> {{ form.created_at }}
+        <span class="fw-bold">Creado el:</span>
+        {{ $s26.formatDate(form.created_at) }}
       </div>
     </template>
     <template v-slot:level-1>
@@ -222,9 +223,7 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
   methods: {
     infoData(id) {
@@ -247,12 +246,6 @@ export default {
           this.form.create_notifications_users =
             res.data.create_notifications_users;
           this.form.status = res.data.status;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
         })
         .catch((err) => {
           console.log(err);
@@ -273,8 +266,8 @@ export default {
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Usuario?.`,
         () => {
-          let formData = s26.json_to_formData(this.form);
-          s26.show_loader_points();
+          let formData = $s26.json_to_formData(this.form);
+          $s26.show_loader_points();
           this.axios
             .post("/users/setUser", formData)
             .then((res) => {
@@ -287,25 +280,19 @@ export default {
               } else {
                 this.$alertify.error(res.data.msg);
               }
-              s26.hide_loader_points();
+              $s26.hide_loader_points();
               this.$emit("update");
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         },
-        () => {
-          this.$alertify.error("Acción Cancelada");
-        }
+        () => this.$alertify.error("Acción Cancelada")
       );
     },
     onReset() {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        for (let i in this.form) {
-          this.form[i] = "";
-        }
+        for (let i in this.form) this.form[i] = "";
       }
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
     },

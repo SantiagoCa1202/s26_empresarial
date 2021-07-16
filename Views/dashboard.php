@@ -6,6 +6,12 @@
 <br>
 <br>
 <br>
+<script>
+  let f = '2021-7-5';
+
+  let fecha = new Date(f);
+  console.log(fecha.toLocaleDateString())
+</script>
 <?php
 
 // // Get user IP address

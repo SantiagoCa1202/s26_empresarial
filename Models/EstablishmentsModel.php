@@ -52,7 +52,6 @@ class EstablishmentsModel extends Mysql
     $items = $this->select_all($rows);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['n_establishment'] = str_pad($items[$i]['n_establishment'], 3, "0", STR_PAD_LEFT);
       $items[$i]['company'] = $this->Company->selectCompany($items[$i]['company_id']);
     }
     return [
@@ -70,7 +69,6 @@ class EstablishmentsModel extends Mysql
     ON e.executive_id = u.id
     WHERE e.id = $this->id";
     $request = $this->select($sql);
-    $request['n_establishment'] = str_pad($request['n_establishment'], 3, "0", STR_PAD_LEFT);
     $request['company'] = $this->Company->selectCompany($request['company_id']);
 
     return $request;

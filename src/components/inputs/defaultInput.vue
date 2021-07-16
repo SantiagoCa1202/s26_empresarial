@@ -87,7 +87,7 @@ export default {
   },
   created() {
     setTimeout(() => {
-      s26.val_inputs();
+      $s26.val_inputs();
     }, 100);
   },
   methods: {

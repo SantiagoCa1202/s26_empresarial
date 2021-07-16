@@ -1,11 +1,10 @@
-import Vue from "vue";
 const NAME = "s26Views";
 
 const s26Views = /*#__PURE__*/ {
   NAME,
 };
 
-import "./login.js";
+import "./login";
 
 import "./header";
 import "./roles";

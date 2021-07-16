@@ -45,7 +45,7 @@ if (element) {
           });
       },
       addToFavorites(id) {
-        s26.show_loader_points();
+        $s26.show_loader_points();
         this.axios
           .post("/photos/addToFavorites/" + id)
           .then((res) => {
@@ -54,7 +54,7 @@ if (element) {
             } else {
               this.$alertify.error(res.data.msg);
             }
-            s26.hide_loader_points();
+            $s26.hide_loader_points();
             this.allRows();
           })
           .catch((e) => {

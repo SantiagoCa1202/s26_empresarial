@@ -87,10 +87,7 @@ class BuysToProvidersModel extends Mysql
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['date_issue'] = date(
-        "d/m/Y",
-        strtotime($items[$i]['date_issue'])
-      );
+
       $items[$i]['type_doc'] = $this->Document->selectDocument($items[$i]['type_doc_id']);
 
       $items[$i]['file'] = $items[$i]['file_id'] > 0 ?  $this->File->selectFile($items[$i]['file_id']) : '';

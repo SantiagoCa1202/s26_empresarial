@@ -79,11 +79,6 @@ class CheckBooksModel extends Mysql
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['date_issue'] = date(
-        "d/m/Y",
-        strtotime($items[$i]['date_issue'])
-      );
-      $items[$i]['n_check'] = str_pad($items[$i]['n_check'], 6, "0", STR_PAD_LEFT);
       $items[$i]['bank_account'] = $this->BankAccounts->selectBankAccount($items[$i]['bank_account_id']);
     }
 
