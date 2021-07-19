@@ -575,38 +575,4 @@ class UsersModel extends Mysql
     return $request;
   }
 
-  public function selectIcons(int $perPage, array $filter)
-  {
-    $this->name = $filter['name'];
-    $this->perPage = $perPage;
-
-    $info = 'SELECT COUNT(*) as count 
-      FROM icons
-      WHERE name LIKE "%' . $this->name . '%" 
-    ';
-    $info_table = $this->info_table($info);
-
-    $rows = '
-      SELECT *
-      FROM icons
-      WHERE name LIKE "%' . $this->name . '%" 
-      ORDER BY id ASC LIMIT 0, ' . $this->perPage . ' 
-    ';
-
-    $items = $this->select_all($rows);
-
-    return [
-      'items' => $items,
-      'info' => $info_table
-    ];
-  }
-
-  public function selectIcon(int $id)
-  {
-    $this->id = $id;
-    $sql = "SELECT * FROM icons WHERE id = $this->id";
-    $request = $this->select($sql);
-
-    return $request;
-  }
 }

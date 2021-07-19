@@ -1,7 +1,7 @@
 <header id="s26-header" class="header-menu">
   <div class="s26-navbar-top">
     <div class="navbar-top-left s26-navbar-i">
-      <button class="btn-icon" v-on:click="menu(true)">
+      <button class="btn-icon text-white" v-on:click="menu(true)">
         <s26-icon icon="bars"></s26-icon>
       </button>
       <a class="btn-s26-dash btn-icon-auto"> S26 Empresarial </a>
@@ -20,7 +20,7 @@
     </div>
     <div class="navbar-top-center s26-navbar-i">
       <?php if (!empty($_SESSION['permits'][1]['r'])) { ?>
-        <a class="btn-icon" href="<?= BASE_URL ?>/dashboard">
+        <a class="btn-icon text-white" href="<?= BASE_URL ?>/dashboard">
           <s26-icon icon="home"></s26-icon>
         </a>
       <?php } ?>
@@ -35,11 +35,11 @@
       <div class="text-capitalize">
         <a href="<?= BASE_URL ?>/calendar" class=" btn-icon-auto"> {{ date }} </a>
       </div>
-      <button class="btn-icon">
+      <button class="btn-icon text-white">
         <s26-icon icon="bell"></s26-icon>
       </button>
       <div class="dropdown-options-user">
-        <a @click.prevent="options_user = !options_user" class="btn-icon">
+        <a @click.prevent="options_user = !options_user" class="btn-icon text-white">
           <s26-icon icon="user"></s26-icon>
         </a>
         <transition name="slide-fade">

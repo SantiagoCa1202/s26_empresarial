@@ -1,122 +1,115 @@
 <template>
-  <div :id="'s26-custom-select-' + id" class="s26-custom-select s26-popup mb-3">
-    <label :for="id" class="form-label" v-if="label"> {{ label }} </label>
+  <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
+    <label :for="id" class="form-label w-100">
+      Icono
+      <span class="text-danger" v-if="s26_required">
+        <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
+      </span>
+    </label>
     <div
       :id="id"
-      :class="[
-        'form-control form-control-' + size,
-        's26-select-value',
-        variant,
-      ]"
+      class="form-control form-control-sm s26-select-value"
       tabindex="0"
-      @click="activeSelect"
-      @keyup.13="activeSelect"
+      @click="$s26.activeSelect"
+      @keypress.13="$s26.activeSelect"
     >
-      <div class="row mx-0">
-        <div class="col-4 s26-align-y-center">
-          <s26-icon
-            :icon="
-              value == 1 || value == '' ? 'project-diagram' : info_icon.icon
-            "
-            class="option-icon text-secondary"
-          ></s26-icon>
-        </div>
-        <div :class="['s26-align-y-center fw-bold', 'col-8']">
-          {{ value == 1 || value == "" ? "default" : info_icon.name }}
-        </div>
+      <div>
+        <span class="me-2" v-if="value != 0 && value">
+          <s26-icon :icon="info_icon.icon"></s26-icon>
+        </span>
+        {{
+          value != 0 && value
+            ? info_icon.name
+            : all
+            ? "Todos"
+            : "-- seleccionar --"
+        }}
       </div>
-      <span :class="['icon-sort-down-select', { active: isActive }]">
-        <s26-icon icon="sort-down"></s26-icon>
-      </span>
+      <s26-icon icon="angle-down" class="icon-angle-down"></s26-icon>
     </div>
-    <transition name="fade">
-      <div
-        v-if="isActive"
-        class="s26-select-container active"
-        :style="position"
-      >
-        <div class="w-100 p-1">
-          <s26-input-search v-model="search" @search="allRows" />
+    <div class="s26-select-container">
+      <div class="w-100 p-2 pb-0">
+        <s26-input-search v-model="search" @search="allRows" />
+      </div>
+      <div class="s26-select-container-options">
+        <div
+          :class="['s26-select-options', value == 0 ? 'focus' : '']"
+          tabindex="0"
+          @click="selectOption(0)"
+          @keyup.13="selectOption(0)"
+        >
+          {{ all ? "Todos" : "-- seleccionar --" }}
         </div>
-        <div class="s26-select-container-options">
-          <div
-            :class="[
-              's26-select-options row mx-0',
-              value == option.id ? 'focus' : '',
-            ]"
-            tabindex="0"
-            v-for="option in options"
-            :key="option.id"
-            @click="selectOption(option.id, option.name, option.class)"
-          >
-            <div class="col-3">
-              <s26-icon
-                :icon="option.class"
-                class="option-icon text-secondary"
-              ></s26-icon>
-            </div>
-            <div class="col-9 s26-align-y-center fw-bold">
-              {{ option.name }}
-            </div>
-          </div>
-          <button
-            v-if="perPage < rows"
-            type="button"
-            class="btn btn-link"
-            @click="loadMore"
-          >
-            Cargar Mas..
-          </button>
+        <div
+          :class="[
+            's26-select-options s26-align-y-center',
+            value == option.id ? 'focus' : '',
+          ]"
+          tabindex="0"
+          v-for="option in options"
+          :key="option.id"
+          @click="selectOption(option.id, option.name, option.class)"
+          @keyup.13="selectOption(option.id, option.name, option.class)"
+        >
+          <span class="me-2">
+            <s26-icon :icon="option.class"></s26-icon>
+          </span>
+          {{ option.name }}
         </div>
       </div>
-    </transition>
-    <p class="invalid-feedback" v-if="s26_required">Seleccione un icono</p>
+      <div class="actions-select pt-1 px-2">
+        <button
+          v-if="rows > perPage"
+          type="button"
+          class="btn-icon text-primary"
+          @click="loadMore"
+          @keypress.13="loadMore"
+        >
+          <s26-icon icon="plus"></s26-icon>
+        </button>
+        <button
+          type="button"
+          class="btn-icon text-warning"
+          @click="allRows"
+          @keypress.13="allRows"
+        >
+          <s26-icon icon="sync-alt"></s26-icon>
+        </button>
+      </div>
+    </div>
+    <input
+      type="hidden"
+      :s26-required="s26_required"
+      int="true"
+      v-model="value"
+    />
+    <p class="invalid-feedback" v-if="s26_required"></p>
   </div>
 </template>
 <script>
 export default {
   props: {
-    label: String,
     id: String,
-    size: String,
-    placeholder: String,
-    variant: {
-      type: String,
-      default: "",
-    },
     value: {},
+    all: Boolean,
     s26_required: Boolean,
   },
   data: function () {
     return {
-      isActive: false,
       options: [],
       info_icon: {
-        selected: "",
-        icon: "",
+        name: "",
+        icon: "project-diagram",
       },
       search: "",
       perPage: 50,
       rows: 0,
-      position: {
-        top: "0",
-      },
     };
   },
-  created() {
-    setTimeout(() => {
-      if (this.value != 0) {
-        this.getIcon(this.value);
-      }
-      $(
-        `html, .s26-modal, .s26-modal-content, .s26-popup:not(#s26-custom-select-${this.id})`
-      ).on("click", (e) => {
-        this.activeSelect(false);
-      });
-      $(`#s26-custom-select-${this.id}`).click(function (e) {
-        e.stopPropagation();
-      });
-    }, 100);
+  mounted: function () {
+    this.allRows();
+
+    if (this.value != 0) this.selectRow(this.value);
   },
   methods: {
     allRows() {
@@ -125,50 +118,26 @@ export default {
         perPage: this.perPage,
       };
       this.axios
-        .get("/users/getIcons/", {
+        .get("/system/getIcons/", {
           params,
         })
         .then((res) => {
           this.options = res.data.items;
           this.rows = res.data.info.count;
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     },
-    getIcon(id) {
+    selectRow(id) {
       this.axios
-        .get("/users/getIcon/" + id)
+        .get("/system/getIcon/" + id)
         .then((res) => {
           this.info_icon.icon = res.data.class;
           this.info_icon.name = res.data.name;
         })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    activeSelect(active = true) {
-      this.isActive = active;
-
-      if (this.isActive) {
-        let s26SelectIcon = document.getElementById(this.id);
-        this.position.top =
-          s26SelectIcon.getBoundingClientRect().bottom + 170 >= 500
-            ? "-148px"
-            : "55px";
-
-        setTimeout(() => {
-          $(".s26-select-container-input-search input").focus();
-        }, 100);
-
-        this.allRows();
-      } else {
-        this.search = "";
-      }
+        .catch((err) => console.log(err));
     },
     selectOption(id, value, icon) {
-      this.isActive = false;
-      this.search = "";
+      $(`div.s26-select-container`).hide("200");
       this.perPage = 50;
       this.$emit("input", id);
       this.info_icon.icon = icon;

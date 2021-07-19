@@ -395,11 +395,7 @@ const val_form = (form) => {
               .siblings("label")
               .text()} 
           </span> 
-          debe contener
-          <span>
-            ${$(input).attr("strictlength")}
-          </span>
-          caracteres.
+          es obligatorio.
         `
       );
       return;
@@ -431,6 +427,42 @@ const readCookie = (name) => {
   return null;
 };
 
+const activeSelect = (e) => {
+  let select = $(e.target).closest("div.s26-custom-select");
+  let select_value = $(select).children("div.s26-select-value");
+  let location = select_value[0].getBoundingClientRect();
+  let select_container = $(select).children("div.s26-select-container");
+  $(select_container)
+    .width(location.width)
+    .css({ left: location.left })
+    .toggle(200);
+  $(`div.s26-select-container`)
+    .not(select_container)
+    .hide("200");
+
+  let position = 0;
+  if (location.top > 0 && location.top < 340) {
+    position = location.top + 40;
+  } else if (location.top > 340) {
+    position = location.top - 285;
+  }
+  $(select_container).css({ top: position });
+
+  $("*")
+    .not("div.s26-select-container *")
+    .on("scroll", () => {
+      $("div.s26-select-container").hide("200");
+    });
+  $(window).on("resize", () => {
+    $("div.s26-select-container").hide("200");
+  });
+  $("html, .s26-modal, .s26-modal-content").on("click", () => {
+    $(`div.s26-select-container`).hide("200");
+  });
+  $(".s26-custom-select").on("click", (e) => {
+    e.stopPropagation();
+  });
+};
 export default {
   val_inputs,
   val_form,
@@ -446,4 +478,5 @@ export default {
   validEmail,
   formatDate,
   currency,
+  activeSelect,
 };

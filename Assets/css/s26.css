@@ -79,10 +79,6 @@ input[email] {
   background-color: var(--s26-blue-gray);
 }
 
-.s26-text-blue {
-  color: var(--s26-blue)
-}
-
 /* Config Reset */
 
 .btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-warning, .btn-info, .btn-light, .btn-dark, .btn-link, .form-control:focus, .custom-select:focus {
@@ -251,6 +247,12 @@ div.alertify .ajs-footer {
 
 /* CUSTOM BTN S26 */
 
+.btn-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .btn-icon, .btn-times, .btn-icon-close, .btn-hide-menu {
   border: none;
   border-radius: 50%;
@@ -332,7 +334,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%) !important;
 }
 
-/* Custom Select */
+/* Reset Select Bootstrap */
 
 .form-select {
   background: none;
@@ -360,91 +362,101 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   align-items: center;
 }
 
-.s26-select-value .icon-sort-down-select {
+.icon-angle-down {
   position: absolute;
+  font-size: 1rem;
   right: 10px;
-  transition: .3s;
-}
-
-.s26-select-value .icon-sort-down-select i {
-  font-size: 1.2rem;
-}
-
-.icon-sort-down-select.active {
-  transform: rotate(-180deg) translateY(-2px);
 }
 
 .s26-select-container {
-  background: #fff;
-  position: absolute;
+  position: fixed;
+  display: none;
   width: 100%;
-  height: 0px;
-  margin-top: 5px;
-  top: 55px;
-  border-radius: .2rem;
-  overflow: auto;
-  transition: .2s;
+  height: 275px;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 0 9px 0 #80808078;
+  z-index: 1000;
 }
 
-.s26-select-container.active {
-  height: 168px;
-  box-shadow: 0 1px 3px 2px rgba(0, 0, 0, .15);
-  border: 1px solid #ced4da;
-  z-index: 1060;
-}
-
-.s26-select-container-input-search {
-  width: 100%;
-  padding: .5rem;
-  position: sticky;
-  top: 0;
-  background: #fff;
-  display: flex;
-  align-items: center;
-}
-
-.s26-select-container-input-search .s26-btn-search {
-  position: absolute;
+.search-select {
   border: none;
-  background: none;
-  right: 10px;
-  color: rgba(0, 0, 0, .5);
-  transition: .2s;
+  border-bottom: 1px solid #e6e6e6;
+  border-radius: 0;
 }
 
-.s26-select-container-input-search .s26-btn-search:hover, .s26-select-container-input-search .s26-btn-search:focus {
-  color: var(--bs-primary);
-  outline: none;
+.s26-select-container-options {
+  height: 185px;
+  overflow: auto;
+}
+
+.s26-select-container-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.s26-select-container-options::-webkit-scrollbar-thumb {
+  background: var(--s26-blue-gray);
+  border-radius: 4px;
+}
+
+.s26-select-container-options::-webkit-scrollbar-thumb:hover {
+  background: #517c94;
+}
+
+.s26-select-container-options::-webkit-scrollbar-thumb:active {
+  background: #608092;
 }
 
 .s26-select-options {
-  padding: .3rem .8rem;
+  padding: 0.4rem 0.8rem;
 }
 
-.s26-select-options:hover, .s26-select-options:focus, .s26-select-options.focus, .s26-select-options.focus svg {
-  background-color: var(--bs-info);
+.s26-select-options:hover, .s26-select-options.focus, .s26-select-options:focus {
+  background-color: var(--bs-primary);
   color: #fff;
-  transition: .2s;
+  transition: 0.2s;
 }
 
-/* CUSTOM INPUT SEARCH */
-
-.s26-container-search {
-  border: 1px solid #ced4da;
-  border-radius: .2rem;
+.actions-select {
+  position: absolute;
+  height: 38px;
+  bottom: 0;
   display: flex;
   align-items: center;
-  transition: .3s;
+  justify-content: flex-end;
+}
+
+.actions-select .btn-icon {
+  font-size: 0.9rem;
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.actions-select .btn-icon:hover {
+  background: rgba(0, 0, 0, 0.062);
+}
+
+.actions-select .btn-icon {
+  color: rgba(0, 0, 0, 0.219);
+}
+
+/* INPUT SEARCH 1 */
+
+.s26-container-search {
+  border-bottom: 1px solid #ced4da;
+  display: flex;
+  align-items: center;
+  transition: 0.3s;
+  height: 2em;
 }
 
 .s26-container-search.focus {
   border-color: var(--s26-info);
-  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%) !important;
+  box-shadow: 0 3px 6px 0px rgb(0 0 0 / 12%) !important;
 }
 
 .s26-container-search button {
   display: flex;
-  font-weight: 400;
   text-align: center;
   text-decoration: none;
   align-items: center;
@@ -452,11 +464,11 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  font-size: 1rem;
+  font-size: 0.85rem;
   border: 0;
   background: none;
   color: #bebebe;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .s26-container-search .s26-btn {
@@ -484,7 +496,8 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   border: 0;
   width: 100%;
   height: 100%;
-  padding: .35rem .5rem;
+  padding: 0.35rem 0.5rem;
+  background: none;
 }
 
 .s26-container-search .s26-input-search input:focus {
@@ -1252,10 +1265,9 @@ div.year-active {
   pointer-events: auto;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: .3rem;
   outline: 0;
-  box-shadow: 0px 2px 4px 0px #606060;
+  border-radius: .9rem;
+  border: 0;
 }
 
 .modal-md {

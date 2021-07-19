@@ -423,35 +423,4 @@ class Users extends Controllers
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
-
-  public function getIcons()
-  {
-    $perPage = intval($_GET['perPage']);
-    $filter = [
-      'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
-    ];
-    $arrData = $this->model->selectIcons($perPage, $filter);
-    if (empty($arrData)) {
-      $arrRes = 0;
-    } else {
-      $arrRes = $arrData;
-    }
-    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
-    die();
-  }
-
-  public function getIcon($id)
-  {
-    $id = intval(strClean($id));
-    if ($id > 0) {
-      $arrData = $this->model->selectIcon($id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
-      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
-    }
-    die();
-  }
 }

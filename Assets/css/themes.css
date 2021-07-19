@@ -8,7 +8,7 @@ body.s26-theme {
   background: var(--s26-blue);
 }
 
-.s26-theme .btn-icon, .btn-hide-menu, .s26-theme .s26-navbar-top, .s26-theme .btn-s26-dash, .s26-theme .s26-navbar .menu li.title-menu {
+.btn-hide-menu, .s26-theme .s26-navbar-top, .s26-theme .btn-s26-dash, .s26-theme .s26-navbar .menu li.title-menu {
   color: var(--bs-light) !important;
 }
 

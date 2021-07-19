@@ -35,7 +35,7 @@
                 Tipo de Emisión
               </label>
               <select id="form-type_check" class="form-select form-select-sm" v-model="filter.type">
-                <option value="">-- Seleccionar --</option>
+                <option value="">Todos</option>
                 <option value="emitido">Emitido</option>
                 <option value="recibido">Recibido</option>
               </select>
@@ -45,7 +45,7 @@
                 Estado de Cheque
               </label>
               <select id="form-payment_status" class="form-select form-select-sm" v-model="filter.payment_status">
-                <option value="">-- Seleccionar --</option>
+                <option value="">Todos</option>
                 <option value="por pagar">Por Pagar</option>
                 <option value="pagado">Pagado</option>
                 <option value="anulado">Anulado</option>

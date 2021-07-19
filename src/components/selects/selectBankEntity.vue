@@ -1,6 +1,6 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
-    <label :for="id" class="form-label">
+    <label :for="id" class="form-label w-100">
       Entidad Bancaria
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
@@ -10,59 +10,70 @@
       :id="id"
       class="form-control form-control-sm s26-select-value"
       tabindex="0"
-      @click="activeSelect(!isActive)"
-      @keyup.13="activeSelect(!isActive)"
+      @click="$s26.activeSelect"
+      @keypress.13="$s26.activeSelect"
     >
       <div>
-        {{ value != 0 && value ? selected : all ? "Todos" : "Seleccionar --" }}
+        {{
+          value != 0 && value ? selected : all ? "Todos" : "-- seleccionar --"
+        }}
       </div>
-      <span :class="['icon-sort-down-select', { active: isActive }]">
-        <s26-icon icon="sort-down"></s26-icon>
-      </span>
+      <s26-icon icon="angle-down" class="icon-angle-down"></s26-icon>
     </div>
-    <transition name="fade">
-      <div
-        v-if="isActive"
-        class="s26-select-container active"
-        :style="position"
-      >
-        <div class="w-100 p-1">
-          <s26-input-search v-model="search" @search="allRows" />
+    <div class="s26-select-container">
+      <div class="w-100 p-2 pb-0">
+        <s26-input-search v-model="search" @search="allRows" />
+      </div>
+      <div class="s26-select-container-options">
+        <div
+          :class="['s26-select-options', value == 0 ? 'focus' : '']"
+          tabindex="0"
+          @click="selectOption(0)"
+          @keyup.13="selectOption(0)"
+        >
+          {{ all ? "Todos" : "-- seleccionar --" }}
         </div>
-        <div class="s26-select-container-options">
-          <div
-            :class="['s26-select-options', value == 0 ? 'focus' : '']"
-            tabindex="0"
-            @click="selectOption(0, all ? 'Todos' : '-- seleccionar --')"
-            @keyup.13="selectOption(0, all ? 'Todos' : '-- seleccionar --')"
-          >
-            {{ all ? "Todos" : "Seleccionar --" }}
-          </div>
-          <div
-            :class="['s26-select-options', value == option.id ? 'focus' : '']"
-            tabindex="0"
-            v-for="option in options"
-            :key="option.id"
-            @click="selectOption(option.id, option.bank_entity)"
-            @keyup.13="selectOption(option.id, option.bank_entity)"
-          >
-            {{ option.bank_entity }}
-          </div>
-          <button
-            v-if="perPage < rows"
-            type="button"
-            class="btn btn-link btn-sm"
-            @click="loadMore"
-          >
-            Cargar Mas..
-          </button>
+        <div
+          :class="[
+            's26-select-options s26-align-y-center',
+            value == option.id ? 'focus' : '',
+          ]"
+          tabindex="0"
+          v-for="option in options"
+          :key="option.id"
+          @click="selectOption(option.id, option.bank_entity)"
+          @keyup.13="selectOption(option.id, option.bank_entity)"
+        >
+          {{ option.bank_entity }}
         </div>
       </div>
-    </transition>
-    <input type="hidden" :s26-required="s26_required" int v-model="value" />
-    <p class="invalid-feedback" v-if="s26_required">
-      Seleccione una Entidad Bancaria
-    </p>
+      <div class="actions-select pt-1 px-2">
+        <button
+          v-if="rows > perPage"
+          type="button"
+          class="btn-icon text-primary"
+          @click="loadMore"
+          @keypress.13="loadMore"
+        >
+          <s26-icon icon="plus"></s26-icon>
+        </button>
+        <button
+          type="button"
+          class="btn-icon text-warning"
+          @click="allRows"
+          @keypress.13="allRows"
+        >
+          <s26-icon icon="sync-alt"></s26-icon>
+        </button>
+      </div>
+    </div>
+    <input
+      type="hidden"
+      :s26-required="s26_required"
+      int="true"
+      v-model="value"
+    />
+    <p class="invalid-feedback" v-if="s26_required"></p>
   </div>
 </template>
 <script>
@@ -75,31 +86,17 @@ export default {
   },
   data: function () {
     return {
-      isActive: false,
       selected: "",
       options: [],
       search: "",
       perPage: 50,
       rows: 0,
-      position: {
-        top: "0",
-      },
     };
   },
-  created() {
-    setTimeout(() => {
-      if (this.value !== 0 && this.value) {
-        this.selectRow(this.value);
-      }
-      $(
-        `html, .s26-modal, .s26-modal-content, .s26-popup:not(#s26-custom-select-${this.id})`
-      ).on("click", (e) => {
-        this.activeSelect(false);
-      });
-      $(`#s26-custom-select-${this.id}`).click(function (e) {
-        e.stopPropagation();
-      });
-    }, 100);
+  mounted: function () {
+    this.allRows();
+
+    if (this.value != 0) this.selectRow(this.value);
   },
   methods: {
     allRows() {
@@ -115,9 +112,7 @@ export default {
           this.options = res.data.items;
           this.rows = res.data.info.count;
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     },
     selectRow(id) {
       this.axios
@@ -125,29 +120,14 @@ export default {
         .then((res) => {
           this.selectOption(res.data.id, res.data.bank_entity);
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     },
-    activeSelect(active = true) {
-      this.isActive = active;
-
-      if (this.isActive) {
-        let s26SelectBank = document.getElementById(this.id);
-        this.position.top =
-          s26SelectBank.getBoundingClientRect().bottom >= 500
-            ? "-148px"
-            : "55px";
-
-        this.allRows();
-      }
-    },
-    selectOption(id, value) {
-      this.isActive = false;
-      this.search = "";
+    selectOption(id, value = "") {
+      $(`div.s26-select-container`).hide("200");
       this.perPage = 50;
       this.$emit("input", id);
       this.selected = value;
+      this.$emit("change");
     },
     loadMore() {
       let perPage = this.rows - this.perPage;
