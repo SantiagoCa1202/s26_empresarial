@@ -25,10 +25,11 @@ if (element) {
           name: "",
           description: "",
           status: "",
-          date: "",
+          date: [],
         },
         rows: 0,
         items: [],
+        dates: {},
         perPage: 25,
         idRow: "",
         activeSidebar: true,
@@ -59,6 +60,7 @@ if (element) {
           .then((res) => {
             this.items = res.data.items;
             this.rows = res.data.info.count;
+            this.dates = res.data.dates
           })
           .catch((err) => {
             console.log(err);

@@ -48,6 +48,27 @@ class Mysql extends Connection
     return $data;
   }
 
+  public function select_dates(string $column, string $table)
+  {
+    $query = "SELECT DISTINCTROW DATE($column) as day FROM $table";
+    $this->strQuery = $query;
+
+    $days = $this->connection_system->prepare($this->strQuery);
+    $days->execute();
+
+    $query = "SELECT DISTINCTROW DATE_FORMAT($column,'%Y-%m') as month FROM $table";
+    $this->strQuery = $query;
+
+    $months = $this->connection_system->prepare($this->strQuery);
+    $months->execute();
+    
+    return [
+      'days' => $days->fetchall(PDO::FETCH_COLUMN),
+      'months' => $months->fetchall(PDO::FETCH_COLUMN),
+    ];
+  }
+
+
   public function info_table(string $query)
   {
     $this->strQuery = $query;

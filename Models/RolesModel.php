@@ -22,7 +22,7 @@ class RolesModel extends Mysql
 
     $date_range = "";
     if ($this->date != '' && count($this->date) == 2) {
-      $date_range = ' AND created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59" OR created_at BETWEEN "' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"';
+      $date_range = ' AND created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59"';
     }
 
     $whereAdmin = "";
@@ -45,8 +45,10 @@ class RolesModel extends Mysql
     $info_table = $this->info_table($info);
 
     $rows = "SELECT * FROM roles WHERE $where  ORDER BY id DESC LIMIT 0, $this->perPage";
+
     return [
       'items' => $this->select_all($rows),
+      'dates' => $this->select_dates('created_at', 'roles'),
       'info' => $info_table,
     ];
   }

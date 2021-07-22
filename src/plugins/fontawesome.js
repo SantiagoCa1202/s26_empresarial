@@ -69,6 +69,7 @@ import {
   faFileWord,
   faMoneyCheckAlt,
   faAngleDown,
+  faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -142,7 +143,8 @@ library.add(
   faFileWord,
   faFolderOpen,
   faMoneyCheckAlt,
-  faAngleDown
+  faAngleDown,
+  faCalendarAlt
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);
