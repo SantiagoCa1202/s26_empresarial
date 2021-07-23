@@ -130,6 +130,20 @@
   </s26-modal>
 </template>
 <script>
+const def_form = () => {
+  return {
+    id: "",
+    full_name: "",
+    document: "",
+    address: "",
+    phone: "",
+    mobile: "",
+    email: "",
+    time_limit: "",
+    status: 1,
+    created_at: "",
+  };
+};
 export default {
   props: {
     value: {
@@ -143,18 +157,7 @@ export default {
   },
   data: function () {
     return {
-      form: {
-        id: "",
-        full_name: "",
-        document: "",
-        address: "",
-        phone: "",
-        mobile: "",
-        email: "",
-        time_limit: "",
-        status: 1,
-        created_at: "",
-      },
+      form: def_form(),
     };
   },
   created() {
@@ -200,7 +203,7 @@ export default {
       );
     },
     onReset() {
-      for (let i in this.form) this.form[i] = "";
+      this.form = def_form();
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
     },
     hideModal() {

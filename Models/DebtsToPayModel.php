@@ -35,24 +35,24 @@ class DebtsToPayModel extends Mysql
     $this->status_payment = $filter['status_payment'];
     $this->establishment_id = $filter['establishment_id'];
     $this->status = $filter['status'];
+    $this->perPage = $perPage;
 
     $date_range = ($this->date != '' && count($this->date) == 2) ?
-      ' AND date BETWEEN "' . $this->date[0] . ' 00:00:00" AND "
-    ' . $this->date[1] . ' 23:59:59" OR date BETWEEN "
-    ' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"' : '';
+      " AND date BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
 
-    $where = '
-    id LIKE "%' . $this->id . '%" AND
-    creditor_type LIKE "%' . $this->creditor_type . '%" AND
-    ruc LIKE "%' . $this->ruc . '%" AND
-    business_name LIKE "%' . $this->business_name . '%" AND
-    n_document LIKE "%' . $this->n_document . '%" AND
-    status_payment LIKE "%' . $this->status_payment . '%" AND
-    establishment_id LIKE "%' . $this->establishment_id . '%" AND
-    status LIKE "%' . $this->status . '%" AND 
-    status > 0 
-    ' . $date_range;
+    $where = "
+      id LIKE '%$this->id%' AND
+      creditor_type LIKE '%$this->creditor_type%' AND
+      ruc LIKE '%$this->ruc%' AND
+      business_name LIKE '%$this->business_name%' AND
+      n_document LIKE '%$this->n_document%' AND
+      status_payment LIKE '%$this->status_payment%' AND
+      establishment_id LIKE '%$this->establishment_id%' AND
+      status LIKE '%$this->status%' AND 
+      status > 0 
+      $date_range
+    ";
 
 
     $info = "SELECT COUNT(*) as count 
@@ -68,10 +68,9 @@ class DebtsToPayModel extends Mysql
         ORDER BY id DESC LIMIT 0, $this->perPage
     ";
 
-    $items = $this->select_all_company($rows, $this->db_company);
-
     return [
-      'items' => $items,
+      'items' => $this->select_all_company($rows, $this->db_company),
+      'dates' => $this->select_dates_company('date', 'debts_to_pay', $this->db_company),
       'info' => $info_table
     ];
   }
@@ -96,8 +95,8 @@ class DebtsToPayModel extends Mysql
     float $amount,
     float $credit_note,
     string $date,
-    int $establishment_id,
     string $expiration_date,
+    int $establishment_id,
     int $status
   ) {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -122,7 +121,7 @@ class DebtsToPayModel extends Mysql
       description,
       amount,
       credit_note,
-      date,
+      date_issue,
       expiration_date,
       establishment_id,
       status
@@ -164,14 +163,14 @@ class DebtsToPayModel extends Mysql
   }
 
   public function insertRecordDebt(
-    $debt_id,
-    $expiration_date,
-    $payment_date,
-    $description,
-    $amount,
+    int $debt_id,
+    string $expiration_date,
+    string $payment_date,
+    string $description,
+    float $amount,
     $payment_method_id,
     $bank_entity_id,
-    $n_transaction,
+    string $n_transaction,
     $check_id,
     $payment_status
   ) {

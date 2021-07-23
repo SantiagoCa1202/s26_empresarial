@@ -25,3 +25,4 @@
   // Por Pagar = 0
   // Pagado = 1
   // Vencido = 2
+  // Anulado = 3

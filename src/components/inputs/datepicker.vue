@@ -94,7 +94,9 @@
                 <div
                   :class="[
                     'prev-date',
-                    dates.days.indexOf(day.fullDate) > -1 ? 'day-with-data' : '',
+                    dates.days.indexOf(day.fullDate) > -1
+                      ? 'day-with-data'
+                      : '',
                   ]"
                   :date="day.fullDate"
                 >
@@ -113,7 +115,9 @@
                   :class="[
                     today.day == day.fullDate ? 'today' : '',
                     disabled_date(day.fullDate) ? '' : 'date-disabled',
-                    dates.days.indexOf(day.fullDate) > -1 ? 'day-with-data' : '',
+                    dates.days.indexOf(day.fullDate) > -1
+                      ? 'day-with-data'
+                      : '',
                   ]"
                   :date="day.fullDate"
                 >
@@ -132,7 +136,9 @@
                   :class="[
                     'next-date',
                     disabled_date(day.fullDate) ? '' : 'date-disabled',
-                    dates.days.indexOf(day.fullDate) > -1 ? 'day-with-data' : '',
+                    dates.days.indexOf(day.fullDate) > -1
+                      ? 'day-with-data'
+                      : '',
                   ]"
                   :date="day.fullDate"
                 >
@@ -182,7 +188,9 @@
                   disabled_date(year + '-' + month.intMonth + '-01')
                     ? ''
                     : 'date-disabled',
-                    dates.months.indexOf(year + '-' + month.intMonth) > -1 ? 'day-with-data' : '',
+                  dates.months.indexOf(year + '-' + month.intMonth) > -1
+                    ? 'day-with-data'
+                    : '',
                 ]"
                 v-for="(month, index) in months"
                 :key="index"
@@ -439,6 +447,7 @@ export default {
       } else if (this.enable == "unique") {
         if (this.value !== n && n != "") {
           this.$emit("input", n);
+          $(`div.popup-datepicker`).hide("200");
         }
         setTimeout(() => {
           $(`.days .day div[date='${this.value}']`).addClass("day-active");

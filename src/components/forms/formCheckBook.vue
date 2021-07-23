@@ -140,6 +140,22 @@
   </s26-modal-multiple>
 </template>
 <script>
+const def_form = () => {
+  return {
+    id: "",
+    bank_account_id: "",
+    n_check: "",
+    beneficiary: "",
+    reason: "",
+    date_issue: "",
+    date_payment: "",
+    amount: "",
+    balance: "",
+    type: "",
+    payment_status: "",
+    created_at: "",
+  };
+};
 export default {
   props: {
     value: {
@@ -153,20 +169,8 @@ export default {
   },
   data: function () {
     return {
-      form: {
-        id: "",
-        bank_account_id: "",
-        n_check: "",
-        beneficiary: "",
-        reason: "",
-        date_issue: [],
-        date_payment: [],
-        amount: "",
-        balance: "",
-        type: "",
-        payment_status: "",
-        created_at: "",
-      },
+      form: def_form(),
+
       levels: ["Información de Cheque", "Información de Pago"],
     };
   },
@@ -194,11 +198,7 @@ export default {
     infoData(id) {
       this.axios
         .get("/checkBooks/getCheckBook/" + id)
-        .then((res) => {
-          this.form = res.data;
-          this.form.date_issue = [res.data.date_issue];
-          this.form.date_payment = [res.data.date_payment];
-        })
+        .then((res) => (this.form = res.data))
         .catch((err) => console.log(err));
     },
     onSubmit() {
@@ -231,7 +231,7 @@ export default {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        for (let i in this.form) this.form[i] = "";
+        this.form = def_form();
       }
       $("[s26-required]").removeClass("is-invalid");
     },

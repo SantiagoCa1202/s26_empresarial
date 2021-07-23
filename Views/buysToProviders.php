@@ -28,7 +28,8 @@
             <s26-form-input label="N° de Autorización" size="sm" id="n_authorization" type="text" v-model="filter.n_authorization" maxlength="50" @keyup="allRows" number></s26-form-input>
             <s26-select-establishment id="filter-establishment" all v-model="filter.establishment" @change="allRows"></s26-select-establishment>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
-            <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="Fecha de Emisión"></s26-date-picker>
+            <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date_issue" @change="allRows" label="Fecha de Emisión" :dates="s26_data.date_issue"></s26-date-picker>
+            <s26-date-picker id="date" enable="range" size="sm" v-model="filter.created_at" @change="allRows" label="Fecha de Registro" :dates="s26_data.created_at"></s26-date-picker>
           </div>
         </template>
         <template v-slot:info>
@@ -37,7 +38,7 @@
               <div class="col-12">
                 <s26-tarjet-info title="Registros" variant="primary" icon="list-ul">
                   <span class="fw-bold text-primary">
-                    {{ perPage }}
+                    {{ filter.perPage }}
                   </span>
                   &nbsp
                   <span class="text-lowercase">
@@ -45,17 +46,37 @@
                   </span>
                   &nbsp
                   <span class="fw-bold text-primary">
-                    {{ info.rows }}
+                    {{ s26_data.info.count }}
                   </span>
+                </s26-tarjet-info>
+                <s26-tarjet-info title="Total" variant="warning" icon="money-bill-wave">
+                  <s26-icon icon="dollar-sign" class="text-warning"></s26-icon>
+                  {{ $s26.currency(s26_data.info.total) }}
+                </s26-tarjet-info>
+                <s26-tarjet-info title="BI 12%" variant="purple" icon="money-bill-wave">
+                  <s26-icon icon="dollar-sign" class="s26-text-purple"></s26-icon>
+                  {{ $s26.currency(s26_data.info.total_bi_) }}
+                </s26-tarjet-info>
+                <s26-tarjet-info title="BI 0%" variant="orange" icon="money-bill-wave">
+                  <s26-icon icon="dollar-sign" class="s26-text-orange"></s26-icon>
+                  {{ $s26.currency(s26_data.info.total_bi_0) }}
+                </s26-tarjet-info>
+                <s26-tarjet-info title="Iva" variant="danger" icon="money-bill-wave">
+                  <s26-icon icon="dollar-sign" class="text-danger"></s26-icon>
+                  {{ $s26.currency(s26_data.info.total_iva) }}
+                </s26-tarjet-info>
+                <s26-tarjet-info title="Rise" variant="secondary" icon="money-bill-wave">
+                  <s26-icon icon="dollar-sign" class="text-secondary"></s26-icon>
+                  {{ $s26.currency(s26_data.info.total_rise) }}
                 </s26-tarjet-info>
               </div>
             </div>
           </div>
         </template>
       </s26-sidebar>
-      <s26-table :fields="fields" :rows="info.rows" @get="allRows" :sidebar="activeSidebar" v-model="perPage" action>
+      <s26-table :fields="fields" :rows="s26_data.info.count" @get="allRows" :sidebar="activeSidebar" v-model="filter.perPage" action>
         <template v-slot:body>
-          <tr v-for="item in items" :key="item.id">
+          <tr v-for="item in s26_data.items" :key="item.id">
             <td class="length-date">{{ $s26.formatDate(item.date_issue) }}</td>
             <td class="length-int">{{ item.n_document }}</td>
             <td class="length-description">

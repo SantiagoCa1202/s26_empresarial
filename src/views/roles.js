@@ -2,6 +2,16 @@ import Vue from "vue";
 
 let element = !!document.getElementById("s26-roles-view");
 if (element) {
+  const def_filter = () => {
+    return {
+      id: "",
+      name: "",
+      description: "",
+      status: "",
+      date: [],
+      perPage: 25,
+    };
+  };
   new Vue({
     el: "#s26-roles-view",
     data: function() {
@@ -20,57 +30,34 @@ if (element) {
             class: "length-status",
           },
         ],
-        filter: {
-          id: "",
-          name: "",
-          description: "",
-          status: "",
-          date: [],
-        },
-        rows: 0,
-        items: [],
-        dates: {},
-        perPage: 25,
-        idRow: "",
+        filter: def_filter(),
+        s26_data: { info: {} },
+        idRow: null,
         activeSidebar: true,
         action: "",
         url_export: "",
       };
     },
     created() {
-      if ($s26.readCookie("id")) {
-        this.setIdRow($s26.readCookie("id"), "watch");
-      }
+      if ($s26.readCookie("id")) this.setIdRow($s26.readCookie("id"), "watch");
+
       this.allRows();
     },
     methods: {
       allRows() {
-        const params = {
-          id: this.filter.id,
-          name: this.filter.name,
-          description: this.filter.description,
-          status: this.filter.status,
-          date: this.filter.date,
-          perPage: this.perPage,
-        };
+        const params = {};
+        for (let fil in this.filter) params[fil] = this.filter[fil];
+
         this.axios
           .get("/roles/getRoles/", {
             params,
           })
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-            this.dates = res.data.dates
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
         this.url_export = $s26.url_get("/roles/exportRoles/", params);
       },
       onReset() {
-        for (let fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.filter = def_filter();
         this.allRows();
       },
       setIdRow(id, type) {

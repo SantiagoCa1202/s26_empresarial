@@ -34,11 +34,8 @@ class BankAccounts extends Controllers
       $id = intval(strClean($id));
       if ($id > 0) {
         $arrData = $this->model->selectBankAccount($id);
-        if (empty($arrData)) {
-          $arrRes = 0;
-        } else {
-          $arrRes = $arrData;
-        }
+        $arrRes = (empty($arrData)) ? 0 : $arrData;
+
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
       }
     }

@@ -44,11 +44,7 @@ class Providers extends Controllers
       $id = intval(strClean($id));
       if ($id > 0) {
         $arrData = $this->model->selectProvider($id);
-        if (empty($arrData)) {
-          $arrRes = 0;
-        } else {
-          $arrRes = $arrData;
-        }
+        $arrRes = (empty($arrData)) ? 0 : $arrData;
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
       }
     }
@@ -249,14 +245,12 @@ class Providers extends Controllers
   {
     if ($_SESSION['permitsModule']['d']) {
       $id = intval($id);
-      $requestDelete = $this->model->deleteProvider($id);
-      if ($requestDelete == 1) {
-        $arrRes = array('type' => true, 'msg' => 'Proveedor Eliminado.');
-      } else {
-        $arrRes = array('type' => false, 'msg' => 'Error al eliminar Proveedor.');
-      }
-      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+      $request = $this->model->deleteRol($id);
+    } else {
+      $request = -5;
     }
+    $arrRes = s26_res("Proveedor", $request, 3);
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
 

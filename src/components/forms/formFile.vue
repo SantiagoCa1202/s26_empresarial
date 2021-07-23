@@ -43,13 +43,22 @@
       </div>
       <div class="col-12">
         <span class="fw-bold">Creado el:</span>
-        {{ form.created_at }}
+        {{ $s26.formatDate(form.created_at, "xl") }}
       </div>
     </template>
   </s26-modal-multiple>
 </template>
 
 <script>
+const def_form = () => {
+  return {
+    id: "",
+    name: "",
+    description: "",
+    status: 1,
+    created_at: "",
+  };
+};
 export default {
   props: {
     value: {
@@ -63,37 +72,19 @@ export default {
   },
   data: function () {
     return {
-      form: {
-        id: "",
-        name: "",
-        description: "",
-        status: 1,
-        created_at: "",
-      },
+      form: def_form(),
       levels: ["Información"],
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) {
-      this.infoData(this.id);
-    }
+    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
   methods: {
     infoData(id) {
       this.axios
         .get("/files/getFile/" + id)
-        .then((res) => {
-          this.form = res.data;
-          let date = new Date(res.data.created_at);
-          this.form.created_at = new Intl.DateTimeFormat("es-ES", {
-            dateStyle: "full",
-            timeStyle: "short",
-            calendar: "ecuador",
-          }).format(date);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => (this.form = res.data))
+        .catch((err) => console.log(err));
     },
     onSubmit() {
       this.form.id = this.id;
@@ -120,8 +111,11 @@ export default {
     },
 
     onReset() {
-      for (let i in this.form) this.form[i] = "";
-
+      if (this.id !== 0 && this.id) {
+        this.infoData(this.id);
+      } else {
+        this.form = def_form();
+      }
       $("[s26-required]").removeClass("is-invalid");
     },
     hideModal() {

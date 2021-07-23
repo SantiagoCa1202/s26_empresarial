@@ -23,10 +23,6 @@ export default {
     },
     post_delete: String,
   },
-  data: function () {
-    return {};
-  },
-  created() {},
   methods: {
     deleteRow() {
       $s26.show_loader_points();

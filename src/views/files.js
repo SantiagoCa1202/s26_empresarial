@@ -2,6 +2,16 @@ import Vue from "vue";
 
 let element = !!document.getElementById("s26-files-view");
 if (element) {
+  const def_filter = () => {
+    return {
+      id: "",
+      name: "",
+      date: [],
+      favorites: "",
+      status: "",
+      perPage: 25,
+    };
+  };
   new Vue({
     el: "#s26-files-view",
     data: function() {
@@ -28,16 +38,8 @@ if (element) {
             class: "length-action",
           },
         ],
-        filter: {
-          id: "",
-          name: "",
-          date: "",
-          favorites: "",
-          status: "",
-        },
-        rows: 0,
-        items: [],
-        perPage: 25,
+        filter: def_filter(),
+        s26_data: { info: {} },
         idRow: null,
         activeSidebar: true,
         activeUploadFile: false,
@@ -49,25 +51,15 @@ if (element) {
     },
     methods: {
       allRows() {
-        const params = {
-          id: this.filter.id,
-          name: this.filter.name,
-          date: this.filter.date,
-          favorites: this.filter.favorites,
-          status: this.filter.status,
-          perPage: this.perPage,
-        };
+        const params = {};
+        for (let fil in this.filter) params[fil] = this.filter[fil];
+
         this.axios
           .get("/files/getFiles/", {
             params,
           })
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
         this.url_export = $s26.url_get("/files/exportFiles/", params);
       },
       addToFavorites(id) {
@@ -83,18 +75,15 @@ if (element) {
             $s26.hide_loader_points();
             this.allRows();
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => console.log(e));
       },
       filterFavorites() {
         this.filter.favorites = this.filter.favorites == 1 ? "" : 1;
         this.allRows();
       },
       onReset() {
-        for (let fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.filter = def_filter();
+
         this.allRows();
       },
       setIdRow(id, type) {

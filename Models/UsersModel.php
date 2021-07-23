@@ -14,6 +14,7 @@ class UsersModel extends Mysql
   public $phone;
   public $role_id;
   public $establishment_id;
+  public $company_id;
   public $status;
   public $date;
   public $note;
@@ -39,8 +40,8 @@ class UsersModel extends Mysql
 
 
     $user_access = ($_SESSION['userData']['user_access'] == 0) ?
-      'u.establishment_id = ' . $_SESSION['userData']['establishment_id'] . ' AND'
-      : '';
+      " AND u.establishment_id = '{$_SESSION['userData']['establishment_id']}'"
+      : "";
 
     $this->id = $filter['id'];
     $this->document = $filter['document'];
@@ -50,29 +51,27 @@ class UsersModel extends Mysql
     $this->status = $filter['status'];
     $this->date = $filter['date'];
     $this->perPage = $perPage;
-
+    $this->company_id = $_SESSION['userData']['establishment']['company_id'];
 
     $date_range = ($this->date != '' && count($this->date) == 2) ?
-      ' AND u.created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "
-      ' . $this->date[1] . ' 23:59:59" OR u.created_at BETWEEN "
-      ' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"' : '';
+      " AND u.created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
-    $whereAdmin = "";
-    if (!$_SESSION['userData']['user_root']) {
-      $whereAdmin = "AND u.user_root != 1";
-    }
-    $where = '
-      u.id LIKE "%' . $this->id . '%" AND
-      u.document LIKE "%' . $this->document . '%" AND
-      (u.name LIKE "%' . $this->user . '%" OR u.last_name LIKE "%' . $this->user . '%") AND
-      u.role_id LIKE "%' . $this->role_id . '%" AND 
-      u.establishment_id LIKE "%' . $this->establishment_id . '%" AND
-      ' . $user_access . '
-      u.status LIKE "%' . $this->status . '%" AND 
+    //BLOQUEO DE VISTA USUARIOS ROOT
+    $whereAdmin = (!$_SESSION['userData']['user_root']) ? " AND u.user_root != 1" : "";
+
+    $where = "
+      u.id LIKE '%$this->id%' AND
+      u.document LIKE '%$this->document%' AND
+      (u.name LIKE '%$this->user%' OR u.last_name LIKE '%$this->user%') AND
+      u.role_id LIKE '%$this->role_id%' AND 
+      u.establishment_id LIKE '%$this->establishment_id%' AND
+      u.status LIKE '%$this->status%' AND 
       u.status > 0 AND 
-      e.company_id = "' . $_SESSION['userData']['establishment']['company_id'] . '"
-      ' . $date_range . $whereAdmin . '
-    ';
+      e.company_id = $this->company_id
+      $user_access
+      $date_range 
+      $whereAdmin
+    ";
 
     $info = "SELECT COUNT(*) as count 
       FROM users u
@@ -101,6 +100,7 @@ class UsersModel extends Mysql
 
     return [
       'items' => $items,
+      'dates' => $this->select_dates('created_at', 'users'),
       'info' => $info_table
     ];
   }
@@ -213,7 +213,7 @@ class UsersModel extends Mysql
     $this->create_notifications_users = $create_notifications_users;
     $this->status = $status;
 
-    $sql = "SELECT * FROM users WHERE id != '$this->id' AND (name = '$this->name' OR document = '$this->document' OR email = '$this->email')";
+    $sql = "SELECT * FROM users WHERE id != $this->id AND (name = '$this->name' OR document = '$this->document' OR email = '$this->email')";
     $request = $this->select_all($sql);
 
     if (empty($request)) {
@@ -274,9 +274,9 @@ class UsersModel extends Mysql
 
   public function updateDarkMode($val)
   {
-    $sql = 'UPDATE users SET 
-      dark_mode = "' . $val . '"
-      WHERE id = ' . $_SESSION['userData']['id'];
+    $sql = "UPDATE users SET 
+      dark_mode = $val
+      WHERE id = " . $_SESSION['userData']['id'];
     $request = $this->delete($sql);
 
     return $request;
@@ -313,10 +313,6 @@ class UsersModel extends Mysql
     ";
     $request = $this->select_company($sql, $this->db_company);
 
-    $request['amount_date'] = date(
-      "d/m/Y",
-      strtotime($request['amount_date'])
-    );
     $request['payment_method'] = $this->System->selectPaymentMethod($request['payment_method_id']);
     return $request;
   }
@@ -329,11 +325,8 @@ class UsersModel extends Mysql
     $this->date = $filter['date'];
     $this->perPage = $perPage;
 
-    $date_range = "";
-
-    if ($this->date != '' && count($this->date) == 2) {
-      $date_range = ' AND amount_date BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59" OR amount_date BETWEEN "' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"';
-    }
+    $date_range = ($this->date != '' && count($this->date) == 2) ?
+      " AND amount_date BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
     $info = "SELECT COUNT(*) as count FROM payments_records 
       WHERE user_id = $this->id $date_range";
@@ -346,10 +339,6 @@ class UsersModel extends Mysql
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['amount_date'] = date(
-        "d/m/Y",
-        strtotime($items[$i]['amount_date'])
-      );
       $items[$i]['payment_method'] = $this->System->selectPaymentMethod($items[$i]['payment_method_id']);
     }
 
@@ -388,13 +377,6 @@ class UsersModel extends Mysql
       ORDER BY id DESC";
 
     $items = $this->select_all_company($rows, $this->db_company);
-
-    for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['created_at'] = date(
-        "d/m/Y",
-        strtotime($items[$i]['created_at'])
-      );
-    }
 
     return [
       'items' => $items,
@@ -501,14 +483,6 @@ class UsersModel extends Mysql
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['expiration_date_xl'] = utf8_encode(
-        strftime(
-          '%A %d de %B de %Y',
-          strtotime(
-            date($items[$i]['expiration_date'])
-          )
-        )
-      );
       $issued_by = intval($items[$i]['issued_by']);
       $items[$i]['issued_by'] = $issued_by == 0 ?
         array('id' => 0, 'name' => $items[$i]['issued_by']) :
@@ -574,5 +548,4 @@ class UsersModel extends Mysql
 
     return $request;
   }
-
 }

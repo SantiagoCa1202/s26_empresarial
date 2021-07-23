@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-
 :root {
   --s26-blue: #243a46;
   --s26-dark-blue: #1a2830;
@@ -76,6 +75,14 @@ input[email] {
 
 /* Colors */
 
+.s26-text-purple {
+  color: var(--bs-purple)
+}
+
+.s26-text-orange {
+  color: var(--bs-orange)
+}
+
 .bg-s26-blue-gray {
   background-color: var(--s26-blue-gray);
 }
@@ -126,7 +133,7 @@ textarea.resize-none {
 
 .s26-form-group .form-icon-dollar {
   position: absolute;
-  top: 2.4rem;
+  top: 2.25rem;
   left: 0.5rem;
 }
 
@@ -378,6 +385,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   background: #ffffff;
   box-shadow: 0 0 9px 0 #80808078;
   z-index: 1000;
+  min-width: 260px;
 }
 
 .search-select {

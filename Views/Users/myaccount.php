@@ -202,13 +202,18 @@
                 </div>
               </div>
             </div>
-            <s26-table :fields="fields" :rows="rows" @get="payments_records" v-model="perPage" id info>
+            <s26-table :fields="fields" :rows="s26_data.info.count" @get="payments_records" v-model="filter.perPage" id info>
               <template v-slot:body>
-                <tr v-for="item in items" :key="item.id">
+                <tr v-for="item in s26_data.items" :key="item.id">
                   <td class="length-int">{{ item.id }}</td>
-                  <td class="length-action">{{ item.amount_date }}</td>
+                  <td class="length-action">
+                    {{ $s26.formatDate(item.amount_date) }}
+                  </td>
                   <td class="length-description">{{ item.description }}</td>
-                  <td class="length-action">{{ item.amount }}</td>
+                  <td class="length-action">
+                    <s26-icon icon="dollar-sign"></s26-icon>
+                    {{ $s26.currency(item.amount) }}
+                  </td>
                   <td class="length-action">{{ item.payment_method.name }}</td>
                   <td class="length-action">
                     <button class="btn-info-tbl" @click="idRow = parseInt(item.id)">
@@ -233,7 +238,7 @@
               <button class="btn btn-primary btn-sm ms-4" @click="idNote = parseInt(0)">Nuevo</button>
             </h2>
             <div class="row">
-              <div class="col-6 mb-3" v-for="item in items" :key="item.id">
+              <div class="col-6 mb-3" v-for="item in s26_data.items" :key="item.id">
                 <div class="card s26-card-notes" :style="'border-left: .4rem solid' + item.color ">
                   <div class="card-body">
                     <h3 class="card-title h6 fw-bold"> {{ item.name }} </h3>
@@ -274,7 +279,7 @@
               </button>
             </h2>
             <div class="row">
-              <div class="col-12 mb-3" v-for="item in items" :key="item.id">
+              <div class="col-12 mb-3" v-for="item in s26_data.items" :key="item.id">
                 <div class="card s26-card-notification">
                   <div class="card-body">
                     <div class="icon-notification">
@@ -302,7 +307,8 @@
                           {{ item.description }}
                         </div>
                         <div class="col-10 text-secondary">
-                          Vence el: {{ item.expiration_date_xl }}
+                          <span class="fw-bold">Vence el:</span>
+                          {{ $s26.formatDate(item.expiration_date, 'xl') }}
                         </div>
                         <div class="col-2 container-options-ntf">
                           <a :href="item.url" target="_blank" class="btn btn-link btn-sm btn-del-ntf" v-if="item.url != ''">

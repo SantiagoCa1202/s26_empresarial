@@ -5,6 +5,9 @@ class RolesModel extends Mysql
   public $rol;
   public $description;
   public $status;
+  public $date;
+  public $perPage;
+  public $company_id;
 
   public function __construct()
   {
@@ -19,27 +22,25 @@ class RolesModel extends Mysql
     $this->status = $filter['status'];
     $this->date = $filter['date'];
     $this->perPage = $perPage;
+    $this->company_id = $_SESSION['userData']['establishment']['company_id'];
 
-    $date_range = "";
-    if ($this->date != '' && count($this->date) == 2) {
-      $date_range = ' AND created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "' . $this->date[1] . ' 23:59:59"';
-    }
 
-    $whereAdmin = "";
-    if (!$_SESSION['userData']['user_root']) {
-      $whereAdmin = "AND id != 1";
-    }
 
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      name LIKE "%' . $this->rol . '%" AND
-      description LIKE "%' . $this->description . '%" AND
-      status LIKE "%' . $this->status . '%" AND 
+    $date_range = ($this->date != '' && count($this->date) == 2) ?
+      " AND created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
+
+    $whereAdmin = (!$_SESSION['userData']['user_root']) ? "AND id != 1" : "";
+
+    $where = "
+      id LIKE '%$this->id%' AND
+      name LIKE '%$this->rol%' AND
+      description LIKE '%$this->description%' AND
+      status LIKE '%$this->status%' AND 
       status > 0 AND 
-      (company_id = "' . $_SESSION['userData']['establishment']['company_id'] . '" OR
+      (company_id = $this->company_id OR
       company_id IS NULL)
-      ' . $date_range . $whereAdmin . '
-    ';
+      $date_range $whereAdmin
+    ";
 
     $info = "SELECT COUNT(*) as count FROM roles WHERE $where ";
     $info_table = $this->info_table($info);
@@ -56,8 +57,7 @@ class RolesModel extends Mysql
   public function selectRol(int $id)
   {
     $this->id = $id;
-    $sql = 'SELECT * FROM roles 
-      WHERE id = ' . $this->id;
+    $sql = "SELECT * FROM roles WHERE id = $this->id";
     $request = $this->select($sql);
     return $request;
   }
@@ -73,8 +73,8 @@ class RolesModel extends Mysql
 
       $sql = "
         SELECT * FROM roles 
-        WHERE name = '$this->rol' AND 
-        company_id = '$this->company_id'
+        WHERE name = $this->rol AND 
+        company_id = $this->company_id
       ";
       $request = $this->select_all($sql);
 
@@ -108,7 +108,7 @@ class RolesModel extends Mysql
       $sql = "SELECT * FROM roles 
         WHERE id != $this->id AND 
         name = '$this->rol' AND 
-        company_id = '$this->company_id' 
+        company_id = $this->company_id 
       ";
       $request = $this->select_all($sql);
 

@@ -2,6 +2,20 @@ import Vue from "vue";
 
 let element = !!document.getElementById("s26-checkBooks-view");
 if (element) {
+  const def_filter = () => {
+    return {
+      id: "",
+      bank_account_id: "",
+      n_check: "",
+      date_issue: [],
+      date_payment: [],
+      beneficiary: "",
+      reason: "",
+      type: "",
+      payment_status: "",
+      perPage: 25,
+    };
+  };
   new Vue({
     el: "#s26-checkBooks-view",
     data: function() {
@@ -32,20 +46,8 @@ if (element) {
             class: "length-action",
           },
         ],
-        filter: {
-          id: "",
-          bank_account_id: "",
-          n_check: "",
-          date_issue: "",
-          date_payment: "",
-          beneficiary: "",
-          reason: "",
-          type: "",
-          payment_status: "",
-        },
-        rows: 0,
-        items: [],
-        perPage: 25,
+        filter: def_filter(),
+        s26_data: { info: {} },
         idRow: null,
         activeSidebar: true,
         action: "",
@@ -53,42 +55,29 @@ if (element) {
       };
     },
     created() {
-      if ($s26.readCookie("id")) {
-        this.setIdRow($s26.readCookie("id"), "watch");
-      }
+      if ($s26.readCookie("id")) this.setIdRow($s26.readCookie("id"), "watch");
+
       this.allRows();
     },
     methods: {
       allRows() {
-        const params = {
-          id: this.filter.id,
-          bank_account_id: this.filter.bank_account_id,
-          n_check: this.filter.n_check,
-          date_issue: this.filter.date_issue,
-          date_payment: this.filter.date_payment,
-          beneficiary: this.filter.beneficiary,
-          reason: this.filter.reason,
-          type: this.filter.type,
-          payment_status: this.filter.payment_status,
-          perPage: this.perPage,
-        };
+        const params = {};
+        for (let fil in this.filter) params[fil] = this.filter[fil];
+
         this.axios
           .get("/checkBooks/getCheckBooks/", {
             params,
           })
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        this.url_export = $s26.url_get("/checkbooks/exportCheckbBooks/", params);
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
+        this.url_export = $s26.url_get(
+          "/checkbooks/exportCheckbBooks/",
+          params
+        );
       },
       onReset() {
-        for (let fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.filter = def_filter();
+
         this.allRows();
       },
       setIdRow(id, type) {

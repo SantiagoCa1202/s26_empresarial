@@ -17,9 +17,8 @@ if (element) {
       };
     },
     created() {
-      if ($s26.readCookie("id")) {
-        this.setIdRow($s26.readCookie("id"), "watch");
-      }
+      if ($s26.readCookie("id")) this.setIdRow($s26.readCookie("id"), "watch");
+
       this.allRows();
     },
     methods: {
@@ -45,9 +44,8 @@ if (element) {
         );
       },
       onReset() {
-        for (let fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.status = "";
+        this.perPage = 25;
         this.allRows();
       },
       setIdRow(id, type) {

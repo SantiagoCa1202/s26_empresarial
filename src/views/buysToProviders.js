@@ -2,6 +2,20 @@ import Vue from "vue";
 
 let element = !!document.getElementById("s26-buysToProviders-view");
 if (element) {
+  const def_filter = () => {
+    return {
+      id: "",
+      ruc: "",
+      business_name: "",
+      n_document: "",
+      n_authorization: "",
+      establishment: "",
+      status: "",
+      date_issue: [],
+      created_at: [],
+      perPage: 25,
+    };
+  };
   new Vue({
     el: "#s26-buysToProviders-view",
     data: function() {
@@ -12,7 +26,7 @@ if (element) {
             class: "length-date",
           },
           {
-            name: "N° de Documento",
+            name: "N° de Doc.",
             class: "length-int",
           },
           {
@@ -40,26 +54,8 @@ if (element) {
             class: "length-action text-center",
           },
         ],
-        filter: {
-          id: "",
-          ruc: "",
-          business_name: "",
-          n_document: "",
-          n_authorization: "",
-          establishment: "",
-          status: "",
-          date: "",
-        },
-        items: [],
-        info: {
-          rows: "",
-          total_rise: "",
-          total_bi_0: "",
-          total_bi_: "",
-          total_iva: "",
-          total: "",
-        },
-        perPage: 25,
+        filter: def_filter(),
+        s26_data: { info: {} },
         idRow: null,
         activeSidebar: true,
         action: "",
@@ -67,46 +63,26 @@ if (element) {
       };
     },
     created() {
-      if ($s26.readCookie("id")) {
-        this.setIdRow($s26.readCookie("id"), "watch");
-      }
+      if ($s26.readCookie("id")) this.setIdRow($s26.readCookie("id"), "watch");
+
       this.allRows();
     },
     methods: {
       allRows() {
-        const params = {
-          id: this.filter.id,
-          ruc: this.filter.ruc,
-          business_name: this.filter.business_name,
-          n_document: this.filter.n_document,
-          n_authorization: this.filter.n_authorization,
-          establishment: this.filter.establishment,
-          status: this.filter.status,
-          date: this.filter.date,
-          perPage: this.perPage,
-        };
+        const params = {};
+        for (let fil in this.filter) params[fil] = this.filter[fil];
+
         this.axios
           .get("/buysToProviders/getBuys/", {
             params,
           })
-          .then((res) => {
-            this.items = res.data.items;
-            this.info.rows = res.data.info.count;
-            this.info.total_rise = res.data.info.total_rise;
-            this.info.total_bi_0 = res.data.info.total_bi_0;
-            this.info.total_bi_ = res.data.info.total_bi_;
-            this.info.total_iva = res.data.info.total_iva;
-            this.info.total = res.data.info.total;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
         this.url_export = $s26.url_get("/buysToProviders/exportBuys/", params);
       },
       onReset() {
-        for (let fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.filter = def_filter();
+
         this.allRows();
       },
       setIdRow(id, type) {

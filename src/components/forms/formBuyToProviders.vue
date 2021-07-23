@@ -90,10 +90,11 @@
           enable="unique"
           size="sm"
           v-model="form.date_issue"
-          @change="form.credit_date = form.date_issue"
+          @change="form.counted_date = form.date_issue"
           label="Fecha"
           s26_required
           select_all_dates
+          today
         ></s26-date-picker>
       </div>
       <div class="col-6">
@@ -206,7 +207,7 @@
                 id="form-date_payment"
                 enable="unique"
                 size="sm"
-                v-model="form.credit_date"
+                v-model="form.counted_date"
                 label="Fecha"
                 select_all_dates
               ></s26-date-picker>
@@ -350,6 +351,36 @@
   </s26-modal-multiple>
 </template>
 <script>
+const def_form = () => {
+  return {
+    id: "",
+    provider_id: "",
+    document: "",
+    business_name: "",
+    description: "",
+    n_document: "",
+    type_doc_id: "",
+    payment_method: "",
+    date_issue: "",
+    n_authorization: "",
+    file_id: "",
+    created_at: "",
+    rise: "",
+    subtotal_0: "",
+    subtotal_12: "",
+    iva: "",
+    total: "",
+    total_import: "",
+    payment_type: 1,
+    credit_note: "",
+    payment_method_counted: "",
+    bank_entity_id: "",
+    check_id: "",
+    n_transaction: "",
+    counted_date: "",
+    credit_date: [],
+  };
+};
 export default {
   props: {
     value: {
@@ -363,33 +394,7 @@ export default {
   },
   data: function () {
     return {
-      form: {
-        id: "",
-        provider_id: "",
-        document: "",
-        business_name: "",
-        description: "",
-        n_document: "",
-        type_doc_id: "",
-        payment_method: "",
-        date_issue: "",
-        n_authorization: "",
-        file_id: "",
-        created_at: "",
-        rise: "",
-        subtotal_0: "",
-        subtotal_12: "",
-        iva: "",
-        total: "",
-        total_import: "",
-        payment_type: 1,
-        credit_note: "",
-        payment_method_counted: "",
-        bank_entity_id: "",
-        check_id: "",
-        n_transaction: "",
-        credit_date: "",
-      },
+      form: def_form(),
       levels: ["Información de Comprobante", "Totales", "Plazo"],
     };
   },
@@ -473,7 +478,7 @@ export default {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        for (let i in this.form) this.form[i] = "";
+        this.form = def_form();
       }
       this.form.payment_type = 1;
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");

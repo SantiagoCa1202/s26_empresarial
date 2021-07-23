@@ -29,7 +29,8 @@ class BuysToProviders extends Controllers
         'n_authorization' => !empty($_GET['n_authorization']) ? strClean($_GET['n_authorization']) : '',
         'establishment' => !empty($_GET['establishment']) ? intval($_GET['establishment']) : '',
         'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
-        'date' => !empty($_GET['date']) ? $_GET['date'] : '',
+        'date_issue' => !empty($_GET['date_issue']) ? $_GET['date_issue'] : '',
+        'created_at' => !empty($_GET['created_at']) ? $_GET['created_at'] : '',
       ];
       $arrData = $this->model->selectBuys($perPage, $filter);
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
@@ -43,11 +44,8 @@ class BuysToProviders extends Controllers
       $id = intval(strClean($id));
       if ($id > 0) {
         $arrData = $this->model->selectBuy($id);
-        if (empty($arrData)) {
-          $arrRes = 0;
-        } else {
-          $arrRes = $arrData;
-        }
+        $arrRes = (empty($arrData)) ? 0 : $arrData;
+
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
       }
     }
@@ -64,7 +62,7 @@ class BuysToProviders extends Controllers
     $n_document = !empty($_POST['n_document']) ? strClean($_POST['n_document']) : '';
     $type_doc_id = intval($_POST['type_doc_id']);
     $payment_method = intval($_POST['payment_method']);
-    $date_issue = strClean($_POST['date_issue'][0]);
+    $date_issue = strClean($_POST['date_issue']);
     $n_authorization = strClean($_POST['n_authorization']);
     $file_id = intval($_POST['file_id']);
     $rise = floatval($_POST['rise']);
@@ -78,6 +76,7 @@ class BuysToProviders extends Controllers
     $bank_entity_id = !empty($_POST['bank_entity_id']) ? intval($_POST['bank_entity_id']) : null;
     $check_id = !empty($_POST['check_id']) ? intval($_POST['check_id']) : null;
     $n_transaction = strClean($_POST['n_transaction']);
+    $counted_date = !empty($_POST['counted_date']) ? $_POST['counted_date'] : '';
     $credit_date = !empty($_POST['credit_date']) ? $_POST['credit_date'] : '';
 
     if ($_SESSION['permits'][41]['r']) {
@@ -85,15 +84,13 @@ class BuysToProviders extends Controllers
     } else {
       $establishment_id = $_SESSION['userData']['establishment_id'];
     }
-
     $status = !empty($_POST['status']) ? intval($_POST['status']) : 1;
     $request = "";
     $response = [];
     if (
       valString($document, 13, 13) &&
       valString($business_name, 5, 100) &&
-      val_doc($n_document) &&
-      $total !== '' && is_numeric($total) &&
+      ($total !== '' && is_numeric($total)) &&
       val_date($date_issue) &&
       ($payment_type == 1 || $payment_type == 2) &&
       ($status == 1 || $status == 2)
@@ -122,8 +119,8 @@ class BuysToProviders extends Controllers
           $type = 1;
 
           if ($request > 0) {
-            $d = count($credit_date);
-            $expiration_date = $credit_date[$d - 1];
+            $d = $payment_type == 1 ? '' : count($credit_date);
+            $expiration_date = $payment_type == 1 ? $counted_date : $credit_date[$d - 1];
 
             $description = $payment_type == 1 ? 'pago de contado' : 'pago diferido';
             //INGRESO DE CUENTA POR PAGAR
@@ -137,27 +134,42 @@ class BuysToProviders extends Controllers
               $description,
               $total_import,
               $credit_note,
-              $date_issue,
-              $establishment_id,
+              $payment_type == 1 ? $counted_date : $date_issue,
               $expiration_date,
+              $establishment_id,
               1
             );
             if ($request_debt > 0) {
-              $amount = ($total_import - $credit_note) / count($credit_date);
-              for ($i = 0; $i < count($credit_date); $i++) {
-                # code...
+              if ($payment_type == 1) {
                 $request_record_debt = $DebtsToPayModel->insertRecordDebt(
                   $request_debt,
-                  $credit_date[$i],
-                  '',
+                  $counted_date,
+                  $counted_date,
                   'pago de documento',
-                  $amount,
-                  $payment_type == 1 ? $payment_method_counted : '',
-                  $payment_type == 1 ? $bank_entity_id : '',
+                  $total_import,
+                  $payment_method_counted,
+                  $bank_entity_id,
                   $n_transaction,
-                  $payment_type == 1 ? $check_id : '',
-                  $payment_type == 1 ? 'pagado' : 'por pagar'
+                  $check_id,
+                  1
                 );
+              } else {
+                $amount = ($total_import - $credit_note) / count($credit_date);
+                for ($i = 0; $i < count($credit_date); $i++) {
+                  # code...
+                  $request_record_debt = $DebtsToPayModel->insertRecordDebt(
+                    $request_debt,
+                    $credit_date[$i],
+                    $credit_date[$i],
+                    'pago de documento',
+                    $amount,
+                    null,
+                    null,
+                    $n_transaction,
+                    '',
+                    0
+                  );
+                }
               }
             }
             $arrRes = s26_res("Cuenta Por Pagar", $request_debt, $type);

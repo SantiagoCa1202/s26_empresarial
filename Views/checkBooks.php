@@ -26,8 +26,8 @@
             <s26-select-bank-account size="sm" id="form-bank_account" v-model="filter.bank_account_id" all>
             </s26-select-bank-account>
             <s26-form-input label="N° de Cheque" size="sm" id="document" type="text" v-model="filter.n_check" maxlength="20" @keyup="allRows" number></s26-form-input>
-            <s26-date-picker id="date_issue" enable="range" size="sm" v-model="filter.date_issue" @change="allRows" label="Fecha de Emisión"></s26-date-picker>
-            <s26-date-picker id="date_payment" enable="range" size="sm" v-model="filter.date_payment" @change="allRows" label="Fecha de Pago"></s26-date-picker>
+            <s26-date-picker id="date_issue" enable="range" size="sm" v-model="filter.date_issue" @change="allRows" label="Fecha de Emisión" :dates="s26_data.date_issue"></s26-date-picker>
+            <s26-date-picker id="date_payment" enable="range" size="sm" v-model="filter.date_payment" @change="allRows" label="Fecha de Pago" :dates="s26_data.date_payment"></s26-date-picker>
             <s26-form-input label="Beneficiario" size="sm" id="beneficiary" type="text" v-model="filter.beneficiary" maxlength="100" @keyup="allRows" text></s26-form-input>
             <s26-form-input label="Motivo" size="sm" id="reason" type="text" v-model="filter.reason" maxlength="100" @keyup="allRows" text></s26-form-input>
             <div class="mb-3 s26-form-group">
@@ -59,7 +59,7 @@
               <div class="col-12">
                 <s26-tarjet-info title="Registros" variant="primary" icon="list-ul">
                   <span class="fw-bold text-primary">
-                    {{ perPage }}
+                    {{ filter.perPage }}
                   </span>
                   &nbsp
                   <span class="text-lowercase">
@@ -67,7 +67,7 @@
                   </span>
                   &nbsp
                   <span class="fw-bold text-primary">
-                    {{ rows }}
+                    {{ s26_data.info.count }}
                   </span>
                 </s26-tarjet-info>
               </div>
@@ -75,9 +75,9 @@
           </div>
         </template>
       </s26-sidebar>
-      <s26-table :fields="fields" :rows="rows" @get="allRows" :sidebar="activeSidebar" v-model="perPage" id action>
+      <s26-table :fields="fields" :rows="s26_data.info.count" @get="allRows" :sidebar="activeSidebar" v-model="filter.perPage" id action>
         <template v-slot:body>
-          <tr v-for="item in items" :key="item.id">
+          <tr v-for="item in s26_data.items" :key="item.id">
             <td class="length-int">{{ item.id }}</td>
             <td class="length-int" :title="item.bank_account.bank_entity.bank_entity">
               {{ (item.n_check).padStart(6, '0') }}

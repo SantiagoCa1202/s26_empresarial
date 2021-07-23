@@ -28,6 +28,7 @@ if (element) {
         ],
         filter: {
           date: "",
+          perPage: 25,
         },
         icon: {
           building: {
@@ -41,14 +42,12 @@ if (element) {
         },
         payRoll_arr: {},
         modal: "info_user",
-        items: [],
-        rows: 0,
+        s26_data: { info: {} },
         idRow: null,
         idNote: null,
         idNotification: null,
         del_note: null,
         del_notification: null,
-        perPage: 25,
         idUser: idUser,
       };
     },
@@ -62,50 +61,33 @@ if (element) {
             this.payRoll_arr = res.data;
             this.payments_records();
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => console.log(err));
       },
       payments_records() {
         const params = {
           date: this.filter.date,
-          perPage: this.perPage,
+          perPage: this.filter.perPage,
         };
         this.axios
           .get("/users/getPayRecords/", {
             params,
           })
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
       },
       my_notes() {
         this.modal = "my_notes";
         this.axios
           .get("/users/getMyNotes/")
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
       },
       notifications() {
         this.modal = "notifications";
         this.axios
           .get("/users/getNotifications/")
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
       },
     },
   });

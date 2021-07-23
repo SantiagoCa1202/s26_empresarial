@@ -41,7 +41,7 @@
       <div class="col-6">
         <s26-input-read
           label="Fecha de Nacimiento."
-          :content="form.date_of_birth"
+          :content="$s26.formatDate(form.date_of_birth)"
         ></s26-input-read>
       </div>
     </template>
@@ -89,7 +89,7 @@
       <div class="col-8">
         <s26-input-read
           label="Creado El:"
-          :content="$S26.formatDate(form.created_at)"
+          :content="$s26.formatDate(form.created_at)"
         ></s26-input-read>
       </div>
     </template>

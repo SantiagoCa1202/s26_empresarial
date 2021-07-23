@@ -121,6 +121,11 @@
   </s26-modal>
 </template>
 <script>
+const def_form = () => {
+  return {
+    upload_photos_data: [],
+  };
+};
 export default {
   data: function () {
     return {
@@ -130,12 +135,9 @@ export default {
       rows: 0,
       row: 0,
       upload_photos: [],
-      form: {
-        upload_photos_data: [],
-      },
+      form: def_form(),
     };
   },
-  created() {},
   methods: {
     onSubmit() {
       let formData = $s26.json_to_formData(this.form);
@@ -156,9 +158,7 @@ export default {
           $s26.hide_loader_points();
           this.$emit("update");
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     },
     validate_image() {
       let input_img = document.querySelector("#inputUploadPhotos");
@@ -198,8 +198,7 @@ export default {
     },
     onReset() {
       this.upload_photos = [];
-      this.form = {};
-      this.form.upload_photos_data = [];
+      this.form = def_form();
     },
     remove_photo(id) {
       this.upload_photos.splice(id, 1);

@@ -241,7 +241,7 @@ export default {
   border: 0;
 }
 .modal-multiple-header .modal-title {
-  font-weight: bold;
+  font-weight: 600;
 }
 .modal-multiple-header .actions-s26-modal {
   position: absolute;
@@ -297,7 +297,6 @@ export default {
 .modal-multiple-header .modal-sub-title {
   width: 100%;
   text-align: center;
-  font-weight: bold;
   font-size: 1.1rem;
   opacity: 0.7;
   padding-top: 0.5rem;

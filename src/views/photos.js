@@ -1,19 +1,21 @@
 import Vue from "vue";
 let element = !!document.getElementById("s26-photos-view");
 if (element) {
+  const def_filter = () => {
+    return {
+      name: "",
+      favorites: "",
+      date: [],
+      status: "",
+      perPage: 8,
+    };
+  };
   new Vue({
     el: "#s26-photos-view",
     data: function() {
       return {
-        filter: {
-          name: "",
-          favorites: "",
-          date: "",
-          status: "",
-        },
-        rows: 0,
-        items: [],
-        perPage: 8,
+        filter: def_filter(),
+        s26_data: { info: {} },
         idRow: null,
         activeSidebar: true,
         activeUploadPhoto: false,
@@ -25,24 +27,15 @@ if (element) {
     },
     methods: {
       allRows() {
-        const params = {
-          name: this.filter.name,
-          date: this.filter.date,
-          favorites: this.filter.favorites,
-          status: this.filter.status,
-          perPage: this.perPage,
-        };
+        const params = {};
+        for (let fil in this.filter) params[fil] = this.filter[fil];
+
         this.axios
           .get("/photos/getPhotos/", {
             params,
           })
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
       },
       addToFavorites(id) {
         $s26.show_loader_points();
@@ -57,19 +50,15 @@ if (element) {
             $s26.hide_loader_points();
             this.allRows();
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => console.log(e));
       },
       filterFavorites() {
         this.filter.favorites = this.filter.favorites == 1 ? "" : 1;
         this.allRows();
       },
       onReset() {
-        this.perPage = 8;
-        for (let fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.filter = def_filter();
+
         this.allRows();
       },
       setIdRow(id, type) {
@@ -77,8 +66,9 @@ if (element) {
         this.action = type;
       },
       loadMore() {
-        let perPage = this.rows - this.perPage;
-        this.perPage = perPage > 8 ? this.perPage + 8 : this.rows;
+        let perPage = this.s26_data.info.count - this.filter.perPage;
+        this.filter.perPage =
+          perPage > 8 ? this.filter.perPage + 8 : this.s26_data.info.count;
         this.allRows();
       },
     },

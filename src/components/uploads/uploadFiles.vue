@@ -127,6 +127,11 @@
   </s26-modal>
 </template>
 <script>
+const def_form = () => {
+  return {
+    upload_files_data: [],
+  };
+};
 export default {
   data: function () {
     return {
@@ -135,12 +140,9 @@ export default {
       rows: 0,
       row: 0,
       upload_files: [],
-      form: {
-        upload_files_data: [],
-      },
+      form: def_form(),
     };
   },
-  created() {},
   methods: {
     onSubmit() {
       let formData = $s26.json_to_formData(this.form);
@@ -161,9 +163,7 @@ export default {
           $s26.hide_loader_points();
           this.$emit("update");
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     },
     validate_file() {
       let input_file = document.querySelector("#inputUploadFiles");
@@ -208,16 +208,13 @@ export default {
     },
     searchDocument(name) {
       for (let i in this.upload_files) {
-        if (this.upload_files[i]["name"] == name) {
-          return false;
-        }
+        if (this.upload_files[i]["name"] == name) return;
       }
       return true;
     },
     onReset() {
       this.upload_files = [];
-      this.form = {};
-      this.form.upload_files_data = [];
+      this.form = def_form();
     },
     remove_file(id) {
       this.upload_files.splice(id, 1);

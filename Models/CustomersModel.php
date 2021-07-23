@@ -36,22 +36,20 @@ class CustomersModel extends Mysql
 
 
     $date_range = ($this->date != '' && count($this->date) == 2) ?
-      ' AND created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "
-      ' . $this->date[1] . ' 23:59:59" OR created_at BETWEEN "
-      ' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"' : '';
+      " AND u.created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
 
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      document LIKE "%' . $this->document . '%" AND
-      full_name LIKE "%' . $this->name . '%" AND
-      address LIKE "%' . $this->address . '%" AND
-      phone LIKE "%' . $this->phone . '%" AND
-      mobile LIKE "%' . $this->mobile . '%" AND
-      email LIKE "%' . $this->email . '%" AND
-      status LIKE "%' . $this->status . '%" AND 
+    $where = "
+      id LIKE '%$this->id%' AND
+      document LIKE '%$this->document%' AND
+      full_name LIKE '%$this->name%' AND
+      address LIKE '%$this->address%' AND
+      phone LIKE '%$this->phone%' AND
+      mobile LIKE '%$this->mobile%' AND
+      email LIKE '%$this->email%' AND
+      status LIKE '%$this->status%' AND 
       status > 0 
-      ' . $date_range;
+      $date_range";
 
     $info = "SELECT COUNT(*) as count 
       FROM customers
@@ -70,6 +68,7 @@ class CustomersModel extends Mysql
 
     return [
       'items' => $items,
+      'dates' => $this->select_dates_company('created_at', 'customers', $this->db_company),
       'info' => $info_table
     ];
   }
@@ -100,7 +99,6 @@ class CustomersModel extends Mysql
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $return = "";
     $this->document = $document;
     $this->name = $name;
     $this->address = $address;

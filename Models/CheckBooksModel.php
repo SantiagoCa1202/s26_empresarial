@@ -38,30 +38,23 @@ class CheckBooksModel extends Mysql
     $this->payment_status = $filter['payment_status'];
     $this->perPage = $perPage;
 
-
     $date_issue = ($this->date_issue != '' && count($this->date_issue) == 2) ?
-      ' AND date_issue BETWEEN "' . $this->date_issue[0] . ' 00:00:00" AND "
-      ' . $this->date[1] . ' 23:59:59" OR date_issue BETWEEN "
-      ' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"' : '';
+      " AND date_issue BETWEEN '{$this->date_issue[0]} 00:00:00' AND '{$this->date_issue[1]}  23:59:59'" : "";
 
     $date_payment = ($this->date_payment != '' && count($this->date_payment) == 2) ?
-      ' AND date_payment BETWEEN "' . $this->date_payment[0] . ' 00:00:00" AND "
-    ' . $this->date[1] . ' 23:59:59" OR date_payment BETWEEN "
-    ' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"' : '';
+      " AND date_payment BETWEEN '{$this->date_payment[0]} 00:00:00' AND '{$this->date_payment[1]}  23:59:59'" : "";
 
-
-
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      bank_account_id LIKE "%' . $this->bank_account_id . '%" AND
-      n_check LIKE "%' . $this->n_check . '%" AND
-      date_issue LIKE "%' . $this->date_issue . '%" AND
-      date_payment LIKE "%' . $this->date_payment . '%" AND
-      beneficiary LIKE "%' . $this->beneficiary . '%" AND
-      reason LIKE "%' . $this->reason . '%" AND
-      type LIKE "%' . $this->type . '%" AND
-      payment_status LIKE "%' . $this->payment_status . '%"
-      ' . $date_issue . $date_payment;
+    $where = "
+      id LIKE '%$this->id%' AND
+      bank_account_id LIKE '%$this->bank_account_id%' AND
+      n_check LIKE '%$this->n_check%' AND
+      beneficiary LIKE '%$this->beneficiary%' AND
+      reason LIKE '%$this->reason%' AND
+      type LIKE '%$this->type%' AND
+      payment_status LIKE '%$this->payment_status%'
+      $date_issue
+      $date_payment
+    ";
 
     $info = "SELECT COUNT(*) as count 
       FROM checkbooks
@@ -84,6 +77,8 @@ class CheckBooksModel extends Mysql
 
     return [
       'items' => $items,
+      'date_issue' => $this->select_dates_company('date_issue', 'checkbooks', $this->db_company),
+      'date_payment' => $this->select_dates_company('date_payment', 'checkbooks', $this->db_company),
       'info' => $info_table
     ];
   }

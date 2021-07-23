@@ -2,6 +2,17 @@ import Vue from "vue";
 
 let element = !!document.getElementById("s26-customers-view");
 if (element) {
+  const def_filter = () => {
+    return {
+      id: "",
+      document: "",
+      name: "",
+      email: "",
+      date: [],
+      status: "",
+      perPage: 25,
+    };
+  };
   new Vue({
     el: "#s26-customers-view",
     data: function() {
@@ -32,17 +43,8 @@ if (element) {
             class: "length-action",
           },
         ],
-        filter: {
-          id: "",
-          document: "",
-          name: "",
-          email: "",
-          date: "",
-          status: "",
-        },
-        rows: 0,
-        items: [],
-        perPage: 25,
+        filter: def_filter(),
+        s26_data: { info: {} },
         idRow: null,
         activeSidebar: true,
         action: "",
@@ -50,39 +52,26 @@ if (element) {
       };
     },
     created() {
-      if ($s26.readCookie("id")) {
-        this.setIdRow($s26.readCookie("id"), "watch");
-      }
+      if ($s26.readCookie("id")) this.setIdRow($s26.readCookie("id"), "watch");
+
       this.allRows();
     },
     methods: {
       allRows() {
-        const params = {
-          id: this.filter.id,
-          document: this.filter.document,
-          name: this.filter.name,
-          email: this.filter.email,
-          date: this.filter.date,
-          status: this.filter.status,
-          perPage: this.perPage,
-        };
+        const params = {};
+        for (let fil in this.filter) params[fil] = this.filter[fil];
+
         this.axios
           .get("/customers/getCustomers/", {
             params,
           })
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+          .catch((err) => console.log(err));
         this.url_export = $s26.url_get("/customers/exportCustomers/", params);
       },
       onReset() {
-        for (let fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.filter = def_filter();
+
         this.allRows();
       },
       setIdRow(id, type) {

@@ -28,7 +28,7 @@
             <s26-form-input label="Nombre" size="sm" id="name" type="text" v-model="filter.name" maxlength="100" @keyup="allRows" text></s26-form-input>
             <s26-form-input label="Descripción" size="sm" id="description" type="text" v-model="filter.description" maxlength="100" @keyup="allRows" text></s26-form-input>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
-            <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha" :dates="dates"></s26-date-picker>
+            <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha" :dates="s26_data.dates"></s26-date-picker>
           </div>
         </template>
         <template v-slot:info>
@@ -37,7 +37,7 @@
               <div class="col-12">
                 <s26-tarjet-info title="Registros" variant="primary" icon="list-ul">
                   <span class="fw-bold text-primary">
-                    {{ perPage }}
+                    {{ filter.perPage }}
                   </span>
                   &nbsp
                   <span class="text-lowercase">
@@ -45,7 +45,7 @@
                   </span>
                   &nbsp
                   <span class="fw-bold text-primary">
-                    {{ rows }}
+                    {{ s26_data.info.count }}
                   </span>
                 </s26-tarjet-info>
               </div>
@@ -53,9 +53,9 @@
           </div>
         </template>
       </s26-sidebar>
-      <s26-table :fields="fields" :rows="rows" @get="allRows" :sidebar="activeSidebar" v-model="perPage" id action>
+      <s26-table :fields="fields" :rows="s26_data.info.count" @get="allRows" :sidebar="activeSidebar" v-model="filter.perPage" id action>
         <template v-slot:body>
-          <tr v-for="item in items" :key="item.id">
+          <tr v-for="item in s26_data.items" :key="item.id">
             <td class="length-int">{{ item.id }}</td>
             <td class="length-description">{{ item.name }}</td>
             <td class="length-description">{{ item.description }}</td>

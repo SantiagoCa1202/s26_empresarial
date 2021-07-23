@@ -9,12 +9,19 @@
           <s26-input-read label="Id" :content="form.id"></s26-input-read>
         </div>
         <div class="col-12 col-sm-6">
-          <s26-input-read label="Fecha" :content="form.amount_date">
+          <s26-input-read
+            label="Fecha"
+            :content="$s26.formatDate(form.amount_date)"
+          >
           </s26-input-read>
         </div>
         <div class="col-12 col-sm-6">
-          <s26-input-money-read label="Importe / Valor" :content="form.amount">
-          </s26-input-money-read>
+          <s26-input-read
+            label="Importe / Valor"
+            :content="form.amount"
+            money
+          >
+          </s26-input-read>
         </div>
         <div class="col-12 col-sm-6">
           <s26-input-read

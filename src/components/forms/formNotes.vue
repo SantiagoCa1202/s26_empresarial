@@ -41,7 +41,7 @@
             </div>
           </div>
           <div class="col-12 mb-4" v-if="value !== 0">
-            {{ $s26.formatDate(form.created_at) }}
+            {{ $s26.formatDate(form.created_at, "xl") }}
           </div>
         </div>
       </form>
@@ -61,6 +61,15 @@
   </s26-modal>
 </template>
 <script>
+const def_form = () => {
+  return {
+    id: "",
+    name: "",
+    note: "",
+    color: "#ffc107",
+    created_at: "",
+  };
+};
 export default {
   props: {
     value: {
@@ -70,13 +79,7 @@ export default {
   },
   data: function () {
     return {
-      form: {
-        id: "",
-        name: "",
-        note: "",
-        color: "#ffc107",
-        created_at: "",
-      },
+      form: def_form(),
     };
   },
   created() {
@@ -111,11 +114,8 @@ export default {
         .catch((e) => console.log(e));
     },
     onReset() {
-      this.form.name = "";
-      this.form.note = "";
-      this.form.color = "#ffc107";
+      this.form = def_form();
     },
-
     hideModal() {
       this.$emit("input", null);
     },

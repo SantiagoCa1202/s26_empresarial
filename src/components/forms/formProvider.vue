@@ -264,6 +264,38 @@
 </template>
 
 <script>
+const def_form = () => {
+  return {
+    trade_information: {
+      document: "",
+      business_name: "",
+      tradename: "",
+      alias: "",
+    },
+    contacts: {
+      phone: "",
+      phone_2: "",
+      mobile_provider: "",
+      email: "",
+      seller: "",
+      mobile_seller: "",
+    },
+    current_address: {
+      city: "",
+      address: "",
+    },
+    bank_accounts: {
+      account_number: "",
+      bank_entity_id: "",
+      document: "",
+      beneficiary: "",
+      account_type: "",
+    },
+    categories: [],
+    status: 1,
+    created_at: "",
+  };
+};
 export default {
   props: {
     value: {
@@ -285,37 +317,7 @@ export default {
         "Cuenta Bancaria",
         "Categorías",
       ],
-      form: {
-        trade_information: {
-          document: "",
-          business_name: "",
-          tradename: "",
-          alias: "",
-        },
-        contacts: {
-          phone: "",
-          phone_2: "",
-          mobile_provider: "",
-          email: "",
-          seller: "",
-          mobile_seller: "",
-        },
-        current_address: {
-          city: "",
-          address: "",
-        },
-        bank_accounts: {
-          account_number: "",
-          bank_entity_id: "",
-          document: "",
-          beneficiary: "",
-          account_type: "",
-        },
-
-        categories: [],
-        status: 1,
-        created_at: "",
-      },
+      form: def_form(),
     };
   },
   created() {
@@ -363,17 +365,7 @@ export default {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        for (let i in this.form.trade_information)
-          this.form.trade_information[i] = "";
-
-        for (let i in this.form.contacts) this.form.contacts[i] = "";
-
-        for (let i in this.form.current_address)
-          this.form.current_address[i] = "";
-
-        for (let i in this.form.bank_accounts) this.form.bank_accounts[i] = "";
-
-        this.form.categories = [];
+        this.form = def_form();
       }
     },
     getCategories() {

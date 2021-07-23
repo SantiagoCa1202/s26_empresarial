@@ -95,8 +95,11 @@ export default {
   },
   mounted: function () {
     this.allRows();
-
-    if (this.value != 0) this.selectRow(this.value);
+  },
+  created: function () {
+    setTimeout(() => {
+      if (this.value != 0) this.selectRow(this.value);
+    }, 50);
   },
   methods: {
     allRows() {

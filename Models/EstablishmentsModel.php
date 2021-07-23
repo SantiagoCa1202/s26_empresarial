@@ -30,14 +30,16 @@ class EstablishmentsModel extends Mysql
     $this->city = $filter['city'];
     $this->status = $filter['status'];
     $this->perPage = $perPage;
+    $this->company_id = $_SESSION['userData']['establishment']['company_id'];
 
-    $where = '
-      n_establishment LIKE "%' . $this->n_establishment . '%" AND
-      tradename LIKE "%' . $this->tradename . '%" AND 
-      city LIKE "%' . $this->city . '%" AND 
-      status LIKE "%' . $this->status . '%" AND 
+    $where = "
+      n_establishment LIKE '%$this->n_establishment%' AND
+      tradename LIKE '%$this->tradename%' AND 
+      city LIKE '%$this->city%' AND 
+      status LIKE '%$this->status%' AND 
       status > 0 AND
-      company_id = ' . $_SESSION['userData']['establishment']['company_id'];
+      company_id = $this->company_id
+    ";
 
     $info = "SELECT COUNT(*) as count FROM establishments WHERE $where ";
     $info_table = $this->info_table($info);

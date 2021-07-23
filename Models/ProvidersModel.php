@@ -39,22 +39,19 @@ class ProvidersModel extends Mysql
     $this->status = $filter['status'];
     $this->perPage = $perPage;
 
-
     $date_range = ($this->date != '' && count($this->date) == 2) ?
-      ' AND created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "
-      ' . $this->date[1] . ' 23:59:59" OR created_at BETWEEN "
-      ' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"' : '';
+      " AND created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
-
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      document LIKE "%' . $this->document . '%" AND
-      business_name LIKE "%' . $this->business_name . '%" AND
-      tradename LIKE "%' . $this->tradename . '%" AND
-      city LIKE "%' . $this->city . '%" AND
-      status LIKE "%' . $this->status . '%" AND 
+    $where = "
+      id LIKE '%$this->id%' AND
+      document LIKE '%$this->document%' AND
+      business_name LIKE '%$this->business_name%' AND
+      tradename LIKE '%$this->tradename%' AND
+      city LIKE '%$this->city%' AND
+      status LIKE '%$this->status%' AND 
       status > 0 
-      ' . $date_range;
+      $date_range
+    ";
 
     $info = "SELECT COUNT(*) as count 
       FROM providers
@@ -73,6 +70,7 @@ class ProvidersModel extends Mysql
 
     return [
       'items' => $items,
+      'dates' => $this->select_dates_company('created_at', 'providers', $this->db_company),
       'info' => $info_table
     ];
   }

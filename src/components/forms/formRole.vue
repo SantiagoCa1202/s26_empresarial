@@ -68,6 +68,14 @@
   </s26-modal>
 </template>
 <script>
+const def_form = () => {
+  return {
+    id: "",
+    name: "",
+    description: "",
+    status: 1,
+  };
+};
 export default {
   props: {
     value: {
@@ -81,12 +89,7 @@ export default {
   },
   data() {
     return {
-      form: {
-        id: "",
-        name: "",
-        description: "",
-        status: 1,
-      },
+      form: def_form(),
     };
   },
   created() {
@@ -105,7 +108,7 @@ export default {
         this.$alertify.error(
           "Es Necesario Llenar todos los campos requeridos."
         );
-        return false;
+        return;
       }
 
       this.$alertify.confirm(
@@ -133,8 +136,7 @@ export default {
       );
     },
     onReset() {
-      for (let i in this.form) this.form[i] = "";
-
+      this.form = def_form();
       $("[s26-required]").removeClass("is-invalid");
     },
     hideModal() {

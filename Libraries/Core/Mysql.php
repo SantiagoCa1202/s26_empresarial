@@ -61,7 +61,7 @@ class Mysql extends Connection
 
     $months = $this->connection_system->prepare($this->strQuery);
     $months->execute();
-    
+
     return [
       'days' => $days->fetchall(PDO::FETCH_COLUMN),
       'months' => $months->fetchall(PDO::FETCH_COLUMN),
@@ -138,6 +138,29 @@ class Mysql extends Connection
     $data = $result->fetchall(PDO::FETCH_ASSOC);
     return $data;
   }
+
+  public function select_dates_company(string $column, string $table, string $db_company)
+  {
+    $this->connection_company = $this->connection->connect_company($db_company);
+
+    $query = "SELECT DISTINCTROW DATE($column) as day FROM $table";
+    $this->strQuery = $query;
+
+    $days = $this->connection_company->prepare($this->strQuery);
+    $days->execute();
+
+    $query = "SELECT DISTINCTROW DATE_FORMAT($column,'%Y-%m') as month FROM $table";
+    $this->strQuery = $query;
+
+    $months = $this->connection_company->prepare($this->strQuery);
+    $months->execute();
+
+    return [
+      'days' => $days->fetchall(PDO::FETCH_COLUMN),
+      'months' => $months->fetchall(PDO::FETCH_COLUMN),
+    ];
+  }
+
 
   public function info_table_company(string $query, string $db_company)
   {

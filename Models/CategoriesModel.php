@@ -19,7 +19,7 @@ class CategoriesModel extends Mysql
   {
     parent::__construct();
 
-    $this->Icon = new UsersModel;
+    $this->Icon = new SystemModel;
     $this->Photo = new PhotosModel;
   }
 
@@ -34,20 +34,17 @@ class CategoriesModel extends Mysql
     $this->status = $filter['status'];
     $this->perPage = $perPage;
 
-
     $date_range = ($this->date != '' && count($this->date) == 2) ?
-      ' AND created_at BETWEEN "' . $this->date[0] . ' 00:00:00" AND "
-      ' . $this->date[1] . ' 23:59:59" OR created_at BETWEEN "
-      ' . $this->date[1] . ' 00:00:00" AND "' . $this->date[0] . ' 23:59:59"' : '';
+      " AND created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
-
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      name LIKE "%' . $this->name . '%" AND
-      description LIKE "%' . $this->description . '%" AND
-      status LIKE "%' . $this->status . '%" AND 
+    $where = "
+      id LIKE '%$this->id%' AND
+      name LIKE '%$this->name%' AND
+      description LIKE '%$this->description%' AND
+      status LIKE '%$this->status%' AND 
       status > 0 
-      ' . $date_range;
+      $date_range
+    ";
 
     $info = "SELECT COUNT(*) as count 
       FROM categories
@@ -70,6 +67,7 @@ class CategoriesModel extends Mysql
     }
     return [
       'items' => $items,
+      'dates' => $this->select_dates_company('created_at', 'categories', $this->db_company),
       'info' => $info_table
     ];
   }

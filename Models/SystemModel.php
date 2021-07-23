@@ -34,11 +34,11 @@ class SystemModel extends Mysql
     $this->bank_entity = $filter['bank_entity'];
     $this->perPage = $perPage;
 
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      bank_entity LIKE "%' . $this->bank_entity . '%" AND
+    $where = "
+      id LIKE '%$this->id%' AND
+      bank_entity LIKE '%$this->bank_entity%' AND
       status > 0
-    ';
+    ";
 
     $info = "SELECT COUNT(*) as count 
       FROM bank_entities
@@ -86,11 +86,11 @@ class SystemModel extends Mysql
     $this->name = $filter['name'];
     $this->perPage = $perPage;
 
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      name LIKE "%' . $this->name . '%" AND
+    $where = "
+      id LIKE '%$this->id%' AND
+      name LIKE '%$this->name%' AND
       status > 0
-    ';
+    ";
 
     $info = "SELECT COUNT(*) as count 
       FROM documents
@@ -128,11 +128,11 @@ class SystemModel extends Mysql
     $this->name = $filter['name'];
     $this->perPage = $perPage;
 
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      name LIKE "%' . $this->name . '%" AND
+    $where = "
+      id LIKE '%$this->id%' AND
+      name LIKE '%$this->name%' AND
       status > 0
-    ';
+    ";
 
     $info = "SELECT COUNT(*) as count 
       FROM payment_methods
@@ -168,18 +168,18 @@ class SystemModel extends Mysql
     $this->name = $filter['name'];
     $this->perPage = $perPage;
 
-    $info = 'SELECT COUNT(*) as count 
+    $info = "SELECT COUNT(*) as count 
       FROM icons
-      WHERE name LIKE "%' . $this->name . '%" 
-    ';
+      WHERE name LIKE '%$this->name%' 
+    ";
     $info_table = $this->info_table($info);
 
-    $rows = '
+    $rows = "
       SELECT *
       FROM icons
-      WHERE name LIKE "%' . $this->name . '%" 
-      ORDER BY id ASC LIMIT 0, ' . $this->perPage . ' 
-    ';
+      WHERE name LIKE '%$this->name%' 
+      ORDER BY id ASC LIMIT 0, $this->perPage 
+    ";
 
     $items = $this->select_all($rows);
 

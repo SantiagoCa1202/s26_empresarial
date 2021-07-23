@@ -47,24 +47,28 @@ class BuysToProvidersModel extends Mysql
     $this->n_authorization = $filter['n_authorization'];
     $this->establishment_id = $filter['establishment'];
     $this->status = $filter['status'];
-    $this->date_issue = $filter['date'];
+    $this->date_issue = $filter['date_issue'];
+    $this->created_at = $filter['created_at'];
     $this->perPage = $perPage;
 
-    $date_range = "";
-    if ($this->date_issue != '' && count($this->date_issue) == 2) {
-      $date_range = ' AND date_issue BETWEEN "' . $this->date_issue[0] . ' 00:00:00" AND "' . $this->date_issue[1] . ' 23:59:59" OR date_issue BETWEEN "' . $this->date_issue[1] . ' 00:00:00" AND "' . $this->date_issue[0] . ' 23:59:59"';
-    }
+    $date_issue = ($this->date_issue != '' && count($this->date_issue) == 2) ?
+      " AND date_issue BETWEEN '{$this->date_issue[0]} 00:00:00' AND '{$this->date_issue[1]}  23:59:59'" : "";
 
-    $where = '
-      id LIKE "%' . $this->id . '%" AND
-      document LIKE "%' . $this->ruc . '%" AND
-      business_name LIKE "%' . $this->business_name . '%" AND
-      n_document LIKE "%' . $this->n_document . '%" AND
-      n_authorization LIKE "%' . $this->n_authorization . '%" AND
-      establishment_id LIKE "%' . $this->establishment_id . '%" AND
-      status LIKE "%' . $this->status . '%" AND 
+    $created_at = ($this->created_at != '' && count($this->created_at) == 2) ?
+      " AND created_at BETWEEN '{$this->created_at[0]} 00:00:00' AND '{$this->created_at[1]}  23:59:59'" : "";
+
+    $where = "
+      id LIKE '%$this->id%' AND
+      document LIKE '%$this->ruc%' AND
+      business_name LIKE '%$this->business_name%' AND
+      n_document LIKE '%$this->n_document%' AND
+      n_authorization LIKE '%$this->n_authorization%' AND
+      establishment_id LIKE '%$this->establishment_id%' AND
+      status LIKE '%$this->status%' AND 
       status > 0 
-    ' . $date_range;
+      $date_issue
+      $created_at
+    ";
 
     $info = "SELECT COUNT(*) as count, 
       SUM(rise) as total_rise, 
@@ -98,6 +102,8 @@ class BuysToProvidersModel extends Mysql
 
     return [
       'items' => $items,
+      'date_issue' => $this->select_dates_company('date_issue', 'buystoproviders', $this->db_company),
+      'created_at' => $this->select_dates_company('created_at', 'buystoproviders', $this->db_company),
       'info' => $info_table
     ];
   }
@@ -133,7 +139,6 @@ class BuysToProvidersModel extends Mysql
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $return = "";
     $this->provider_id = $provider_id;
     $this->document = $document;
     $this->business_name = $business_name;
@@ -150,9 +155,7 @@ class BuysToProvidersModel extends Mysql
     $this->establishment_id = $establishment_id;
     $this->status = $status;
 
-
-
-    $sql = "SELECT * FROM buystoproviders WHERE n_document = '$this->n_document' OR file_id = '$this->file_id'";
+    $sql = "SELECT * FROM buystoproviders WHERE n_document = '$this->n_document'";
     $request = $this->select_all_company($sql, $this->db_company);
 
     if (empty($request)) {

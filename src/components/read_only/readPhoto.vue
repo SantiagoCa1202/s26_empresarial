@@ -39,7 +39,7 @@
       </div>
       <div class="col-12">
         <span class="fw-bold">Creado el:</span>
-        {{ $s26.formatDate(form.created_at) }}
+        {{ $s26.formatDate(form.created_at, 'xl') }}
       </div>
     </template>
   </s26-modal-multiple>

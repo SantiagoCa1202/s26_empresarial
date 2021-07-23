@@ -23,7 +23,7 @@
           <div class="container">
             <s26-form-input label="Nombre" size="sm" id="name" type="text" v-model="filter.name" maxlength="100" @keyup="allRows"></s26-form-input>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
-            <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha"></s26-date-picker>
+            <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha" :dates="s26_data.dates"></s26-date-picker>
             <button :class="['btn mt-2 w-100', filter.favorites == 1 ? 'btn-warning' : 'btn-outline-warning']" @click="filterFavorites">Favoritos</button>
           </div>
         </template>
@@ -33,7 +33,7 @@
               <div class="col-12">
                 <s26-tarjet-info title="Registros" variant="primary" icon="list-ul">
                   <span class="fw-bold text-primary">
-                    {{ perPage }}
+                    {{ filter.perPage }}
                   </span>
                   &nbsp
                   <span class="text-lowercase">
@@ -41,7 +41,7 @@
                   </span>
                   &nbsp
                   <span class="fw-bold text-primary">
-                    {{ rows }}
+                    {{ s26_data.info.count }}
                   </span>
                 </s26-tarjet-info>
               </div>
@@ -52,7 +52,7 @@
       <section :class="['main', { 'mainWidth-100': !activeSidebar }]">
         <div class="s26-container-table">
           <div class="row mx-0">
-            <div class="col-6 col-md-3 my-2 px-2 container-img" v-for="item in items" :key="item.id">
+            <div class="col-6 col-md-3 my-2 px-2 container-img" v-for="item in s26_data.items" :key="item.id">
               <img class="rounded w-100 min-img hover-none pointer" :src="item.href" tabindex="0" @click="setIdRow(item.id, 'watch')" />
               <div :class="['row mx-0 bg-white shadow-sm rounded', item.status == 2 ? 'border-bottom border-2 border-danger' : '']">
                 <?php
@@ -108,10 +108,10 @@
               </div>
             </div>
           </div>
-          <button type="button" class="btn btn-outline-primary mt-3 mx-2 float-end" @click="loadMore" v-if="perPage < rows">
+          <button type="button" class="btn btn-outline-primary mt-3 mx-2 float-end" @click="loadMore" v-if="filter.perPage < s26_data.info.count">
             Cargar Más...
           </button>
-          <div v-if="rows == 0" class="w-100 h-75 text-secondary fs-1 fw-bold s26-align-center pointer" @click="activeUploadPhoto = true">
+          <div v-if="s26_data.info.count == 0" class="w-100 h-75 text-secondary fs-1 fw-bold s26-align-center pointer" @click="activeUploadPhoto = true">
             Subir Fotos
           </div>
         </div>

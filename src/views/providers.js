@@ -2,6 +2,18 @@ import Vue from "vue";
 
 let element = !!document.getElementById("s26-providers-view");
 if (element) {
+  const def_filter = () => {
+    return {
+      id: "",
+      document: "",
+      business_name: "",
+      tradename: "",
+      city: "",
+      date: [],
+      status: "",
+      perPage: 25,
+    };
+  };
   new Vue({
     el: "#s26-providers-view",
     data: function() {
@@ -28,18 +40,8 @@ if (element) {
             class: "length-action",
           },
         ],
-        filter: {
-          id: "",
-          document: "",
-          business_name: "",
-          tradename: "",
-          city: "",
-          date: "",
-          status: "",
-        },
-        rows: 0,
-        items: [],
-        perPage: 25,
+        filter: def_filter(),
+        s26_data: { info: {} },
         idRow: null,
         activeSidebar: true,
         action: "",
@@ -54,32 +56,22 @@ if (element) {
     },
     methods: {
       allRows() {
-        const params = {
-          id: this.filter.id,
-          document: this.filter.document,
-          business_name: this.filter.business_name,
-          tradename: this.filter.tradename,
-          date: this.filter.date,
-          status: this.filter.status,
-          perPage: this.perPage,
-        };
+        const params = {};
+        for (let fil in this.filter) params[fil] = this.filter[fil];
+
         this.axios
           .get("/providers/getProviders/", {
             params,
           })
-          .then((res) => {
-            this.items = res.data.items;
-            this.rows = res.data.info.count;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => (this.s26_data = res.data))
+
+          .catch((err) => console.log(err));
+
         this.url_export = $s26.url_get("/providers/exportProviders/", params);
       },
       onReset() {
-        for (fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.filter = def_filter();
+
         this.allRows();
       },
       setIdRow(id, type) {

@@ -117,25 +117,27 @@ const startFromZero = (arr) => {
   return newArr;
 };
 
-const formatDate = (date, size = "sm") => {
-  let new_date = new Date(date);
-  new_date.setDate(new_date.getDate() + 1);
-  if (size == "sm") {
-    let arrDate = date.split("-");
-    return arrDate[2] + "/" + arrDate[1] + "/" + arrDate[0]; // 20/07/2021
-  } else if (size == "md") {
-    let options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return new_date.toLocaleDateString("es-ES", options); // 16 De Julio De 2021
-  } else if (size == "xl") {
-    return new Intl.DateTimeFormat("es-ES", {
-      dateStyle: "full",
-      timeStyle: "short",
-      calendar: "ecuador",
-    }).format(new_date); // Jueves, 15 De Julio De 2021, 1:11
+const formatDate = (date = "", size = "sm") => {
+  if (date != "") {
+    let new_date = new Date(date);
+    new_date.setDate(new_date.getDate());
+    if (size == "sm") {
+      let arrDate = date.split("-");
+      return arrDate[2] + "/" + arrDate[1] + "/" + arrDate[0]; // 20/07/2021
+    } else if (size == "md") {
+      let options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      return new_date.toLocaleDateString("es-ES", options); // 16 De Julio De 2021
+    } else if (size == "xl") {
+      return new Intl.DateTimeFormat("es-ES", {
+        dateStyle: "full",
+        timeStyle: "short",
+        calendar: "ecuador",
+      }).format(new_date); // Jueves, 15 De Julio De 2021, 1:11
+    }
   }
 };
 
@@ -173,21 +175,6 @@ const val_form = (form) => {
       .siblings("p")
       .empty()
       .append(string);
-  };
-
-  let val_date = (sDate) => {
-    var val_date = sDate.split("-");
-    var d = val_date[2];
-    var m = val_date[1];
-    var y = val_date[0];
-    return (
-      m > 0 &&
-      m < 13 &&
-      y > 0 &&
-      y < 32768 &&
-      d > 0 &&
-      d <= new Date(y, m, 0).getDate()
-    );
   };
 
   $(
@@ -432,9 +419,15 @@ const activeSelect = (e) => {
   let select_value = $(select).children("div.s26-select-value");
   let location = select_value[0].getBoundingClientRect();
   let select_container = $(select).children("div.s26-select-container");
+
+  let left = location.left;
+  if (location.width < 260) {
+    left = location.left + (location.width - 260) / 2;
+  }
+
   $(select_container)
     .width(location.width)
-    .css({ left: location.left })
+    .css({ left: left })
     .toggle(200);
   $(`div.s26-select-container`)
     .not(select_container)

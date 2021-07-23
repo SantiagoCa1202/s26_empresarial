@@ -110,7 +110,7 @@
       </div>
       <div class="col-12" v-if="id !== 0">
         <span class="fw-bold">Creado el:</span>
-        {{ $s26.formatDate(form.created_at) }}
+        {{ $s26.formatDate(form.created_at, "xl") }}
       </div>
     </template>
     <template v-slot:level-1>
@@ -187,6 +187,27 @@
   </s26-modal-multiple>
 </template>
 <script>
+const def_form = () => {
+  return {
+    id: "",
+    name: "",
+    last_name: "",
+    document: "",
+    email: "",
+    new_password: "",
+    confirm_password: "",
+    phone: "",
+    gender_id: "",
+    date_of_birth: "",
+    role_id: "",
+    insurance: "",
+    establishment_id: "",
+    user_access: "",
+    create_notifications_users: "",
+    status: 1,
+    created_at: "",
+  };
+};
 export default {
   props: {
     value: {
@@ -200,25 +221,7 @@ export default {
   },
   data: function () {
     return {
-      form: {
-        id: "",
-        name: "",
-        last_name: "",
-        document: "",
-        email: "",
-        new_password: "",
-        confirm_password: "",
-        phone: "",
-        gender_id: "",
-        date_of_birth: [],
-        role_id: "",
-        insurance: "",
-        establishment_id: "",
-        user_access: "",
-        create_notifications_users: "",
-        status: 1,
-        created_at: "",
-      },
+      form: def_form(),
       levels: ["Información Personal", "Información Empresarial"],
     };
   },
@@ -231,21 +234,9 @@ export default {
       this.axios
         .get("/users/getUser/" + id)
         .then((res) => {
-          this.form.id = res.data.id;
-          this.form.name = res.data.name;
-          this.form.last_name = res.data.last_name;
-          this.form.document = res.data.document;
-          this.form.email = res.data.email;
-          this.form.phone = res.data.phone;
-          this.form.gender_id = res.data.gender_id;
-          this.form.date_of_birth = [res.data.date_of_birth];
-          this.form.role_id = res.data.role_id;
-          this.form.insurance = res.data.insurance;
-          this.form.establishment_id = res.data.establishment_id;
-          this.form.user_access = res.data.user_access;
-          this.form.create_notifications_users =
-            res.data.create_notifications_users;
-          this.form.status = res.data.status;
+          this.form = res.data;
+          this.form.new_password = "";
+          this.form.confirm_password = "";
         })
         .catch((err) => {
           console.log(err);
@@ -292,7 +283,7 @@ export default {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        for (let i in this.form) this.form[i] = "";
+        this.form = def_form();
       }
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
     },

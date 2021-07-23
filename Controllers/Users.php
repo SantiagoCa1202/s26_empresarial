@@ -66,11 +66,8 @@ class Users extends Controllers
       $id = intval(strClean($id));
       if ($id > 0) {
         $arrData = $this->model->selectUser($id);
-        if (empty($arrData)) {
-          $arrRes = 0;
-        } else {
-          $arrRes = $arrData;
-        }
+        $arrRes = (empty($arrData)) ? 0 : $arrData;
+
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
       }
     }
@@ -88,7 +85,7 @@ class Users extends Controllers
     $confirm_password = isset($_POST['confirm_password']) ? strClean($_POST['confirm_password']) : '';
     $phone = strClean($_POST['phone']);
     $gender_id = intval($_POST['gender_id']);
-    $date_of_birth = strClean($_POST['date_of_birth'][0]);
+    $date_of_birth = strClean($_POST['date_of_birth']);
     $role_id = intval($_POST['role_id']);
     $establishment_id = intval($_POST['establishment_id']);
     $insurance = intval($_POST['insurance']);
@@ -352,11 +349,8 @@ class Users extends Controllers
     $row_id = $idRow;
     if ($row_id > 0) {
       $arrData = $this->model->selectNotification($row_id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
+
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -367,11 +361,8 @@ class Users extends Controllers
     $id = $_SESSION['idUser'];
 
     $arrData = $this->model->selectNotifications($id);
-    if (empty($arrData)) {
-      $arrRes = 0;
-    } else {
-      $arrRes = $arrData;
-    }
+    $arrRes = (empty($arrData)) ? 0 : $arrData;
+
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -387,7 +378,7 @@ class Users extends Controllers
     $url = strClean($_POST['url']);
     $icon = isset($_POST['icon']) ? $_POST['icon'] : 'user';
 
-    $expiration_date = strClean($_POST['expiration_date'][0]);
+    $expiration_date = strClean($_POST['expiration_date']);
 
     if (
       valString($name) &&
