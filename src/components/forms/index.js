@@ -35,8 +35,8 @@ Vue.component("s26-form-photo", formPhoto);
 import formFile from "./formFile.vue";
 Vue.component("s26-form-file", formFile);
 
-import formBuyToProviders from "./formBuyToProviders.vue";
-Vue.component("s26-form-buytoproviders", formBuyToProviders);
+import formVouchers from "./formVouchers.vue";
+Vue.component("s26-form-vouchers", formVouchers);
 
 import formBankAccount from "./formBankAccount.vue";
 Vue.component("s26-form-bank-account", formBankAccount);

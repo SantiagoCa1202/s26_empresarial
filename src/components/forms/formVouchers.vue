@@ -97,7 +97,17 @@
           today
         ></s26-date-picker>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-sm-5" v-if="form.type_doc_id == 8">
+        <s26-input-document
+          label="Doc. a Modificar"
+          size="sm"
+          v-model="form.n_doc_modify"
+          s26_required
+          length
+        >
+        </s26-input-document>
+      </div>
+      <div class="col">
         <s26-form-input
           label="N° de Autorización"
           size="sm"
@@ -108,7 +118,7 @@
         >
         </s26-form-input>
       </div>
-      <div class="col-sm-6">
+      <div class="col">
         <s26-select-file
           id="form-file"
           v-model="form.file_id"
@@ -379,6 +389,7 @@ const def_form = () => {
     n_transaction: "",
     counted_date: "",
     credit_date: [],
+    n_doc_modify: "",
   };
 };
 export default {
@@ -434,6 +445,13 @@ export default {
           "Importe no puede estar vacio o no puede ser igual a 0.00 "
         );
         return;
+      } else if (
+        this.form.payment_type == 1 &&
+        this.form.payment_method_counted == 0
+      ) {
+        this.$alertify.error("Es necesario elegir una Forma de Pago");
+        $("#form-payment_method_counted").addClass("is-invalid").focus();
+        return;
       }
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Compra?.`,
@@ -441,7 +459,7 @@ export default {
           let formData = $s26.json_to_formData(this.form);
           $s26.show_loader_points();
           this.axios
-            .post("/BuysToProviders/setBuy", formData, {
+            .post("/vouchers/setVoucher", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },

@@ -3,7 +3,7 @@ require_once('SystemModel.php');
 require_once('EstablishmentsModel.php');
 require_once('FilesModel.php');
 
-class BuysToProvidersModel extends Mysql
+class VouchersModel extends Mysql
 {
   public $id;
   public $document;
@@ -36,7 +36,7 @@ class BuysToProvidersModel extends Mysql
     $this->File = new FilesModel;
   }
 
-  public function selectBuys(int $perPage, array $filter)
+  public function selectVouchers(int $perPage, array $filter)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
@@ -76,14 +76,14 @@ class BuysToProvidersModel extends Mysql
       SUM(bi_) as total_bi_,
       SUM(iva) as total_iva,
       SUM(total) as total
-      FROM buystoproviders
+      FROM vouchers
       WHERE $where 
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
     $rows = "
       SELECT *
-      FROM buystoproviders
+      FROM vouchers
       WHERE $where  
       ORDER BY id DESC LIMIT 0, $this->perPage
     ";
@@ -102,24 +102,24 @@ class BuysToProvidersModel extends Mysql
 
     return [
       'items' => $items,
-      'date_issue' => $this->select_dates_company('date_issue', 'buystoproviders', $this->db_company),
-      'created_at' => $this->select_dates_company('created_at', 'buystoproviders', $this->db_company),
+      'date_issue' => $this->select_dates_company('date_issue', 'vouchers', $this->db_company),
+      'created_at' => $this->select_dates_company('created_at', 'vouchers', $this->db_company),
       'info' => $info_table
     ];
   }
 
-  public function selectBuy(int $id)
+  public function selectVoucher(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->id = $id;
-    $sql = "SELECT * FROM buystoproviders WHERE id = $this->id";
+    $sql = "SELECT * FROM vouchers WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
 
     return $request;
   }
 
-  public function insertBuy(
+  public function insertVoucher(
     int $provider_id,
     string $document,
     string $business_name,
@@ -155,11 +155,11 @@ class BuysToProvidersModel extends Mysql
     $this->establishment_id = $establishment_id;
     $this->status = $status;
 
-    $sql = "SELECT * FROM buystoproviders WHERE n_document = '$this->n_document'";
+    $sql = "SELECT * FROM vouchers WHERE n_document = '$this->n_document'";
     $request = $this->select_all_company($sql, $this->db_company);
 
     if (empty($request)) {
-      $query_insert = "INSERT INTO buystoproviders (provider_id, document, business_name, description, type_doc_id, payment_method_id, n_document, n_authorization, iva_, rise, bi_0, bi_, file_id, date_issue, establishment_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      $query_insert = "INSERT INTO vouchers (provider_id, document, business_name, description, type_doc_id, payment_method_id, n_document, n_authorization, iva_, rise, bi_0, bi_, file_id, date_issue, establishment_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       $arrData = array(
         $this->provider_id,
         $this->document,

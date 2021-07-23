@@ -1,6 +1,6 @@
 <?= head_(); ?>
 <?= header_(); ?>
-<div id="s26-buysToProviders-view" class="container-fluid s26-container" tabindex="0">
+<div id="s26-vouchers-view" class="container-fluid s26-container" tabindex="0">
   <?php
   if (empty($_SESSION['permitsModule']['r'])) {
   ?>
@@ -133,8 +133,8 @@
       ?>
         <!-- Modal Ver-->
         <transition name="slide-fade">
-          <s26-read-buytoproviders v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-read-buytoproviders>
+          <s26-read-vouchers v-model="action" :id="idRow" v-if="action == 'watch'">
+          </s26-read-vouchers>
         </transition>
       <?php
       }
@@ -142,7 +142,7 @@
       ?>
         <!-- Modal Nuevo-->
         <transition name="slide-fade">
-          <s26-form-buytoproviders v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-buytoproviders>
+          <s26-form-vouchers v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-vouchers>
         </transition>
       <?php
       }
@@ -152,7 +152,7 @@
       ?>
         <!-- Modal Eliminar -->
         <transition name="slide-fade">
-          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'buysToProviders/delBuy/' + idRow"></s26-delete>
+          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'vouchers/delBuy/' + idRow"></s26-delete>
         </transition>
       <?php
       }

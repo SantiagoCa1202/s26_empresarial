@@ -1,5 +1,5 @@
 <?php
-class BuysToProviders extends Controllers
+class Vouchers extends Controllers
 {
   public function __construct()
   {
@@ -12,12 +12,12 @@ class BuysToProviders extends Controllers
     getPermits(24);
   }
 
-  public function buysToProviders()
+  public function vouchers()
   {
-    $this->views->getView($this, "buysToProviders");
+    $this->views->getView($this, "vouchers");
   }
 
-  public function getBuys()
+  public function getVouchers()
   {
     if ($_SESSION['permitsModule']['r']) {
       $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : '10000';
@@ -32,18 +32,18 @@ class BuysToProviders extends Controllers
         'date_issue' => !empty($_GET['date_issue']) ? $_GET['date_issue'] : '',
         'created_at' => !empty($_GET['created_at']) ? $_GET['created_at'] : '',
       ];
-      $arrData = $this->model->selectBuys($perPage, $filter);
+      $arrData = $this->model->selectVouchers($perPage, $filter);
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
     }
     die();
   }
 
-  public function getBuy($id)
+  public function getVoucher($id)
   {
     if ($_SESSION['permitsModule']['r']) {
       $id = intval(strClean($id));
       if ($id > 0) {
-        $arrData = $this->model->selectBuy($id);
+        $arrData = $this->model->selectVoucher($id);
         $arrRes = (empty($arrData)) ? 0 : $arrData;
 
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
@@ -52,7 +52,7 @@ class BuysToProviders extends Controllers
     die();
   }
 
-  public function setBuy()
+  public function setVoucher()
   {
     $id = intval($_POST['id']);
     $provider_id = intval($_POST['provider_id']) == 0 ? '' : intval($_POST['provider_id']);
@@ -99,7 +99,7 @@ class BuysToProviders extends Controllers
 
         if ($_SESSION['permitsModule']['w']) {
           //Crear
-          $request = $this->model->insertBuy(
+          $request = $this->model->insertVoucher(
             $provider_id,
             $document,
             $business_name,
@@ -182,7 +182,7 @@ class BuysToProviders extends Controllers
 
         if ($_SESSION['permitsModule']['u']) {
           // Actualizar
-          $request = $this->model->updateBuy(
+          $request = $this->model->updateVoucher(
             $id,
             $provider_id,
             $document,
@@ -210,7 +210,7 @@ class BuysToProviders extends Controllers
       $type = 0;
       $request = -1;
     }
-    $arrRes = s26_res("Compra", $request, $type);
+    $arrRes = s26_res("Comprobante", $request, $type);
     array_push($response, $arrRes);
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
     die();
