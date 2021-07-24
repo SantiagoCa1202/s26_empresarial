@@ -102,7 +102,7 @@ class SystemModel extends Mysql
       SELECT *
       FROM documents
       WHERE $where  
-      ORDER BY id DESC LIMIT 0, $this->perPage
+      ORDER BY id ASC LIMIT 0, $this->perPage
     ";
 
     $items = $this->select_all($rows);

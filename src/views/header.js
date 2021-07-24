@@ -40,6 +40,7 @@ if (element) {
         "deposits",
         "external_income",
       ],
+      subDocuments: ["buys_to_providers", "credit_notes", "withholdings"],
       subWallet: ["wallet", "estadisticas", "bankAccounts"],
       subAccounts: [
         "accounts_to_pay",
@@ -79,6 +80,8 @@ if (element) {
         this.activeSubMenu = 2;
       } else if (this.subTransactions.includes(this.route)) {
         this.activeSubMenu = 3;
+      } else if (this.subDocuments.includes(this.route)) {
+        this.activeSubMenu = 4;
       } else if (this.subWallet.includes(this.route)) {
         this.activeSubMenu = 5;
       } else if (this.subAccounts.includes(this.route)) {

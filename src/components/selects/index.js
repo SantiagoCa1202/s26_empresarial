@@ -44,4 +44,7 @@ Vue.component("s26-select-payment-method", selectPaymentMethod);
 import selectFile from "./selectFile.vue";
 Vue.component("s26-select-file", selectFile);
 
+import selectBuys from "./selectBuys.vue";
+Vue.component("s26-select-buys", selectBuys);
+
 export default s26Selects;

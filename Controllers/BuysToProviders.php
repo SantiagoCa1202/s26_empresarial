@@ -1,5 +1,5 @@
 <?php
-class Vouchers extends Controllers
+class BuysToProviders extends Controllers
 {
   public function __construct()
   {
@@ -12,12 +12,12 @@ class Vouchers extends Controllers
     getPermits(24);
   }
 
-  public function vouchers()
+  public function buysToProviders()
   {
-    $this->views->getView($this, "vouchers");
+    $this->views->getView($this, "buysToProviders");
   }
 
-  public function getVouchers()
+  public function getBuys()
   {
     if ($_SESSION['permitsModule']['r']) {
       $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : '10000';
@@ -28,22 +28,23 @@ class Vouchers extends Controllers
         'n_document' => !empty($_GET['n_document']) ? strClean($_GET['n_document']) : '',
         'n_authorization' => !empty($_GET['n_authorization']) ? strClean($_GET['n_authorization']) : '',
         'establishment' => !empty($_GET['establishment']) ? intval($_GET['establishment']) : '',
+        'type_doc_id' => !empty($_GET['type_doc_id']) ? intval($_GET['type_doc_id']) : '',
         'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
         'date_issue' => !empty($_GET['date_issue']) ? $_GET['date_issue'] : '',
         'created_at' => !empty($_GET['created_at']) ? $_GET['created_at'] : '',
       ];
-      $arrData = $this->model->selectVouchers($perPage, $filter);
+      $arrData = $this->model->selectBuys($perPage, $filter);
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
     }
     die();
   }
 
-  public function getVoucher($id)
+  public function getBuy($id)
   {
     if ($_SESSION['permitsModule']['r']) {
       $id = intval(strClean($id));
       if ($id > 0) {
-        $arrData = $this->model->selectVoucher($id);
+        $arrData = $this->model->selectBuy($id);
         $arrRes = (empty($arrData)) ? 0 : $arrData;
 
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
@@ -52,7 +53,7 @@ class Vouchers extends Controllers
     die();
   }
 
-  public function setVoucher()
+  public function setBuy()
   {
     $id = intval($_POST['id']);
     $provider_id = intval($_POST['provider_id']) == 0 ? '' : intval($_POST['provider_id']);
@@ -90,16 +91,19 @@ class Vouchers extends Controllers
     if (
       valString($document, 13, 13) &&
       valString($business_name, 5, 100) &&
+      val_doc($n_document) &&
       ($total !== '' && is_numeric($total)) &&
       val_date($date_issue) &&
       ($payment_type == 1 || $payment_type == 2) &&
-      ($status == 1 || $status == 2)
+      ($status == 1 || $status == 2) &&
+      ($type_doc_id > 0 || $type_doc_id < 9) &&
+      ($payment_method > 0 || $payment_method < 8)
     ) {
       if ($id == 0) {
 
         if ($_SESSION['permitsModule']['w']) {
           //Crear
-          $request = $this->model->insertVoucher(
+          $request = $this->model->insertBuy(
             $provider_id,
             $document,
             $business_name,
@@ -182,7 +186,7 @@ class Vouchers extends Controllers
 
         if ($_SESSION['permitsModule']['u']) {
           // Actualizar
-          $request = $this->model->updateVoucher(
+          $request = $this->model->updateBuy(
             $id,
             $provider_id,
             $document,
@@ -210,7 +214,7 @@ class Vouchers extends Controllers
       $type = 0;
       $request = -1;
     }
-    $arrRes = s26_res("Comprobante", $request, $type);
+    $arrRes = s26_res("Compra", $request, $type);
     array_push($response, $arrRes);
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
     die();

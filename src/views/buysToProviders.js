@@ -1,6 +1,6 @@
 import Vue from "vue";
 
-let element = !!document.getElementById("s26-vouchers-view");
+let element = !!document.getElementById("s26-buysToProviders-view");
 if (element) {
   const def_filter = () => {
     return {
@@ -17,7 +17,7 @@ if (element) {
     };
   };
   new Vue({
-    el: "#s26-vouchers-view",
+    el: "#s26-buysToProviders-view",
     data: function() {
       return {
         fields: [
@@ -73,12 +73,12 @@ if (element) {
         for (let fil in this.filter) params[fil] = this.filter[fil];
 
         this.axios
-          .get("/vouchers/getVouchers/", {
+          .get("/buysToProviders/getBuys/", {
             params,
           })
           .then((res) => (this.s26_data = res.data))
           .catch((err) => console.log(err));
-        this.url_export = $s26.url_get("/vouchers/exportVouchers/", params);
+        this.url_export = $s26.url_get("/buysToProviders/exportBuys/", params);
       },
       onReset() {
         this.filter = def_filter();
@@ -89,7 +89,7 @@ if (element) {
         this.idRow = parseInt(id);
         this.action = type;
         if (!$s26.readCookie("id") && type == "watch") {
-          $s26.create_cookie("id", id, "vouchers");
+          $s26.create_cookie("id", id, "buysToProviders");
         }
       },
     },

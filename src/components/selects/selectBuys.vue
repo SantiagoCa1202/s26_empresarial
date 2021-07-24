@@ -1,10 +1,13 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
     <label :for="id" class="form-label w-100">
-      Tipo de Documento
+      Comprobantes
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
+      <a @click="getRow" class="text-primary float-end pointer" v-if="!all">
+        <s26-icon icon="link"></s26-icon>
+      </a>
     </label>
     <div
       :id="id"
@@ -41,11 +44,15 @@
           tabindex="0"
           v-for="option in options"
           :key="option.id"
-          @click="selectOption(option.id, option.name)"
-          @keyup.13="selectOption(option.id, option.name)"
-          v-show="showRows(option.id)"
+          @click="
+            selectOption(
+              option.id,
+              `${option.type_doc.alias} - ${option.n_document}`
+            )
+          "
+          @keyup.13="selectOption(option.id, option.n_document)"
         >
-          {{ option.name }}
+          {{ option.type_doc.alias }} - {{ option.n_document }}
         </div>
       </div>
       <div class="actions-select pt-1 px-2">
@@ -84,10 +91,6 @@ export default {
     value: {},
     all: Boolean,
     s26_required: Boolean,
-    type: {
-      type: String,
-      default: "all",
-    },
   },
   data: function () {
     return {
@@ -109,11 +112,12 @@ export default {
   methods: {
     allRows() {
       const params = {
-        name: this.search,
+        n_document: this.search,
         perPage: this.perPage,
+        type_doc_id: this.type_doc,
       };
       this.axios
-        .get("/system/getDocuments/", {
+        .get("/buysToProviders/getBuys/", {
           params,
         })
         .then((res) => {
@@ -124,30 +128,30 @@ export default {
     },
     selectRow(id) {
       this.axios
-        .get("/system/getDocument/" + id)
+        .get("/buysToProviders/getBuys/" + id)
         .then((res) => {
-          this.selectOption(res.data.id, res.data.name);
+          this.selectOption(
+            res.data.id,
+            `${res.type_doc.alias} - ${res.n_document}`
+          );
         })
         .catch((err) => console.log(err));
     },
     selectOption(id, value = "") {
-      if (this.showRows(id)) {
-        $(`div.s26-select-container`).hide("200");
-        this.perPage = 50;
-        this.$emit("input", id);
-        this.selected = value;
-        this.$emit("change");
-      }
-    },
-    showRows(id) {
-      if ((this.type == "buy" && id <= 5) || this.type == "all") return true;
-
-      return false;
+      $(`div.s26-select-container`).hide("200");
+      this.perPage = 50;
+      this.$emit("input", id);
+      this.selected = value;
+      this.$emit("change");
     },
     loadMore() {
       let perPage = this.rows - this.perPage;
       this.perPage = perPage > 25 ? this.perPage + 25 : this.rows;
       this.allRows();
+    },
+    getRow() {
+      $s26.create_cookie("id", this.value, "buysToProviders");
+      window.open(BASE_URL + "/buysToProviders", "_blank");
     },
   },
 };

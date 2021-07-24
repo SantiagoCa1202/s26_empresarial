@@ -1,6 +1,6 @@
 <template>
   <s26-modal-multiple
-    id="formBuyToProviders"
+    id="formBuysToProviders"
     :title="(id == 0 ? 'Nueva ' : 'Editar ') + 'Compra'"
     :levels="levels"
     body_style="min-height: 375px;"
@@ -75,6 +75,7 @@
           id="form-type_doc_id"
           v-model="form.type_doc_id"
           s26_required
+          type="buy"
         ></s26-select-type-document>
       </div>
       <div class="col-sm-4">
@@ -96,16 +97,6 @@
           select_all_dates
           today
         ></s26-date-picker>
-      </div>
-      <div class="col-12 col-sm-5" v-if="form.type_doc_id == 8">
-        <s26-input-document
-          label="Doc. a Modificar"
-          size="sm"
-          v-model="form.n_doc_modify"
-          s26_required
-          length
-        >
-        </s26-input-document>
       </div>
       <div class="col">
         <s26-form-input
@@ -431,6 +422,9 @@ export default {
         this.$alertify.error(
           "Total no puede estar vacio o no puede ser igual a 0.00 "
         );
+        $("#form-rise, #form-subtotal_0, #form-subtotal_12").addClass(
+          "is-invalid"
+        );
         return;
       } else if (this.form.payment_type < 1 || this.form.payment_type > 2) {
         this.$alertify.error("Es necesario elegir un tipo de pago");
@@ -444,6 +438,7 @@ export default {
         this.$alertify.error(
           "Importe no puede estar vacio o no puede ser igual a 0.00 "
         );
+        $("#form-total_import").addClass("is-invalid");
         return;
       } else if (
         this.form.payment_type == 1 &&
@@ -459,7 +454,7 @@ export default {
           let formData = $s26.json_to_formData(this.form);
           $s26.show_loader_points();
           this.axios
-            .post("/vouchers/setVoucher", formData, {
+            .post("/buysToProviders/setBuy", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },

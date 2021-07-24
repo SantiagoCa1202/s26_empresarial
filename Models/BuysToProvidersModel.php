@@ -3,7 +3,7 @@ require_once('SystemModel.php');
 require_once('EstablishmentsModel.php');
 require_once('FilesModel.php');
 
-class VouchersModel extends Mysql
+class BuysToProvidersModel extends Mysql
 {
   public $id;
   public $document;
@@ -36,7 +36,7 @@ class VouchersModel extends Mysql
     $this->File = new FilesModel;
   }
 
-  public function selectVouchers(int $perPage, array $filter)
+  public function selectBuys(int $perPage, array $filter)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
@@ -47,6 +47,7 @@ class VouchersModel extends Mysql
     $this->n_authorization = $filter['n_authorization'];
     $this->establishment_id = $filter['establishment'];
     $this->status = $filter['status'];
+    $this->type_doc_id = $filter['type_doc_id'];
     $this->date_issue = $filter['date_issue'];
     $this->created_at = $filter['created_at'];
     $this->perPage = $perPage;
@@ -64,6 +65,7 @@ class VouchersModel extends Mysql
       n_document LIKE '%$this->n_document%' AND
       n_authorization LIKE '%$this->n_authorization%' AND
       establishment_id LIKE '%$this->establishment_id%' AND
+      type_doc_id LIKE '%$this->type_doc_id%' AND 
       status LIKE '%$this->status%' AND 
       status > 0 
       $date_issue
@@ -76,14 +78,14 @@ class VouchersModel extends Mysql
       SUM(bi_) as total_bi_,
       SUM(iva) as total_iva,
       SUM(total) as total
-      FROM vouchers
+      FROM buys_to_providers
       WHERE $where 
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
     $rows = "
       SELECT *
-      FROM vouchers
+      FROM buys_to_providers
       WHERE $where  
       ORDER BY id DESC LIMIT 0, $this->perPage
     ";
@@ -102,24 +104,24 @@ class VouchersModel extends Mysql
 
     return [
       'items' => $items,
-      'date_issue' => $this->select_dates_company('date_issue', 'vouchers', $this->db_company),
-      'created_at' => $this->select_dates_company('created_at', 'vouchers', $this->db_company),
+      'date_issue' => $this->select_dates_company('date_issue', 'buys_to_providers', $this->db_company),
+      'created_at' => $this->select_dates_company('created_at', 'buys_to_providers', $this->db_company),
       'info' => $info_table
     ];
   }
 
-  public function selectVoucher(int $id)
+  public function selectBuy(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->id = $id;
-    $sql = "SELECT * FROM vouchers WHERE id = $this->id";
+    $sql = "SELECT * FROM buys_to_providers WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
 
     return $request;
   }
 
-  public function insertVoucher(
+  public function insertBuy(
     int $provider_id,
     string $document,
     string $business_name,
@@ -155,11 +157,11 @@ class VouchersModel extends Mysql
     $this->establishment_id = $establishment_id;
     $this->status = $status;
 
-    $sql = "SELECT * FROM vouchers WHERE n_document = '$this->n_document'";
+    $sql = "SELECT * FROM buys_to_providers WHERE n_document = '$this->n_document'";
     $request = $this->select_all_company($sql, $this->db_company);
 
     if (empty($request)) {
-      $query_insert = "INSERT INTO vouchers (provider_id, document, business_name, description, type_doc_id, payment_method_id, n_document, n_authorization, iva_, rise, bi_0, bi_, file_id, date_issue, establishment_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      $query_insert = "INSERT INTO buys_to_providers (provider_id, document, business_name, description, type_doc_id, payment_method_id, n_document, n_authorization, iva_, rise, bi_0, bi_, file_id, date_issue, establishment_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       $arrData = array(
         $this->provider_id,
         $this->document,
