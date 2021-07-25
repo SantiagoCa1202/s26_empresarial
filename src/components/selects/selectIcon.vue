@@ -17,13 +17,7 @@
         <span class="me-2" v-if="value != 0 && value">
           <s26-icon :icon="info_icon.icon"></s26-icon>
         </span>
-        {{
-          value != 0 && value
-            ? info_icon.name
-            : all
-            ? "Todos"
-            : "-- seleccionar --"
-        }}
+        {{ select }}
       </div>
       <s26-icon icon="angle-down" class="icon-angle-down"></s26-icon>
     </div>
@@ -35,8 +29,8 @@
         <div
           :class="['s26-select-options', value == 0 ? 'focus' : '']"
           tabindex="0"
-          @click="selectOption(0)"
-          @keyup.13="selectOption(0)"
+          @click="$emit('input', 0)"
+          @keyup.13="$emit('input', 0)"
         >
           {{ all ? "Todos" : "-- seleccionar --" }}
         </div>
@@ -48,8 +42,8 @@
           tabindex="0"
           v-for="option in options"
           :key="option.id"
-          @click="selectOption(option.id, option.name, option.class)"
-          @keyup.13="selectOption(option.id, option.name, option.class)"
+          @click="$emit('input', option.id)"
+          @keyup.13="$emit('input', option.id)"
         >
           <span class="me-2">
             <s26-icon :icon="option.class"></s26-icon>
@@ -109,10 +103,24 @@ export default {
   mounted: function () {
     this.allRows();
   },
-  created: function () {
-    setTimeout(() => {
-      if (this.value != 0) this.selectRow(this.value);
-    }, 50);
+  computed: {
+    select: function () {
+      $(`div.s26-select-container`).hide("200");
+      this.perPage = 50;
+      this.$emit("change");
+      if (this.value != 0) {
+        this.axios
+          .get("/system/getIcon/" + this.value)
+          .then((res) => {
+            this.info_icon.icon = res.data.class;
+            this.info_icon.name = res.data.name;
+          })
+          .catch((err) => console.log(err));
+        return this.info_icon.name;
+      } else {
+        return this.all ? "Todos" : "-- seleccionar --";
+      }
+    },
   },
   methods: {
     allRows() {
@@ -129,22 +137,6 @@ export default {
           this.rows = res.data.info.count;
         })
         .catch((err) => console.log(err));
-    },
-    selectRow(id) {
-      this.axios
-        .get("/system/getIcon/" + id)
-        .then((res) => {
-          this.info_icon.icon = res.data.class;
-          this.info_icon.name = res.data.name;
-        })
-        .catch((err) => console.log(err));
-    },
-    selectOption(id, value, icon) {
-      $(`div.s26-select-container`).hide("200");
-      this.perPage = 50;
-      this.$emit("input", id);
-      this.info_icon.icon = icon;
-      this.info_icon.name = value;
     },
     loadMore() {
       let perPage = this.rows - this.perPage;

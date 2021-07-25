@@ -17,9 +17,7 @@
       @keypress.13="$s26.activeSelect"
     >
       <div>
-        {{
-          value != 0 && value ? selected : all ? "Todos" : "-- seleccionar --"
-        }}
+        {{ select }}
       </div>
       <s26-icon icon="angle-down" class="icon-angle-down"></s26-icon>
     </div>
@@ -31,8 +29,8 @@
         <div
           :class="['s26-select-options', value == 0 ? 'focus' : '']"
           tabindex="0"
-          @click="selectOption(0)"
-          @keyup.13="selectOption(0)"
+          @click="$emit('input', 0)"
+          @keyup.13="$emit('input', 0)"
         >
           {{ all ? "Todos" : "-- seleccionar --" }}
         </div>
@@ -44,13 +42,8 @@
           tabindex="0"
           v-for="option in options"
           :key="option.id"
-          @click="
-            selectOption(
-              option.id,
-              `${option.type_doc.alias} - ${option.n_document}`
-            )
-          "
-          @keyup.13="selectOption(option.id, option.n_document)"
+          @click="$emit('input', option.id)"
+          @keyup.13="$emit('input', option.id)"
         >
           {{ option.type_doc.alias }} - {{ option.n_document }}
         </div>
@@ -104,10 +97,24 @@ export default {
   mounted: function () {
     this.allRows();
   },
-  created: function () {
-    setTimeout(() => {
-      if (this.value != 0) this.selectRow(this.value);
-    }, 50);
+  computed: {
+    select: function () {
+      $(`div.s26-select-container`).hide("200");
+      this.perPage = 50;
+      this.$emit("change");
+      if (this.value != 0) {
+        this.axios
+          .get("/buysToProviders/getBuys/" + this.value)
+          .then(
+            (res) =>
+              (this.selected = `${res.type_doc.alias} - ${res.n_document}`)
+          )
+          .catch((err) => console.log(err));
+        return this.selected;
+      } else {
+        return this.all ? "Todos" : "-- seleccionar --";
+      }
+    },
   },
   methods: {
     allRows() {
@@ -125,24 +132,6 @@ export default {
           this.rows = res.data.info.count;
         })
         .catch((err) => console.log(err));
-    },
-    selectRow(id) {
-      this.axios
-        .get("/buysToProviders/getBuys/" + id)
-        .then((res) => {
-          this.selectOption(
-            res.data.id,
-            `${res.type_doc.alias} - ${res.n_document}`
-          );
-        })
-        .catch((err) => console.log(err));
-    },
-    selectOption(id, value = "") {
-      $(`div.s26-select-container`).hide("200");
-      this.perPage = 50;
-      this.$emit("input", id);
-      this.selected = value;
-      this.$emit("change");
     },
     loadMore() {
       let perPage = this.rows - this.perPage;

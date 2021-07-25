@@ -62,7 +62,7 @@ class BuysToProviders extends Controllers
     $description = !empty($_POST['description']) ? strClean($_POST['description']) : '';
     $n_document = !empty($_POST['n_document']) ? strClean($_POST['n_document']) : '';
     $type_doc_id = intval($_POST['type_doc_id']);
-    $payment_method = intval($_POST['payment_method']);
+    $payment_method_id = intval($_POST['payment_method_id']);
     $date_issue = strClean($_POST['date_issue']);
     $n_authorization = strClean($_POST['n_authorization']);
     $file_id = intval($_POST['file_id']);
@@ -97,7 +97,7 @@ class BuysToProviders extends Controllers
       ($payment_type == 1 || $payment_type == 2) &&
       ($status == 1 || $status == 2) &&
       ($type_doc_id > 0 || $type_doc_id < 9) &&
-      ($payment_method > 0 || $payment_method < 8)
+      ($payment_method_id > 0 || $payment_method_id < 8)
     ) {
       if ($id == 0) {
 
@@ -109,7 +109,7 @@ class BuysToProviders extends Controllers
             $business_name,
             $description,
             $type_doc_id,
-            $payment_method,
+            $payment_method_id,
             $n_document,
             $n_authorization,
             $rise,

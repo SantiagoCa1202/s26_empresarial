@@ -80,8 +80,8 @@
       </div>
       <div class="col-sm-4">
         <s26-select-payment-method
-          id="form-payment_method"
-          v-model="form.payment_method"
+          id="form-payment_method_id"
+          v-model="form.payment_method_id"
           s26_required
         ></s26-select-payment-method>
       </div>
@@ -116,7 +116,8 @@
         ></s26-select-file>
       </div>
       <div class="col-12" v-if="id !== 0">
-        <span class="fw-bold">Creado el:</span> {{ form.created_at }}
+        <span class="fw-bold">Creado el:</span>
+        {{ $s26.formatDate(form.created_at, "xl") }}
       </div>
     </template>
     <template v-slot:level-1>
@@ -138,9 +139,9 @@
           <s26-form-input
             label="SubTotal 0%"
             size="sm"
-            id="form-subtotal_0"
+            id="form-bi_0"
             type="text"
-            v-model="form.subtotal_0"
+            v-model="form.bi_0"
             money
             placeholder="000.00"
             @keyup="total"
@@ -151,9 +152,9 @@
           <s26-form-input
             label="SubTotal 12%"
             size="sm"
-            id="form-subtotal_12"
+            id="form-bi_"
             type="text"
-            v-model="form.subtotal_12"
+            v-model="form.bi_"
             money
             placeholder="000.00"
             @keyup="total"
@@ -361,14 +362,14 @@ const def_form = () => {
     description: "",
     n_document: "",
     type_doc_id: "",
-    payment_method: "",
+    payment_method_id: "",
     date_issue: "",
     n_authorization: "",
     file_id: "",
     created_at: "",
     rise: "",
-    subtotal_0: "",
-    subtotal_12: "",
+    bi_0: "",
+    bi_: "",
     iva: "",
     total: "",
     total_import: "",
@@ -397,23 +398,25 @@ export default {
   data: function () {
     return {
       form: def_form(),
-      levels: ["Información de Comprobante", "Totales", "Plazo"],
     };
   },
   created() {
     if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
+  computed: {
+    levels: function () {
+      return this.id !== 0 && this.id !== null
+        ? ["Información de Comprobante", "Totales"]
+        : ["Información de Comprobante", "Totales", "Plazo"];
+    },
+  },
   methods: {
     infoData(id) {
-      // $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
-      // this.axios
-      //   .get("/users/getUser/" + id)
-      //   .then((res) => {
-      //     this.form.id = res.data.id;
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
+      this.axios
+        .get("/buysToProviders/getBuy/" + id)
+        .then((res) => (this.form = res.data))
+        .catch((err) => console.log(err));
     },
     onSubmit() {
       this.form.id = this.id;
@@ -422,9 +425,7 @@ export default {
         this.$alertify.error(
           "Total no puede estar vacio o no puede ser igual a 0.00 "
         );
-        $("#form-rise, #form-subtotal_0, #form-subtotal_12").addClass(
-          "is-invalid"
-        );
+        $("#form-rise, #form-bi_0, #form-bi_").addClass("is-invalid");
         return;
       } else if (this.form.payment_type < 1 || this.form.payment_type > 2) {
         this.$alertify.error("Es necesario elegir un tipo de pago");
@@ -479,13 +480,15 @@ export default {
       );
     },
     getProvider(id) {
-      this.axios
-        .get("/providers/getProvider/" + id)
-        .then((res) => {
-          this.form.document = res.data.trade_information.document;
-          this.form.business_name = res.data.trade_information.business_name;
-        })
-        .catch((err) => console.log(err));
+      if (id > 0) {
+        this.axios
+          .get("/providers/getProvider/" + id)
+          .then((res) => {
+            this.form.document = res.data.trade_information.document;
+            this.form.business_name = res.data.trade_information.business_name;
+          })
+          .catch((err) => console.log(err));
+      }
     },
     onReset() {
       if (this.id !== 0 && this.id) {
@@ -500,15 +503,13 @@ export default {
       const _iva__ = 1.12;
 
       let iva =
-        this.form.subtotal_12 != ""
-          ? this.form.subtotal_12 * _iva__ - this.form.subtotal_12
-          : 0;
+        this.form.bi_ != "" ? this.form.bi_ * _iva__ - this.form.bi_ : 0;
 
       this.form.iva = parseFloat(iva).toFixed(2);
       this.form.total = (
         (this.form.rise != "" ? parseFloat(this.form.rise) : 0) +
-        (this.form.subtotal_0 != "" ? parseFloat(this.form.subtotal_0) : 0) +
-        (this.form.subtotal_12 != "" ? parseFloat(this.form.subtotal_12) : 0) +
+        (this.form.bi_0 != "" ? parseFloat(this.form.bi_0) : 0) +
+        (this.form.bi_ != "" ? parseFloat(this.form.bi_) : 0) +
         parseFloat(iva)
       ).toFixed(2);
       this.form.total_import = this.form.total;
