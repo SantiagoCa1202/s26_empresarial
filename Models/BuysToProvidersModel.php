@@ -2,6 +2,7 @@
 require_once('SystemModel.php');
 require_once('EstablishmentsModel.php');
 require_once('FilesModel.php');
+require_once('ProvidersModel.php');
 
 class BuysToProvidersModel extends Mysql
 {
@@ -34,6 +35,7 @@ class BuysToProvidersModel extends Mysql
     $this->Document = new SystemModel;
     $this->Establishment = new EstablishmentsModel;
     $this->File = new FilesModel;
+    $this->Provider = new ProvidersModel;
   }
 
   public function selectBuys(int $perPage, array $filter)
@@ -45,9 +47,9 @@ class BuysToProvidersModel extends Mysql
     $this->business_name = $filter['business_name'];
     $this->n_document = $filter['n_document'];
     $this->n_authorization = $filter['n_authorization'];
-    $this->establishment_id = $filter['establishment'];
-    $this->status = $filter['status'];
+    $this->establishment_id = $filter['establishment_id'];
     $this->type_doc_id = $filter['type_doc_id'];
+    $this->status = $filter['status'];
     $this->date_issue = $filter['date_issue'];
     $this->created_at = $filter['created_at'];
     $this->perPage = $perPage;
@@ -96,6 +98,8 @@ class BuysToProvidersModel extends Mysql
 
       $items[$i]['type_doc'] = $this->Document->selectDocument($items[$i]['type_doc_id']);
 
+      $items[$i]['payment_method'] = $this->Document->selectPaymentMethod($items[$i]['payment_method_id']);
+
       $items[$i]['file'] = $items[$i]['file_id'] > 0 ?  $this->File->selectFile($items[$i]['file_id']) : '';
 
       $items[$i]['establishment'] = $this->Establishment->selectEstablishment($items[$i]['establishment_id']);
@@ -117,6 +121,16 @@ class BuysToProvidersModel extends Mysql
     $this->id = $id;
     $sql = "SELECT * FROM buys_to_providers WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
+
+    $request['provider'] = $this->Provider->selectProvider($request['provider_id']);
+
+    $request['type_doc'] = $this->Document->selectDocument($request['type_doc_id']);
+
+    $request['payment_method'] = $this->Document->selectPaymentMethod($request['payment_method_id']);
+
+    $request['file'] = $request['file_id'] > 0 ?  $this->File->selectFile($request['file_id']) : '';
+
+    $request['establishment'] = $this->Establishment->selectEstablishment($request['establishment_id']);
 
     return $request;
   }
@@ -183,6 +197,89 @@ class BuysToProvidersModel extends Mysql
       $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     } else {
       $request = -2;
+    }
+    return $request;
+  }
+
+  public function updateBuy(
+    int $id,
+    int $provider_id,
+    string $document,
+    string $business_name,
+    string $description,
+    int $type_doc_id,
+    int $payment_method,
+    string $n_document,
+    string $n_authorization,
+    float $rise,
+    float $subtotal_0,
+    float $subtotal_12,
+    int $file_id,
+    string $date_issue,
+    int $establishment_id,
+    int $status,
+  ) {
+
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+    $this->provider_id = $provider_id;
+    $this->document = $document;
+    $this->business_name = $business_name;
+    $this->description = $description;
+    $this->type_doc_id = $type_doc_id;
+    $this->payment_method = $payment_method;
+    $this->n_document = $n_document;
+    $this->n_authorization = $n_authorization;
+    $this->rise = $rise;
+    $this->subtotal_0 = $subtotal_0;
+    $this->subtotal_12 = $subtotal_12;
+    $this->file_id = $file_id;
+    $this->date_issue = $date_issue;
+    $this->establishment_id = $establishment_id;
+    $this->status = $status;
+
+    $sql = "SELECT * FROM buys_to_providers WHERE id != $this->id AND n_document = '$this->n_document'";
+    $request = $this->select_all_company($sql, $this->db_company);
+
+    if (empty($request)) {
+      $sql = "UPDATE buys_to_providers SET provider_id = ?, document = ?, business_name = ?, description = ?, type_doc_id = ?, payment_method_id = ?, n_document = ?, n_authorization = ?, iva_ = ?, rise = ?, bi_0 = ?, bi_ = ?, file_id = ?, date_issue = ?, establishment_id = ?, status = ? WHERE id = $this->id";
+      $arrData = array(
+        $this->provider_id,
+        $this->document,
+        $this->business_name,
+        $this->description,
+        $this->type_doc_id,
+        $this->payment_method,
+        $this->n_document,
+        $this->n_authorization,
+        _iva,
+        $this->rise,
+        $this->subtotal_0,
+        $this->subtotal_12,
+        $this->file_id,
+        $this->date_issue,
+        $this->establishment_id,
+        $this->status,
+      );
+      $request = $this->update_company($sql, $arrData, $this->db_company);
+    } else {
+      $request = -2;
+    }
+    return $request;
+  }
+
+  public function deleteBuy(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+
+    if ($this->id !== 1) {
+      $sql = "UPDATE buys_to_providers SET status = 0 WHERE id = $this->id";
+      $request = $this->delete_company($sql, $this->db_company);
+    } else {
+      $request = -4;
     }
     return $request;
   }

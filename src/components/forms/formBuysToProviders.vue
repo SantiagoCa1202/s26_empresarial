@@ -98,6 +98,14 @@
           today
         ></s26-date-picker>
       </div>
+      <div class="col-4" v-if="permit_establishment">
+        <s26-select-establishment
+          id="form-establishment"
+          v-model="form.establishment_id"
+          s26_required
+        >
+        </s26-select-establishment>
+      </div>
       <div class="col">
         <s26-form-input
           label="N° de Autorización"
@@ -279,7 +287,12 @@
             </transition>
             <transition name="fade">
               <div class="col-12" v-if="form.payment_method_counted == 7">
-                cheque
+                <s26-select-check
+                  label="Cheque"
+                  size="sm"
+                  id="form-check_id"
+                  v-model="form.check_id"
+                ></s26-select-check>
               </div>
             </transition>
           </div>
@@ -364,6 +377,7 @@ const def_form = () => {
     type_doc_id: "",
     payment_method_id: "",
     date_issue: "",
+    establishment_id: "",
     n_authorization: "",
     file_id: "",
     created_at: "",
@@ -397,6 +411,7 @@ export default {
   },
   data: function () {
     return {
+      permit_establishment: $permit_establishment,
       form: def_form(),
     };
   },
@@ -470,6 +485,12 @@ export default {
                 } else {
                   this.$alertify.error(res.data[i].msg);
                 }
+              }
+              if (this.id > 0) {
+                this.$alertify.warning(
+                  `Recuerda Aztualizar los datos en 
+                  <a href="${BASE_URL}/accounts_to_pay" target="_BLANK" class="btn btn-link"> Cuentas Por Pagar </a>`
+                );
               }
               $s26.hide_loader_points();
               this.$emit("update");

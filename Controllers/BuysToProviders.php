@@ -20,6 +20,13 @@ class BuysToProviders extends Controllers
   public function getBuys()
   {
     if ($_SESSION['permitsModule']['r']) {
+
+      if ($_SESSION['permits'][41]['r']) {
+        $establishment_id = !empty($_GET['establishment_id']) ? intval($_GET['establishment_id']) : "";
+      } else {
+        $establishment_id = $_SESSION['userData']['establishment_id'];
+      }
+
       $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : '10000';
       $filter = [
         'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
@@ -27,7 +34,7 @@ class BuysToProviders extends Controllers
         'business_name' => !empty($_GET['business_name']) ? strClean($_GET['business_name']) : '',
         'n_document' => !empty($_GET['n_document']) ? strClean($_GET['n_document']) : '',
         'n_authorization' => !empty($_GET['n_authorization']) ? strClean($_GET['n_authorization']) : '',
-        'establishment' => !empty($_GET['establishment']) ? intval($_GET['establishment']) : '',
+        'establishment_id' => $establishment_id,
         'type_doc_id' => !empty($_GET['type_doc_id']) ? intval($_GET['type_doc_id']) : '',
         'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
         'date_issue' => !empty($_GET['date_issue']) ? $_GET['date_issue'] : '',
@@ -67,16 +74,16 @@ class BuysToProviders extends Controllers
     $n_authorization = strClean($_POST['n_authorization']);
     $file_id = intval($_POST['file_id']);
     $rise = floatval($_POST['rise']);
-    $subtotal_0 = floatval($_POST['subtotal_0']);
-    $subtotal_12 = floatval($_POST['subtotal_12']);
+    $bi_0 = floatval($_POST['bi_0']);
+    $bi_ = floatval($_POST['bi_']);
     $total = floatval($_POST['total']);
-    $total_import = floatval($_POST['total_import']);
-    $credit_note = floatval($_POST['credit_note']);
-    $payment_type = intval($_POST['payment_type']);
-    $payment_method_counted = intval($_POST['payment_method_counted']);
+    $total_import = !empty($_POST['total_import']) ? floatval($_POST['total_import']) : 0;
+    $credit_note = !empty($_POST['credit_note']) ? floatval($_POST['credit_note']) : 0;
+    $payment_type = !empty($_POST['payment_type']) ? intval($_POST['payment_type']) : 1;
+    $payment_method_counted = !empty($_POST['payment_method_counted']) ? intval($_POST['payment_method_counted']) : "";
     $bank_entity_id = !empty($_POST['bank_entity_id']) ? intval($_POST['bank_entity_id']) : null;
     $check_id = !empty($_POST['check_id']) ? intval($_POST['check_id']) : null;
-    $n_transaction = strClean($_POST['n_transaction']);
+    $n_transaction = !empty($_POST['n_transaction']) ? strClean($_POST['n_transaction']) : "";
     $counted_date = !empty($_POST['counted_date']) ? $_POST['counted_date'] : '';
     $credit_date = !empty($_POST['credit_date']) ? $_POST['credit_date'] : '';
 
@@ -96,7 +103,7 @@ class BuysToProviders extends Controllers
       val_date($date_issue) &&
       ($payment_type == 1 || $payment_type == 2) &&
       ($status == 1 || $status == 2) &&
-      ($type_doc_id > 0 || $type_doc_id < 9) &&
+      ($type_doc_id > 0 || $type_doc_id < 6) &&
       ($payment_method_id > 0 || $payment_method_id < 8)
     ) {
       if ($id == 0) {
@@ -113,8 +120,8 @@ class BuysToProviders extends Controllers
             $n_document,
             $n_authorization,
             $rise,
-            $subtotal_0,
-            $subtotal_12,
+            $bi_0,
+            $bi_,
             $file_id,
             $date_issue,
             $establishment_id,
@@ -193,13 +200,12 @@ class BuysToProviders extends Controllers
             $business_name,
             $description,
             $type_doc_id,
-            $payment_method,
+            $payment_method_id,
             $n_document,
             $n_authorization,
-            _iva,
             $rise,
-            $subtotal_0,
-            $subtotal_12,
+            $bi_0,
+            $bi_,
             $file_id,
             $date_issue,
             $establishment_id,
@@ -217,6 +223,49 @@ class BuysToProviders extends Controllers
     $arrRes = s26_res("Compra", $request, $type);
     array_push($response, $arrRes);
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
+  public function delBuy(int $id)
+  {
+    if ($_SESSION['permitsModule']['d']) {
+      $id = intval($id);
+      $request = $this->model->deleteBuy($id);
+    } else {
+      $request = -5;
+    }
+    $arrRes = s26_res("Compra", $request, 3);
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
+  public function exportBuys()
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      if ($_SESSION['permits'][41]['r']) {
+        $establishment_id = !empty($_GET['establishment_id']) ? intval($_GET['establishment_id']) : "";
+      } else {
+        $establishment_id = $_SESSION['userData']['establishment_id'];
+      }
+
+      $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : '10000';
+      $filter = [
+        'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
+        'ruc' => !empty($_GET['ruc']) ? intval($_GET['ruc']) : '',
+        'business_name' => !empty($_GET['business_name']) ? strClean($_GET['business_name']) : '',
+        'n_document' => !empty($_GET['n_document']) ? strClean($_GET['n_document']) : '',
+        'n_authorization' => !empty($_GET['n_authorization']) ? strClean($_GET['n_authorization']) : '',
+        'establishment_id' => $establishment_id,
+        'type_doc_id' => !empty($_GET['type_doc_id']) ? intval($_GET['type_doc_id']) : '',
+        'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
+        'date_issue' => !empty($_GET['date_issue']) ? $_GET['date_issue'] : '',
+        'created_at' => !empty($_GET['created_at']) ? $_GET['created_at'] : '',
+      ];
+
+      $data['data'] = $this->model->selectBuys($perPage, $filter);
+      $data['type'] = $_GET['type'];
+      $this->views->exportData("buysToProviders", $data);
+    }
     die();
   }
 }

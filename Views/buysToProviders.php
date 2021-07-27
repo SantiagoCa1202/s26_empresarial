@@ -26,7 +26,10 @@
             <s26-form-input label="Razón Social" size="sm" id="business_name" type="text" v-model="filter.business_name" maxlength="100" @keyup="allRows"></s26-form-input>
             <s26-form-input label="N° de Documento" size="sm" id="n_document" type="text" v-model="filter.n_document" maxlength="17" @keyup="allRows"></s26-form-input>
             <s26-form-input label="N° de Autorización" size="sm" id="n_authorization" type="text" v-model="filter.n_authorization" maxlength="50" @keyup="allRows" number></s26-form-input>
-            <s26-select-establishment id="filter-establishment" all v-model="filter.establishment" @change="allRows"></s26-select-establishment>
+            <?php if ($_SESSION['permits'][41]['r']) {  ?>
+              <s26-select-establishment id="filter-establishment" all v-model="filter.establishment_id" @change="allRows"></s26-select-establishment>
+            <?php } ?>
+            <s26-select-type-document id="filter-type_doc_id" v-model="filter.type_doc_id" all type="buy"></s26-select-type-document>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date_issue" @change="allRows" label="Fecha de Emisión" :dates="s26_data.date_issue"></s26-date-picker>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.created_at" @change="allRows" label="Fecha de Registro" :dates="s26_data.created_at"></s26-date-picker>
@@ -53,6 +56,10 @@
                   <s26-icon icon="dollar-sign" class="text-warning"></s26-icon>
                   {{ $s26.currency(s26_data.info.total) }}
                 </s26-tarjet-info>
+                <s26-tarjet-info title="Iva" variant="danger" icon="money-bill-wave">
+                  <s26-icon icon="dollar-sign" class="text-danger"></s26-icon>
+                  {{ $s26.currency(s26_data.info.total_iva) }}
+                </s26-tarjet-info>
                 <s26-tarjet-info title="BI 12%" variant="purple" icon="money-bill-wave">
                   <s26-icon icon="dollar-sign" class="s26-text-purple"></s26-icon>
                   {{ $s26.currency(s26_data.info.total_bi_) }}
@@ -60,10 +67,6 @@
                 <s26-tarjet-info title="BI 0%" variant="orange" icon="money-bill-wave">
                   <s26-icon icon="dollar-sign" class="s26-text-orange"></s26-icon>
                   {{ $s26.currency(s26_data.info.total_bi_0) }}
-                </s26-tarjet-info>
-                <s26-tarjet-info title="Iva" variant="danger" icon="money-bill-wave">
-                  <s26-icon icon="dollar-sign" class="text-danger"></s26-icon>
-                  {{ $s26.currency(s26_data.info.total_iva) }}
                 </s26-tarjet-info>
                 <s26-tarjet-info title="Rise" variant="secondary" icon="money-bill-wave">
                   <s26-icon icon="dollar-sign" class="text-secondary"></s26-icon>
@@ -152,7 +155,7 @@
       ?>
         <!-- Modal Eliminar -->
         <transition name="slide-fade">
-          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'BuysToProviers/delBuy/' + idRow"></s26-delete>
+          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'BuysToProviders/delBuy/' + idRow"></s26-delete>
         </transition>
       <?php
       }
@@ -162,4 +165,7 @@
   }
   ?>
 </div>
+<script>
+  const $permit_establishment = <?= $_SESSION['permits'][41]['r'] ?>;
+</script>
 <?= footer_(); ?>

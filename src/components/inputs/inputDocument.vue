@@ -70,6 +70,7 @@
           :s26-required="s26_required"
         />
       </div>
+      {{ return_document }}
     </div>
     <p class="invalid-feedback" v-if="s26_required || validate"></p>
   </div>
@@ -102,14 +103,25 @@ export default {
       $s26.val_inputs();
     }, 50);
   },
+  computed: {
+    return_document: function () {
+      if (this.value != "") {
+        let arrDoc = this.value.split("-");
+        this.n_establishment = arrDoc[0];
+        this.n_point = arrDoc[1];
+        this.n_document = arrDoc[2];
+      } else {
+        this.n_establishment = "";
+        this.n_point = "";
+        this.n_document = "";
+      }
+    },
+  },
   methods: {
     write() {
-      if (this.n_establishment.length == 3) {
-        $(".n_point").focus();
-      }
-      if (this.n_point.length == 3) {
-        $(".n_document").focus();
-      }
+      if (this.n_establishment.length == 3) $(".n_point").focus();
+
+      if (this.n_point.length == 3) $(".n_document").focus();
 
       let n_document = `${this.n_establishment}-${this.n_point}-${this.n_document}`;
 

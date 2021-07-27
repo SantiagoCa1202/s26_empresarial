@@ -47,4 +47,7 @@ Vue.component("s26-select-file", selectFile);
 import selectBuys from "./selectBuys.vue";
 Vue.component("s26-select-buys", selectBuys);
 
+import selectCheck from "./selectCheck.vue";
+Vue.component("s26-select-check", selectCheck);
+
 export default s26Selects;

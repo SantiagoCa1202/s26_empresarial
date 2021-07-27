@@ -32,4 +32,7 @@ Vue.component("s26-input-photo", inputPhoto);
 import inputDocument from "./inputDocument.vue";
 Vue.component("s26-input-document", inputDocument);
 
+import inputDocumentReadOnly from "./inputDocumentReadOnly.vue";
+Vue.component("s26-input-read-document", inputDocumentReadOnly);
+
 export default s26Inputs;
