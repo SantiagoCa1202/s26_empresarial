@@ -1,5 +1,5 @@
 <?php
-class BuysToProviders extends Controllers
+class Buys extends Controllers
 {
   public function __construct()
   {
@@ -12,9 +12,9 @@ class BuysToProviders extends Controllers
     getPermits(24);
   }
 
-  public function buysToProviders()
+  public function buys()
   {
-    $this->views->getView($this, "buysToProviders");
+    $this->views->getView($this, "buys");
   }
 
   public function getBuys()
@@ -264,7 +264,7 @@ class BuysToProviders extends Controllers
 
       $data['data'] = $this->model->selectBuys($perPage, $filter);
       $data['type'] = $_GET['type'];
-      $this->views->exportData("buysToProviders", $data);
+      $this->views->exportData("buys", $data);
     }
     die();
   }

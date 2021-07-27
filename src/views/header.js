@@ -40,7 +40,7 @@ if (element) {
         "deposits",
         "external_income",
       ],
-      subDocuments: ["buys_to_providers", "credit_notes", "withholdings"],
+      subDocuments: ["buys", "creditNotes", "withholdings"],
       subWallet: ["wallet", "estadisticas", "bankAccounts"],
       subAccounts: [
         "accounts_to_pay",

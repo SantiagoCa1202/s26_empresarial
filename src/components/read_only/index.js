@@ -35,7 +35,7 @@ Vue.component("s26-read-bank-account", readBankAccount);
 import readCheck from "./readCheck.vue";
 Vue.component("s26-read-check", readCheck);
 
-import readBuysToProviders from "./readBuysToProviders.vue";
-Vue.component("s26-read-buy", readBuysToProviders);
+import readBuys from "./readBuys.vue";
+Vue.component("s26-read-buy", readBuys);
 
 export default s26ReadOnly;

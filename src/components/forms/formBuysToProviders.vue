@@ -1,6 +1,6 @@
 <template>
   <s26-modal-multiple
-    id="formBuysToProviders"
+    id="formBuys"
     :title="(id == 0 ? 'Nueva ' : 'Editar ') + 'Compra'"
     :levels="levels"
     body_style="min-height: 375px;"
@@ -429,7 +429,7 @@ export default {
     infoData(id) {
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
       this.axios
-        .get("/buysToProviders/getBuy/" + id)
+        .get("/buys/getBuy/" + id)
         .then((res) => (this.form = res.data))
         .catch((err) => console.log(err));
     },
@@ -470,7 +470,7 @@ export default {
           let formData = $s26.json_to_formData(this.form);
           $s26.show_loader_points();
           this.axios
-            .post("/buysToProviders/setBuy", formData, {
+            .post("/buys/setBuy", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },

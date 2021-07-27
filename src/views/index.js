@@ -16,7 +16,7 @@ import "./providers";
 import "./photos";
 import "./establishments";
 import "./products";
-import "./buysToProviders";
+import "./buys";
 import "./files";
 import "./bankAccounts";
 import "./checkBooks";

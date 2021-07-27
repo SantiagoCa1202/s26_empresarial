@@ -1,6 +1,6 @@
 <template>
   <s26-modal-multiple
-    id="readBuysToProviders"
+    id="readBuys"
     title="Información de Compra a Proveedor"
     :levels="levels"
     body_style="min-height: 375px;"
@@ -148,7 +148,7 @@ export default {
   methods: {
     infoData(id) {
       this.axios
-        .get("/buysToProviders/getBuy/" + id)
+        .get("/buys/getBuy/" + id)
         .then((res) => {
           console.log(res);
           this.form = res.data;
@@ -157,7 +157,7 @@ export default {
     },
     hideModal() {
       this.$emit("input", null);
-      $s26.delete_cookie("id", "buysToProviders");
+      $s26.delete_cookie("id", "buys");
     },
   },
 };

@@ -1,6 +1,6 @@
 <?= head_(); ?>
 <?= header_(); ?>
-<div id="s26-buysToProviders-view" class="container-fluid s26-container" tabindex="0">
+<div id="s26-buys-view" class="container-fluid s26-container" tabindex="0">
   <?php
   if (empty($_SESSION['permitsModule']['r'])) {
   ?>
@@ -155,7 +155,7 @@
       ?>
         <!-- Modal Eliminar -->
         <transition name="slide-fade">
-          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'BuysToProviders/delBuy/' + idRow"></s26-delete>
+          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'Buys/delBuy/' + idRow"></s26-delete>
         </transition>
       <?php
       }

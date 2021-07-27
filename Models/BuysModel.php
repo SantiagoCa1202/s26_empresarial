@@ -4,7 +4,7 @@ require_once('EstablishmentsModel.php');
 require_once('FilesModel.php');
 require_once('ProvidersModel.php');
 
-class BuysToProvidersModel extends Mysql
+class BuysModel extends Mysql
 {
   public $id;
   public $document;
@@ -80,14 +80,14 @@ class BuysToProvidersModel extends Mysql
       SUM(bi_) as total_bi_,
       SUM(iva) as total_iva,
       SUM(total) as total
-      FROM buys_to_providers
+      FROM buys
       WHERE $where 
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
     $rows = "
       SELECT *
-      FROM buys_to_providers
+      FROM buys
       WHERE $where  
       ORDER BY id DESC LIMIT 0, $this->perPage
     ";
@@ -108,8 +108,8 @@ class BuysToProvidersModel extends Mysql
 
     return [
       'items' => $items,
-      'date_issue' => $this->select_dates_company('date_issue', 'buys_to_providers', $this->db_company),
-      'created_at' => $this->select_dates_company('created_at', 'buys_to_providers', $this->db_company),
+      'date_issue' => $this->select_dates_company('date_issue', 'buys', $this->db_company),
+      'created_at' => $this->select_dates_company('created_at', 'buys', $this->db_company),
       'info' => $info_table
     ];
   }
@@ -119,7 +119,7 @@ class BuysToProvidersModel extends Mysql
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->id = $id;
-    $sql = "SELECT * FROM buys_to_providers WHERE id = $this->id";
+    $sql = "SELECT * FROM buys WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
 
     $request['provider'] = $this->Provider->selectProvider($request['provider_id']);
@@ -171,11 +171,11 @@ class BuysToProvidersModel extends Mysql
     $this->establishment_id = $establishment_id;
     $this->status = $status;
 
-    $sql = "SELECT * FROM buys_to_providers WHERE n_document = '$this->n_document'";
+    $sql = "SELECT * FROM buys WHERE n_document = '$this->n_document'";
     $request = $this->select_all_company($sql, $this->db_company);
 
     if (empty($request)) {
-      $query_insert = "INSERT INTO buys_to_providers (provider_id, document, business_name, description, type_doc_id, payment_method_id, n_document, n_authorization, iva_, rise, bi_0, bi_, file_id, date_issue, establishment_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      $query_insert = "INSERT INTO buys (provider_id, document, business_name, description, type_doc_id, payment_method_id, n_document, n_authorization, iva_, rise, bi_0, bi_, file_id, date_issue, establishment_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       $arrData = array(
         $this->provider_id,
         $this->document,
@@ -239,11 +239,11 @@ class BuysToProvidersModel extends Mysql
     $this->establishment_id = $establishment_id;
     $this->status = $status;
 
-    $sql = "SELECT * FROM buys_to_providers WHERE id != $this->id AND n_document = '$this->n_document'";
+    $sql = "SELECT * FROM buys WHERE id != $this->id AND n_document = '$this->n_document'";
     $request = $this->select_all_company($sql, $this->db_company);
 
     if (empty($request)) {
-      $sql = "UPDATE buys_to_providers SET provider_id = ?, document = ?, business_name = ?, description = ?, type_doc_id = ?, payment_method_id = ?, n_document = ?, n_authorization = ?, iva_ = ?, rise = ?, bi_0 = ?, bi_ = ?, file_id = ?, date_issue = ?, establishment_id = ?, status = ? WHERE id = $this->id";
+      $sql = "UPDATE buys SET provider_id = ?, document = ?, business_name = ?, description = ?, type_doc_id = ?, payment_method_id = ?, n_document = ?, n_authorization = ?, iva_ = ?, rise = ?, bi_0 = ?, bi_ = ?, file_id = ?, date_issue = ?, establishment_id = ?, status = ? WHERE id = $this->id";
       $arrData = array(
         $this->provider_id,
         $this->document,
@@ -276,7 +276,7 @@ class BuysToProvidersModel extends Mysql
     $this->id = $id;
 
     if ($this->id !== 1) {
-      $sql = "UPDATE buys_to_providers SET status = 0 WHERE id = $this->id";
+      $sql = "UPDATE buys SET status = 0 WHERE id = $this->id";
       $request = $this->delete_company($sql, $this->db_company);
     } else {
       $request = -4;

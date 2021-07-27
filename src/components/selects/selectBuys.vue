@@ -104,7 +104,7 @@ export default {
       this.$emit("change");
       if (this.value != 0) {
         this.axios
-          .get("/buysToProviders/getBuys/" + this.value)
+          .get("/buys/getBuys/" + this.value)
           .then(
             (res) =>
               (this.selected = `${res.type_doc.alias} - ${res.n_document}`)
@@ -124,7 +124,7 @@ export default {
         type_doc_id: this.type_doc,
       };
       this.axios
-        .get("/buysToProviders/getBuys/", {
+        .get("/buys/getBuys/", {
           params,
         })
         .then((res) => {
@@ -139,8 +139,8 @@ export default {
       this.allRows();
     },
     getRow() {
-      $s26.create_cookie("id", this.value, "buysToProviders");
-      window.open(BASE_URL + "/buysToProviders", "_blank");
+      $s26.create_cookie("id", this.value, "buys");
+      window.open(BASE_URL + "/buys", "_blank");
     },
   },
 };

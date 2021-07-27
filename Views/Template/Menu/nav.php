@@ -235,14 +235,14 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 4 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][24]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/buysToProviders" :class="focusSubMenu('buysToProviders')">
+                <a href="<?= BASE_URL ?>/buys" :class="focusSubMenu('buys')">
                   Compras
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][25]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/credit_notes" :class="focusSubMenu('credit_notes')">
+                <a href="<?= BASE_URL ?>/creditNotes" :class="focusSubMenu('creditNotes')">
                   Notas de Crédito
                 </a>
               </li>
