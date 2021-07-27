@@ -1,9 +1,9 @@
 <template>
   <s26-modal-multiple
     id="readBuys"
-    title="Información de Compra a Proveedor"
+    title="Información de Nota de Crédito"
     :levels="levels"
-    body_style="min-height: 375px;"
+    body_style="min-height: 290px;"
     size="lg"
     @hideModal="hideModal"
     readOnly
@@ -11,17 +11,20 @@
     <template v-slot:level-0>
       <div class="col-sm-3">
         <s26-input-read
-          label="Proveedor"
-          :content="form.provider.trade_information.alias"
+          label="N° de Doc. Modificado"
+          :content="form.buy.n_document"
         ></s26-input-read>
       </div>
       <div class="col-sm-3">
-        <s26-input-read label="Ruc" :content="form.document"></s26-input-read>
+        <s26-input-read
+          label="Ruc"
+          :content="form.buy.document"
+        ></s26-input-read>
       </div>
       <div class="col-sm-6">
         <s26-input-read
           label="Razón Social"
-          :content="form.business_name"
+          :content="form.buy.business_name"
         ></s26-input-read>
       </div>
       <div class="col-sm-7">
@@ -36,31 +39,13 @@
           :content="form.n_document"
         ></s26-input-read-document>
       </div>
-      <div class="col-sm-4">
-        <s26-input-read
-          label="Tipo de Documento"
-          :content="form.type_doc.name"
-        ></s26-input-read>
-      </div>
-      <div class="col-sm-4">
-        <s26-input-read
-          label="Forma de Pago"
-          :content="form.payment_method.name"
-        ></s26-input-read>
-      </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <s26-input-read
           label="Fecha de Emisión"
           :content="$s26.formatDate(form.date_issue)"
         ></s26-input-read>
       </div>
-      <div class="col-sm-4">
-        <s26-input-read
-          label="Establecimiento"
-          :content="form.establishment.tradename"
-        ></s26-input-read>
-      </div>
-      <div class="col-sm-4">
+      <div class="col-sm-5">
         <s26-input-read
           label="N° de Autorización"
           :content="form.n_authorization"
@@ -79,13 +64,6 @@
     </template>
     <template v-slot:level-1>
       <div class="col-6 row mx-auto">
-        <div class="col-sm-12">
-          <s26-input-read
-            label="Rise"
-            :content="form.rise"
-            money
-          ></s26-input-read>
-        </div>
         <div class="col-sm-12">
           <s26-input-read
             label="Subtotal 0%"
@@ -130,16 +108,11 @@ export default {
   data: function () {
     return {
       form: {
-        provider: {
-          trade_information: {},
-        },
-        type_doc: {},
-        payment_method: {},
-        establishment: {},
+        buy: {},
         file: {},
         n_document: "",
       },
-      levels: ["Información de Compra", "Totales"],
+      levels: ["Información de Nota de Crédito", "Totales"],
     };
   },
   created() {
@@ -148,13 +121,13 @@ export default {
   methods: {
     infoData(id) {
       this.axios
-        .get("/buys/getBuy/" + id)
+        .get("/creditNotes/getCreditNote/" + id)
         .then((res) => (this.form = res.data))
         .catch((err) => console.log(err));
     },
     hideModal() {
       this.$emit("input", null);
-      $s26.delete_cookie("id", "buys");
+      $s26.delete_cookie("id", "creditNotes");
     },
   },
 };

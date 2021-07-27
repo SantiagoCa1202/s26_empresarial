@@ -17,6 +17,7 @@ import "./photos";
 import "./establishments";
 import "./products";
 import "./buys";
+import "./creditNotes";
 import "./files";
 import "./bankAccounts";
 import "./checkBooks";

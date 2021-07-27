@@ -49,7 +49,6 @@ class BuysModel extends Mysql
     $this->n_authorization = $filter['n_authorization'];
     $this->establishment_id = $filter['establishment_id'];
     $this->type_doc_id = $filter['type_doc_id'];
-    $this->status = $filter['status'];
     $this->date_issue = $filter['date_issue'];
     $this->created_at = $filter['created_at'];
     $this->perPage = $perPage;
@@ -68,7 +67,6 @@ class BuysModel extends Mysql
       n_authorization LIKE '%$this->n_authorization%' AND
       establishment_id LIKE '%$this->establishment_id%' AND
       type_doc_id LIKE '%$this->type_doc_id%' AND 
-      status LIKE '%$this->status%' AND 
       status > 0 
       $date_issue
       $created_at
@@ -150,7 +148,6 @@ class BuysModel extends Mysql
     int $file_id,
     string $date_issue,
     int $establishment_id,
-    int $status,
   ) {
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -169,13 +166,12 @@ class BuysModel extends Mysql
     $this->file_id = $file_id;
     $this->date_issue = $date_issue;
     $this->establishment_id = $establishment_id;
-    $this->status = $status;
 
     $sql = "SELECT * FROM buys WHERE n_document = '$this->n_document'";
     $request = $this->select_all_company($sql, $this->db_company);
 
     if (empty($request)) {
-      $query_insert = "INSERT INTO buys (provider_id, document, business_name, description, type_doc_id, payment_method_id, n_document, n_authorization, iva_, rise, bi_0, bi_, file_id, date_issue, establishment_id, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      $query_insert = "INSERT INTO buys (provider_id, document, business_name, description, type_doc_id, payment_method_id, n_document, n_authorization, iva_, rise, bi_0, bi_, file_id, date_issue, establishment_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       $arrData = array(
         $this->provider_id,
         $this->document,
@@ -192,7 +188,6 @@ class BuysModel extends Mysql
         $this->file_id,
         $this->date_issue,
         $this->establishment_id,
-        $this->status,
       );
       $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     } else {
@@ -217,7 +212,6 @@ class BuysModel extends Mysql
     int $file_id,
     string $date_issue,
     int $establishment_id,
-    int $status,
   ) {
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -237,13 +231,12 @@ class BuysModel extends Mysql
     $this->file_id = $file_id;
     $this->date_issue = $date_issue;
     $this->establishment_id = $establishment_id;
-    $this->status = $status;
 
     $sql = "SELECT * FROM buys WHERE id != $this->id AND n_document = '$this->n_document'";
     $request = $this->select_all_company($sql, $this->db_company);
 
     if (empty($request)) {
-      $sql = "UPDATE buys SET provider_id = ?, document = ?, business_name = ?, description = ?, type_doc_id = ?, payment_method_id = ?, n_document = ?, n_authorization = ?, iva_ = ?, rise = ?, bi_0 = ?, bi_ = ?, file_id = ?, date_issue = ?, establishment_id = ?, status = ? WHERE id = $this->id";
+      $sql = "UPDATE buys SET provider_id = ?, document = ?, business_name = ?, description = ?, type_doc_id = ?, payment_method_id = ?, n_document = ?, n_authorization = ?, rise = ?, bi_0 = ?, bi_ = ?, file_id = ?, date_issue = ?, establishment_id = ?WHERE id = $this->id";
       $arrData = array(
         $this->provider_id,
         $this->document,
@@ -253,14 +246,12 @@ class BuysModel extends Mysql
         $this->payment_method,
         $this->n_document,
         $this->n_authorization,
-        _iva,
         $this->rise,
         $this->subtotal_0,
         $this->subtotal_12,
         $this->file_id,
         $this->date_issue,
         $this->establishment_id,
-        $this->status,
       );
       $request = $this->update_company($sql, $arrData, $this->db_company);
     } else {

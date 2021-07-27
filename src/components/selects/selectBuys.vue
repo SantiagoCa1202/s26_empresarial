@@ -1,7 +1,7 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
     <label :for="id" class="form-label w-100">
-      Comprobantes
+      {{ label }}
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
@@ -84,6 +84,11 @@ export default {
     value: {},
     all: Boolean,
     s26_required: Boolean,
+    label: {
+      type: String,
+      default: "Comprobantes",
+    },
+    type_doc: {},
   },
   data: function () {
     return {
@@ -104,10 +109,10 @@ export default {
       this.$emit("change");
       if (this.value != 0) {
         this.axios
-          .get("/buys/getBuys/" + this.value)
+          .get("/buys/getBuy/" + this.value)
           .then(
             (res) =>
-              (this.selected = `${res.type_doc.alias} - ${res.n_document}`)
+              (this.selected = `${res.data.type_doc.alias} - ${res.data.n_document}`)
           )
           .catch((err) => console.log(err));
         return this.selected;

@@ -36,7 +36,6 @@ class Buys extends Controllers
         'n_authorization' => !empty($_GET['n_authorization']) ? strClean($_GET['n_authorization']) : '',
         'establishment_id' => $establishment_id,
         'type_doc_id' => !empty($_GET['type_doc_id']) ? intval($_GET['type_doc_id']) : '',
-        'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
         'date_issue' => !empty($_GET['date_issue']) ? $_GET['date_issue'] : '',
         'created_at' => !empty($_GET['created_at']) ? $_GET['created_at'] : '',
       ];
@@ -92,7 +91,6 @@ class Buys extends Controllers
     } else {
       $establishment_id = $_SESSION['userData']['establishment_id'];
     }
-    $status = !empty($_POST['status']) ? intval($_POST['status']) : 1;
     $request = "";
     $response = [];
     if (
@@ -102,7 +100,6 @@ class Buys extends Controllers
       ($total !== '' && is_numeric($total)) &&
       val_date($date_issue) &&
       ($payment_type == 1 || $payment_type == 2) &&
-      ($status == 1 || $status == 2) &&
       ($type_doc_id > 0 || $type_doc_id < 6) &&
       ($payment_method_id > 0 || $payment_method_id < 8)
     ) {
@@ -125,7 +122,6 @@ class Buys extends Controllers
             $file_id,
             $date_issue,
             $establishment_id,
-            $status,
           );
           $type = 1;
 
@@ -209,7 +205,6 @@ class Buys extends Controllers
             $file_id,
             $date_issue,
             $establishment_id,
-            $status,
           );
           $type = 2;
         } else {
@@ -257,7 +252,6 @@ class Buys extends Controllers
         'n_authorization' => !empty($_GET['n_authorization']) ? strClean($_GET['n_authorization']) : '',
         'establishment_id' => $establishment_id,
         'type_doc_id' => !empty($_GET['type_doc_id']) ? intval($_GET['type_doc_id']) : '',
-        'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
         'date_issue' => !empty($_GET['date_issue']) ? $_GET['date_issue'] : '',
         'created_at' => !empty($_GET['created_at']) ? $_GET['created_at'] : '',
       ];

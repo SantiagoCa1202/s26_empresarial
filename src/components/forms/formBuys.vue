@@ -395,7 +395,6 @@ const def_form = () => {
     n_transaction: "",
     counted_date: "",
     credit_date: [],
-    n_doc_modify: "",
   };
 };
 export default {
@@ -470,11 +469,7 @@ export default {
           let formData = $s26.json_to_formData(this.form);
           $s26.show_loader_points();
           this.axios
-            .post("/buys/setBuy", formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
+            .post("/buys/setBuy", formData)
             .then((res) => {
               for (let i in res.data) {
                 if (res.data[i].type == 1 || res.data[i].type == 2) {
