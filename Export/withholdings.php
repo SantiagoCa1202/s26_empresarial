@@ -2,7 +2,7 @@
 if (!empty($_SESSION['permitsModule']['r'])) {
   if ($data['type'] == 'excel') {
     header('Content-type: application/vnd.ms-excel');
-    header('Content-Disposition: attachment; filename=compras a proveedores.xls');
+    header('Content-Disposition: attachment; filename=retenciones.xls');
     header('Pragma: no-cache');
     header('Expires: 0');
   };
@@ -25,7 +25,7 @@ if (!empty($_SESSION['permitsModule']['r'])) {
   </style>
 
   <table border=1>
-    <caption>Informe de Compras Proveedores</caption>
+    <caption>Informe de Retenciones</caption>
     <thead>
       <tr>
         <th>
@@ -44,37 +44,19 @@ if (!empty($_SESSION['permitsModule']['r'])) {
           <?= $data['type'] == 'excel' ? utf8_decode("Descripción") : 'Descripción'; ?>
         </th>
         <th>
-          Tipo de doc.
-        </th>
-        <th>
-          Forma de pago
-        </th>
-        <th>
           N° de doc.
         </th>
         <th>
-          N° de Autorización
+          <?= $data['type'] == 'excel' ? utf8_decode("N° de Autorización") : 'N° de Autorización'; ?>
         </th>
         <th>
-          IVA
+          Ret. Iva
         </th>
         <th>
-          Total Rise
-        </th>
-        <th>
-          Subtotal 0%
-        </th>
-        <th>
-          Subtotal 12%
-        </th>
-        <th>
-          Total Iva
+          Ret. Imp. Rent.
         </th>
         <th>
           Total
-        </th>
-        <th>
-          Establ.
         </th>
       </tr>
     </thead>
@@ -92,21 +74,11 @@ if (!empty($_SESSION['permitsModule']['r'])) {
           <td><?= $data['data']['items'][$i]['document'] ?></td>
           <td><?= $data['data']['items'][$i]['business_name'] ?></td>
           <td><?= $data['data']['items'][$i]['description'] ?></td>
-          <td><?= $data['data']['items'][$i]['type_doc']['name'] ?></td>
-          <td><?= $data['data']['items'][$i]['payment_method']['name'] ?></td>
           <td><?= $data['data']['items'][$i]['n_document'] ?></td>
           <td><?= $data['data']['items'][$i]['n_authorization'] ?></td>
-          <td><?= $data['data']['items'][$i]['iva_'] ?></td>
-          <td><?= $data['data']['items'][$i]['rise'] ?></td>
-          <td><?= $data['data']['items'][$i]['bi_0'] ?></td>
-          <td><?= $data['data']['items'][$i]['bi_'] ?></td>
-          <td><?= $data['data']['items'][$i]['iva'] ?></td>
+          <td><?= $data['data']['items'][$i]['ret_iva'] ?></td>
+          <td><?= $data['data']['items'][$i]['ret_imp_rent'] ?></td>
           <td><?= $data['data']['items'][$i]['total'] ?></td>
-          <td>
-            <?=
-            str_pad($data['data']['items'][$i]['establishment']['n_establishment'], 3, "0", STR_PAD_LEFT)
-            ?>
-          </td>
         </tr>
       <?php
       }
@@ -115,7 +87,7 @@ if (!empty($_SESSION['permitsModule']['r'])) {
     <tfoot>
       <tr>
         <th colspan="2">Registros</th>
-        <td colspan="14" style="text-align:right;"><?= $data['data']['info']['count']; ?></td>
+        <td colspan="8" style="text-align:right;"><?= $data['data']['info']['count']; ?></td>
       </tr>
     </tfoot>
     </tfoot>

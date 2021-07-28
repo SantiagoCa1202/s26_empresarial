@@ -38,7 +38,7 @@ if (!empty($_SESSION['permitsModule']['r'])) {
           <?= $data['type'] == 'excel' ? utf8_decode("Fecha de Emisión") : 'Fecha de Emisión'; ?>
         </th>
         <th>
-          Documento
+          Ruc
         </th>
         <th>
           <?= $data['type'] == 'excel' ? utf8_decode("Razón social") : 'Razón social'; ?>

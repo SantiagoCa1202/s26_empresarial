@@ -21,5 +21,6 @@ import "./creditNotes";
 import "./files";
 import "./bankAccounts";
 import "./checkBooks";
+import "./withholdings";
 
 export default s26Views;

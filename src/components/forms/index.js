@@ -41,6 +41,9 @@ Vue.component("s26-form-buy", formBuys);
 import formCreditNotes from "./formCreditNotes.vue";
 Vue.component("s26-form-credit-note", formCreditNotes);
 
+import formWithholdings from "./formWithholdings.vue";
+Vue.component("s26-form-withholding", formWithholdings);
+
 import formBankAccount from "./formBankAccount.vue";
 Vue.component("s26-form-bank-account", formBankAccount);
 
