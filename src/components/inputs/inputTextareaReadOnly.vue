@@ -6,9 +6,8 @@
         'form-control form-control-sm textarea-read',
         rows ? 'row-' + rows : '',
       ]"
-    >
-      {{ content }}
-    </div>
+      v-html="content"
+    ></div>
   </div>
 </template>
 <script>

@@ -47,7 +47,7 @@ class CheckBooks extends Controllers
       if ($id > 0) {
         $arrData = $this->model->selectCheckBook($id);
         $arrRes = (empty($arrData)) ? 0 : $arrData;
-       
+
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
       }
     }
@@ -59,8 +59,8 @@ class CheckBooks extends Controllers
     $id = intval($_POST['id']);
     $bank_account_id = intval($_POST['bank_account_id']);
     $n_check = intval($_POST['n_check']);
-    $date_issue = !empty($_POST['date_issue']) ? $_POST['date_issue'][0] : '';
-    $date_payment = !empty($_POST['date_payment']) ? $_POST['date_payment'][0] : '';
+    $date_issue = !empty($_POST['date_issue']) ? $_POST['date_issue'] : '';
+    $date_payment = !empty($_POST['date_payment']) ? $_POST['date_payment'] : '';
     $beneficiary = strClean($_POST['beneficiary']);
     $reason = strClean($_POST['reason']);
     $amount = floatval($_POST['amount']);
@@ -143,12 +143,12 @@ class CheckBooks extends Controllers
         'beneficiary' => !empty($_GET['beneficiary']) ? strClean($_GET['beneficiary']) : '',
         'reason' => !empty($_GET['reason']) ? strClean($_GET['reason']) : '',
         'type' => !empty($_GET['type']) ? strClean($_GET['type']) : '',
-        'payment_status' => !empty($_GET['payment_status']) ? intval($_GET['payment_status']) : '',
+        'payment_status' => !empty($_GET['payment_status']) ? strClean($_GET['payment_status']) : '',
       ];
 
       $data['data'] = $this->model->selectCheckBooks($perPage, $filter);
-      $data['type'] = $_GET['type'];
-      $this->views->exportData("checkboos", $data);
+      $data['type'] = $_GET['type_export'];
+      $this->views->exportData("checkBooks", $data);
     }
     die();
   }

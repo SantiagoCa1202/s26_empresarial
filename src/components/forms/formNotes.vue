@@ -19,13 +19,12 @@
             </s26-form-input>
           </div>
           <div class="col-12">
-            <s26-textarea
+            <s26-editor
               id="form-description"
               label="Descripción"
-              rows="9"
+              :height="value == 0 ? 250 : 210"
               v-model="form.note"
-            >
-            </s26-textarea>
+            ></s26-editor>
           </div>
           <div class="col-12">
             <div class="row">
@@ -41,6 +40,7 @@
             </div>
           </div>
           <div class="col-12 mb-4" v-if="value !== 0">
+            <span class="fw-bold">Creado el:</span>
             {{ $s26.formatDate(form.created_at, "xl") }}
           </div>
         </div>

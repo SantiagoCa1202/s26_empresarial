@@ -121,7 +121,7 @@ class Roles extends Controllers
       ];
 
       $data['data'] = $this->model->selectRoles($perPage, $filter);
-      $data['type'] = $_GET['type'];
+      $data['type'] = $_GET['type_export'];
       $this->views->exportData("roles", $data);
     }
     die();

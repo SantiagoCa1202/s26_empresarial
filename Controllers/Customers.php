@@ -151,7 +151,7 @@ class Customers extends Controllers
       ];
 
       $data['data'] = $this->model->selectCustomers($perPage, $filter);
-      $data['type'] = $_GET['type'];
+      $data['type'] = $_GET['type_export'];
       $this->views->exportData("customers", $data);
     }
     die();

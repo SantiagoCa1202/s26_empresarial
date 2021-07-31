@@ -242,7 +242,7 @@
                 <div class="card s26-card-notes" :style="'border-left: .4rem solid' + item.color ">
                   <div class="card-body">
                     <h3 class="card-title h6 fw-bold"> {{ item.name }} </h3>
-                    <pre class="card-text">{{ item.note }}</pre>
+                    <div class="card-text" v-html="item.note"></div>
                     <div class="card-buttons">
                       <button class="btn-icon" @click="del_note = parseInt(item.id)">
                         <s26-icon icon="trash-alt" class="text-danger icon-sm"></s26-icon>

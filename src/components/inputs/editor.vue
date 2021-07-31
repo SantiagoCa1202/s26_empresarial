@@ -23,7 +23,6 @@
       :id="id"
       :class="['form-control resize-none']"
       :rows="rows"
-      v-bind:value="value"
       v-on="inputListeners"
       v-model="val"
       :s26-required="s26_required"
@@ -57,6 +56,8 @@ export default {
   },
   computed: {
     inputListeners: function () {
+      this.val = this.value;
+      $("#" + this.id).val(this.val);
       var vm = this;
       return Object.assign({}, this.$listeners, {
         input: function (event) {

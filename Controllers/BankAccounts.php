@@ -123,7 +123,7 @@ class BankAccounts extends Controllers
       $status = !empty($_GET['status']) ? intval($_GET['status']) : '';
 
       $data['data'] = $this->model->selectBankAccounts($perPage, $status, '');
-      $data['type'] = $_GET['type'];
+      $data['type'] = $_GET['type_export'];
       $this->views->exportData("bankAccounts", $data);
     }
     die();

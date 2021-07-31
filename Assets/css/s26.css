@@ -57,6 +57,10 @@ div.tox-tinymce {
   border-radius: .2rem;
 }
 
+textarea.form-control.is-invalid~div.tox.tox-tinymce {
+  border-color: #dc3545;
+}
+
 /* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
 
 ::-webkit-scrollbar-thumb:hover {

@@ -158,7 +158,7 @@ class CreditNotes extends Controllers
       ];
 
       $data['data'] = $this->model->selectCreditNotes($perPage, $filter);
-      $data['type'] = $_GET['type'];
+      $data['type'] = $_GET['type_export'];
       $this->views->exportData("creditNotes", $data);
     }
     die();

@@ -89,7 +89,7 @@ export default {
   created() {},
   methods: {
     exportData(type) {
-      let url = `${this.url_export}&type=${type}`;
+      let url = `${this.url_export}&type_export=${type}`;
 
       if (type == "excel") {
         window.location.href = url;

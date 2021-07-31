@@ -34,7 +34,7 @@
               <label class="form-label">
                 Tipo de Emisión
               </label>
-              <select id="form-type_check" class="form-select form-select-sm" v-model="filter.type">
+              <select id="form-type_check" class="form-select form-select-sm" v-model="filter.type" @change="allRows">
                 <option value="">Todos</option>
                 <option value="emitido">Emitido</option>
                 <option value="recibido">Recibido</option>

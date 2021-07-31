@@ -269,7 +269,7 @@ class Providers extends Controllers
       ];
 
       $data['data'] = $this->model->selectProviders($perPage, $filter);
-      $data['type'] = $_GET['type'];
+      $data['type'] = $_GET['type_export'];
       $this->views->exportData("providers", $data);
     }
     die();

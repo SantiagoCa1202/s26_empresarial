@@ -32,7 +32,7 @@
           </s26-input-read>
         </div>
         <div class="col-12">
-          <s26-textarea-read label="Motivo" :content="form.reason" rows="2">
+          <s26-textarea-read label="Motivo" :content="form.reason" rows="5">
           </s26-textarea-read>
         </div>
         <div class="col-4">

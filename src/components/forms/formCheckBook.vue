@@ -3,13 +3,13 @@
     id="formCheckBook"
     :title="(id == 0 ? 'Nuevo ' : 'Editar ') + 'Cheque'"
     :levels="levels"
-    body_style="min-height: 310px;"
+    body_style="min-height: 400px;"
     @onReset="onReset"
     @onSubmit="onSubmit"
     @hideModal="hideModal"
   >
     <template v-slot:level-0>
-      <div class="col-6">
+      <div class="col-8">
         <s26-select-bank-account
           size="sm"
           id="form-bank_account_id"
@@ -20,7 +20,7 @@
         >
         </s26-select-bank-account>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <s26-input-read label="N° de Cheque" :content="form.n_check">
         </s26-input-read>
       </div>
@@ -38,14 +38,13 @@
         </s26-form-input>
       </div>
       <div class="col-12">
-        <s26-textarea
+        <s26-editor
           id="form-reason"
           label="Motivo / Descripción"
-          rows="2"
+          height="145"
           v-model="form.reason"
           s26_required
-        >
-        </s26-textarea>
+        ></s26-editor>
       </div>
       <div class="col-12" v-if="id !== 0">
         <span class="fw-bold">Creado el:</span> {{ form.created_at }}

@@ -70,10 +70,7 @@ if (element) {
           })
           .then((res) => (this.s26_data = res.data))
           .catch((err) => console.log(err));
-        this.url_export = $s26.url_get(
-          "/checkbooks/exportCheckbBooks/",
-          params
-        );
+        this.url_export = $s26.url_get("/checkbooks/exportCheckBooks/", params);
       },
       onReset() {
         this.filter = def_filter();

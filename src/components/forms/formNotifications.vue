@@ -29,7 +29,7 @@
             >
             </s26-form-input>
           </div>
-          <div class="col-12 mb-3">
+          <div class="col-12">
             <s26-textarea
               id="form-description"
               label="Descripción"
