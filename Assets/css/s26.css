@@ -47,6 +47,16 @@
   border-radius: 4px;
 }
 
+/* TINY EDITOR DE TEXTO */
+
+span.tox-statusbar__branding {
+  display: none !important;
+}
+
+div.tox-tinymce {
+  border-radius: .2rem;
+}
+
 /* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
 
 ::-webkit-scrollbar-thumb:hover {

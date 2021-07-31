@@ -35,4 +35,7 @@ Vue.component("s26-input-document", inputDocument);
 import inputDocumentReadOnly from "./inputDocumentReadOnly.vue";
 Vue.component("s26-input-read-document", inputDocumentReadOnly);
 
+import editor from "./editor.vue";
+Vue.component("s26-editor", editor);
+
 export default s26Inputs;
