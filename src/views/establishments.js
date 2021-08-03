@@ -6,7 +6,7 @@ if (element) {
     return {
       n_establishment: "",
       tradename: "",
-      city: "",
+      city_id: "",
       status: "",
       perPage: 25,
     };

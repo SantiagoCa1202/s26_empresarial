@@ -12,7 +12,7 @@
       <div class="col-sm-3">
         <s26-input-read
           label="Proveedor"
-          :content="form.provider.trade_information.alias"
+          :content="form.provider.alias"
         ></s26-input-read>
       </div>
       <div class="col-sm-3">
@@ -130,9 +130,7 @@ export default {
   data: function () {
     return {
       form: {
-        provider: {
-          trade_information: {},
-        },
+        provider: {},
         type_doc: {},
         payment_method: {},
         establishment: {},

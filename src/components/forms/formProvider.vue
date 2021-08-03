@@ -3,7 +3,7 @@
     id="formProvider"
     :title="(id == 0 ? 'Nuevo ' : 'Editar ') + 'Proveedor'"
     :levels="levels"
-    body_style="min-height: 350px; height: 350px"
+    body_style="min-height: 370px;"
     @onReset="onReset"
     @onSubmit="onSubmit"
     @hideModal="hideModal"
@@ -18,7 +18,7 @@
           size="sm"
           id="form-trade_information-document"
           type="text"
-          v-model="form.trade_information.document"
+          v-model="form.document"
           strictlength="13"
           number
           length
@@ -32,7 +32,7 @@
           size="sm"
           id="form-trade_information-business_name"
           type="text"
-          v-model="form.trade_information.business_name"
+          v-model="form.business_name"
           maxlength="100"
           text
           s26_required
@@ -45,7 +45,7 @@
           size="sm"
           id="form-trade_information-tradename"
           type="text"
-          v-model="form.trade_information.tradename"
+          v-model="form.tradename"
           maxlength="100"
           text
           s26_required
@@ -58,7 +58,7 @@
           size="sm"
           id="form-trade_information-alias"
           type="text"
-          v-model="form.trade_information.alias"
+          v-model="form.alias"
           maxlength="10"
           minlength="3"
           text
@@ -80,39 +80,39 @@
       </div>
     </template>
     <template v-slot:level-1>
-      <div class="col-12 col-sm-6">
+      <div class="col-12 col-sm-4">
         <s26-form-input
-          label="Teléfono Convencional"
+          label="Teléfono"
           size="sm"
           id="form-contacts-phone"
           type="text"
-          v-model="form.contacts.phone"
+          v-model="form.phone"
           strictlength="9"
           number
           validate
         >
         </s26-form-input>
       </div>
-      <div class="col-12 col-sm-6">
+      <div class="col-12 col-sm-4">
         <s26-form-input
-          label="Teléfono Convencional 2"
+          label="Teléfono 2"
           size="sm"
           id="form-contacts-phone2"
           type="text"
-          v-model="form.contacts.phone_2"
+          v-model="form.phone_2"
           strictlength="9"
           number
           validate
         >
         </s26-form-input>
       </div>
-      <div class="col-12">
+      <div class="col-12 col-sm-4">
         <s26-form-input
-          label="Nº Celular Empresarial"
+          label="Nº Celular"
           size="sm"
           id="form-contacts-mobile_provider"
           type="text"
-          v-model="form.contacts.mobile_provider"
+          v-model="form.mobile_provider"
           strictlength="10"
           number
           validate
@@ -125,7 +125,7 @@
           size="sm"
           id="form-contacts-email"
           type="text"
-          v-model="form.contacts.email"
+          v-model="form.email"
           maxlength="100"
           email
           validate
@@ -138,7 +138,7 @@
           size="sm"
           id="form-contacts-seller"
           type="text"
-          v-model="form.contacts.seller"
+          v-model="form.seller"
           maxlength="100"
           text
         >
@@ -150,102 +150,125 @@
           size="sm"
           id="form-contacts-mobile_seller"
           type="text"
-          v-model="form.contacts.mobile_seller"
+          v-model="form.mobile_seller"
           strictlength="10"
           number
           validate
         >
         </s26-form-input>
       </div>
-    </template>
-    <template v-slot:level-2>
-      <div class="col-12">
-        <s26-form-input
-          label="Ciudad"
+      <div class="col-5">
+        <s26-select-cities
           size="sm"
           id="form-current_address-city"
-          type="text"
-          v-model="form.current_address.city"
-          maxlength="100"
-          text
+          v-model="form.city_id"
         >
-        </s26-form-input>
+        </s26-select-cities>
       </div>
-      <div class="col-12">
+      <div class="col-7">
         <s26-form-input
           label="Dirección"
           size="sm"
           id="form-current_address-address"
           type="text"
-          v-model="form.current_address.address"
+          v-model="form.address"
           maxlength="100"
         >
         </s26-form-input>
       </div>
+    </template>
+    <template v-slot:level-2>
+      <div
+        class="col-12 row container-account"
+        v-for="(account, index) in form.bank_accounts"
+        :key="index"
+      >
+        <div class="col-12 col-sm-6">
+          <s26-form-input
+            label="Número de Cuenta"
+            size="sm"
+            :id="'form-bank_account-account_number' + index"
+            type="text"
+            v-model="form.bank_accounts[index]['account_number']"
+            maxlength="15"
+            minlength="6"
+            number
+            validate
+          >
+          </s26-form-input>
+        </div>
+        <div class="col-12 col-sm-6">
+          <s26-form-input
+            label="Cédula / Ruc"
+            size="sm"
+            :id="'form-bank_account-document' + index"
+            type="text"
+            v-model="form.bank_accounts[index]['document']"
+            strictlength="10,13"
+            number
+            length
+            validate
+          >
+          </s26-form-input>
+        </div>
+        <div class="col-12">
+          <s26-select-bank
+            size="sm"
+            :id="'form-bank_account-bank_entity_id' + index"
+            v-model="form.bank_accounts[index]['bank_entity_id']"
+          >
+          </s26-select-bank>
+        </div>
+        <div class="col-8">
+          <s26-form-input
+            label="Beneficiario"
+            size="sm"
+            :id="'form-bank_account-beneficiary' + index"
+            type="text"
+            v-model="form.bank_accounts[index]['beneficiary']"
+            maxlength="100"
+            text
+          >
+          </s26-form-input>
+        </div>
+        <div class="col-4 mb-3">
+          <label class="form-label">
+            Tipo de Cuenta
+            <span class="text-danger">
+              <s26-icon
+                icon="asterisk"
+                class="icon_asterisk_required"
+              ></s26-icon>
+            </span>
+          </label>
+          <select
+            class="form-select form-select-sm"
+            v-model="form.bank_accounts[index]['account_type']"
+          >
+            <option value="ahorros">Ahorros</option>
+            <option value="corriente">Corriente</option>
+          </select>
+          <p class="invalid-feedback">Seleccione un tipo de cuenta</p>
+        </div>
+        <button
+          type="button"
+          class="btn-icon btn-cancel-account"
+          @click="delAccount(index)"
+        >
+          <s26-icon icon="times"></s26-icon>
+        </button>
+      </div>
+      <button class="btn btn-primary" @click="addAccount">
+        <s26-icon icon="plus"></s26-icon>
+      </button>
+      <p
+        class="p-2 text-center text-primary"
+        v-if="form.bank_accounts.length == 0"
+      >
+        Puedes Ingresar Las Cuentas Bancarias Mas Tarde.
+      </p>
     </template>
     <template v-slot:level-3>
-      <div class="col-12 col-sm-6">
-        <s26-form-input
-          label="Número de Cuenta"
-          size="sm"
-          id="form-bank_accounts-account_number"
-          type="text"
-          v-model="form.bank_accounts.account_number"
-          maxlength="15"
-          minlength="6"
-          number
-          validate
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-12 col-sm-6">
-        <s26-form-input
-          label="Cédula / Ruc"
-          size="sm"
-          id="form-bank_accounts-document"
-          type="text"
-          v-model="form.bank_accounts.document"
-          strictlength="10,13"
-          number
-          length
-          validate
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-12">
-        <s26-select-bank
-          size="sm"
-          id="form-bank_accounts-bank_entity_id"
-          v-model="form.bank_accounts.bank_entity_id"
-        >
-        </s26-select-bank>
-      </div>
-      <div class="col-12">
-        <s26-form-input
-          label="Beneficiario"
-          size="sm"
-          id="form-bank_accounts-beneficiary"
-          type="text"
-          v-model="form.bank_accounts.beneficiary"
-          maxlength="100"
-          text
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-12">
-        <s26-form-input
-          label="Tipo de Cuenta"
-          size="sm"
-          id="form-bank_accounts-account_type"
-          type="text"
-          v-model="form.bank_accounts.account_type"
-          maxlength="100"
-          text
-        >
-        </s26-form-input>
-      </div>
-    </template>
-    <template v-slot:level-4>
       <div class="container-categories">
         <div
           :class="[
@@ -258,6 +281,52 @@
         >
           {{ cat.name }}
         </div>
+        <p
+          class="p-2 text-center text-primary"
+          v-if="form.categories.length == 0"
+        >
+          Puedes Ingresar Las Categorias Mas Tarde.
+        </p>
+      </div>
+    </template>
+    <template v-slot:level-4>
+      <div class="col-12 row">
+        <div class="col-10">
+          <s26-form-input
+            size="sm"
+            id="addTrademark"
+            type="text"
+            v-model="trademark"
+            maxlength="100"
+            placeholder="Ej: Samsung"
+          >
+          </s26-form-input>
+        </div>
+        <div class="col-2 px-0">
+          <button
+            class="btn btn-primary btn-sm w-100"
+            :disabled="trademark == ''"
+            @click="addTrademark"
+          >
+            Añadir
+          </button>
+        </div>
+      </div>
+      <div class="container-categories">
+        <div
+          class="cat focus"
+          v-for="mark in form.trademarks"
+          :key="mark"
+          @click="delTrademark(mark)"
+        >
+          {{ mark }}
+        </div>
+        <p
+          class="p-2 text-center text-primary"
+          v-if="form.trademarks.length == 0"
+        >
+          Puedes Ingresar Las Marcas Mas Tarde.
+        </p>
       </div>
     </template>
   </s26-modal-multiple>
@@ -266,32 +335,21 @@
 <script>
 const def_form = () => {
   return {
-    trade_information: {
-      document: "",
-      business_name: "",
-      tradename: "",
-      alias: "",
-    },
-    contacts: {
-      phone: "",
-      phone_2: "",
-      mobile_provider: "",
-      email: "",
-      seller: "",
-      mobile_seller: "",
-    },
-    current_address: {
-      city: "",
-      address: "",
-    },
-    bank_accounts: {
-      account_number: "",
-      bank_entity_id: "",
-      document: "",
-      beneficiary: "",
-      account_type: "",
-    },
+    document: "",
+    business_name: "",
+    tradename: "",
+    alias: "",
+    phone: "",
+    phone_2: "",
+    mobile_provider: "",
+    email: "",
+    seller: "",
+    mobile_seller: "",
+    city_id: "",
+    address: "",
+    bank_accounts: [],
     categories: [],
+    trademarks: [],
     status: 1,
     created_at: "",
   };
@@ -312,12 +370,13 @@ export default {
       categories: [],
       levels: [
         "Información Comercial",
-        "Contactos",
-        "Dirección Actual",
-        "Cuenta Bancaria",
+        "Información de Contacto",
+        "Cuentas Bancarias",
         "Categorías",
+        "Marcas",
       ],
       form: def_form(),
+      trademark: "",
     };
   },
   created() {
@@ -362,6 +421,7 @@ export default {
       );
     },
     onReset() {
+      $("[s26-required]").removeClass("is-invalid");
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
@@ -390,6 +450,36 @@ export default {
     },
     hideModal() {
       this.$emit("input", null);
+    },
+    addAccount() {
+      this.form.bank_accounts.push({
+        account_number: "",
+        bank_entity_id: "",
+        document: "",
+        beneficiary: "",
+        account_type: "",
+      });
+    },
+    delAccount(account) {
+      this.form.bank_accounts.splice(account, 1);
+    },
+    addTrademark() {
+      if (
+        this.trademark !== "" &&
+        this.form.trademarks.indexOf(this.trademark) == -1
+      ) {
+        this.form.trademarks.push(this.trademark);
+        this.trademark = "";
+        $("#addTrademark").focus();
+      }
+    },
+    delTrademark(mark) {
+      if (mark !== "" && this.form.trademarks.indexOf(mark) > -1) {
+        let i = this.form.trademarks.indexOf(mark);
+        this.form.trademarks.splice(i, 1);
+        this.trademark = "";
+        $("#addTrademark").focus();
+      }
     },
   },
 };
@@ -427,7 +517,31 @@ export default {
   color: #fff;
 }
 .container-categories .cat.focus {
-  background-color: #168596;
+  background-color: var(--bs-primary);
   color: #fff;
+}
+.container-account {
+  position: relative;
+  border-radius: 0.25rem !important;
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+  border: 1px solid #e8e8e8;
+}
+.btn-icon.btn-cancel-account {
+  position: absolute;
+  font-size: 0.8rem;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 0;
+  height: 0;
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bs-danger);
+  color: var(--bs-white);
 }
 </style>

@@ -8,7 +8,7 @@ if (element) {
       document: "",
       business_name: "",
       tradename: "",
-      city: "",
+      city_id: "",
       date: [],
       status: "",
       perPage: 25,

@@ -1,6 +1,7 @@
 <?php
 require_once('CompaniesModel.php');
 require_once('UsersModel.php');
+require_once('SystemModel.php');
 
 class EstablishmentsModel extends Mysql
 {
@@ -9,7 +10,7 @@ class EstablishmentsModel extends Mysql
   public $n_establishment;
   public $tradename;
   public $province;
-  public $city;
+  public $city_id;
   public $parish;
   public $address;
   public $phone;
@@ -19,6 +20,7 @@ class EstablishmentsModel extends Mysql
   {
     parent::__construct();
     $this->Company = new CompaniesModel;
+    $this->System = new SystemModel;
   }
 
 
@@ -27,7 +29,7 @@ class EstablishmentsModel extends Mysql
 
     $this->n_establishment = $filter['n_establishment'];
     $this->tradename = $filter['tradename'];
-    $this->city = $filter['city'];
+    $this->city_id = $filter['city_id'];
     $this->status = $filter['status'];
     $this->perPage = $perPage;
     $this->company_id = $_SESSION['userData']['establishment']['company_id'];
@@ -35,7 +37,7 @@ class EstablishmentsModel extends Mysql
     $where = "
       n_establishment LIKE '%$this->n_establishment%' AND
       tradename LIKE '%$this->tradename%' AND 
-      city LIKE '%$this->city%' AND 
+      city_id LIKE '%$this->city_id%' AND 
       status LIKE '%$this->status%' AND 
       status > 0 AND
       company_id = $this->company_id
@@ -55,6 +57,8 @@ class EstablishmentsModel extends Mysql
 
     for ($i = 0; $i < count($items); $i++) {
       $items[$i]['company'] = $this->Company->selectCompany($items[$i]['company_id']);
+
+      $items[$i]['city'] = $this->System->selectCity($items[$i]['city_id']);
     }
     return [
       'items' => $items,
@@ -72,6 +76,7 @@ class EstablishmentsModel extends Mysql
     WHERE e.id = $this->id";
     $request = $this->select($sql);
     $request['company'] = $this->Company->selectCompany($request['company_id']);
+    $request['city'] = $this->System->selectCity($request['city_id']);
 
     return $request;
   }

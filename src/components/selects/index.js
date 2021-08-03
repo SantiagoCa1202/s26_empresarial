@@ -50,4 +50,6 @@ Vue.component("s26-select-buys", selectBuys);
 import selectCheck from "./selectCheck.vue";
 Vue.component("s26-select-check", selectCheck);
 
+import selectCities from "./selectCities.vue";
+Vue.component("s26-select-cities", selectCities);
 export default s26Selects;

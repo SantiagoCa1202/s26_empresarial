@@ -197,4 +197,39 @@ class SystemModel extends Mysql
 
     return $request;
   }
+
+  public function selectCities(int $perPage, array $filter)
+  {
+    $this->name = $filter['name'];
+    $this->perPage = $perPage;
+
+    $info = "SELECT COUNT(*) as count 
+      FROM cities
+      WHERE name LIKE '%$this->name%' 
+    ";
+    $info_table = $this->info_table($info);
+
+    $rows = "
+      SELECT *
+      FROM cities
+      WHERE name LIKE '%$this->name%' 
+      ORDER BY id ASC LIMIT 0, $this->perPage 
+    ";
+
+    $items = $this->select_all($rows);
+
+    return [
+      'items' => $items,
+      'info' => $info_table
+    ];
+  }
+
+  public function selectCity(int $id)
+  {
+    $this->id = $id;
+    $sql = "SELECT * FROM cities WHERE id = $this->id";
+    $request = $this->select($sql);
+
+    return $request;
+  }
 }

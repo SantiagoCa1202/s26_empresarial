@@ -82,7 +82,7 @@
             </td>
             <td class="length-action">{{ item.serie }}</td>
             <td class="length-action">{{ item.trademark }}</td>
-            <td class="length-action">{{ item.provider.trade_information.alias }}</td>
+            <td class="length-action">{{ item.provider.alias }}</td>
             <td class="length-action">{{ item.category.name }}</td>
             <td :class="['length-action text-center fw-bold', item.stock <= item.min_stock ? 'text-warning' : '',item.stock == 0 ? 'text-danger' : '']">{{ item.stock }}</td>
             <td class="length-action">{{ item.cost }}</td>

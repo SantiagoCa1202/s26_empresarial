@@ -500,8 +500,8 @@ export default {
         this.axios
           .get("/providers/getProvider/" + id)
           .then((res) => {
-            this.form.document = res.data.trade_information.document;
-            this.form.business_name = res.data.trade_information.business_name;
+            this.form.document = res.data.document;
+            this.form.business_name = res.data.business_name;
           })
           .catch((err) => console.log(err));
       }

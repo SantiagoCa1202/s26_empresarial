@@ -26,7 +26,9 @@
             <s26-form-input label="Ruc" size="sm" id="document" type="text" v-model="filter.document" maxlength="13" @keyup="allRows" number></s26-form-input>
             <s26-form-input label="Razón Social" size="sm" id="business_name" type="text" v-model="filter.business_name" maxlength="100" @keyup="allRows" text></s26-form-input>
             <s26-form-input label="Nombre Comercial" size="sm" id="tradename" type="text" v-model="filter.tradename" maxlength="100" @keyup="allRows" text></s26-form-input>
-            <s26-form-input label="Ciudad" size="sm" id="city" type="text" v-model="filter.city" maxlength="50" @keyup="allRows" text></s26-form-input>
+
+            <s26-select-cities size="sm" id="city" v-model="filter.city_id" @change="allRows" all>
+            </s26-select-cities>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha" :dates="s26_data.dates"></s26-date-picker>
           </div>

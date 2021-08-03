@@ -14,7 +14,7 @@ class ProvidersModel extends Mysql
   public $mobile_provider;
   public $mobile_sellet;
   public $alias;
-  public $city;
+  public $city_id;
   public $address;
   public $status;
 
@@ -34,7 +34,7 @@ class ProvidersModel extends Mysql
     $this->document = $filter['document'];
     $this->business_name = $filter['business_name'];
     $this->tradename = $filter['tradename'];
-    $this->city = $filter['city'];
+    $this->city_id = $filter['city_id'];
     $this->date = $filter['date'];
     $this->status = $filter['status'];
     $this->perPage = $perPage;
@@ -47,7 +47,7 @@ class ProvidersModel extends Mysql
       document LIKE '%$this->document%' AND
       business_name LIKE '%$this->business_name%' AND
       tradename LIKE '%$this->tradename%' AND
-      city LIKE '%$this->city%' AND
+      city_id LIKE '%$this->city_id%' AND
       status LIKE '%$this->status%' AND 
       status > 0 
       $date_range
@@ -82,42 +82,10 @@ class ProvidersModel extends Mysql
     $this->id = $id;
     $sql = "SELECT * FROM providers WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
-    $request['trade_information'] = array(
-      'document' => $request['document'],
-      'business_name' => $request['business_name'],
-      'tradename' => $request['tradename'],
-      'alias' => $request['alias'],
-    );
-    $request['contacts'] = array(
-      'phone' => $request['phone'],
-      'phone_2' => $request['phone_2'],
-      'mobile_provider' => $request['mobile_provider'],
-      'email' => $request['email'],
-      'seller' => $request['seller'],
-      'mobile_seller' => $request['mobile_seller'],
-    );
-    $request['current_address'] = array(
-      'city' => $request['city'],
-      'address' => $request['address'],
-    );
-    $request['bank_accounts'] = $this->selectBankAccount($request['id']);
-
+    $request['city'] = $this->System->selectCity($request['city_id']);
+    $request['bank_accounts'] = $this->selectBankAccounts($request['id']);
     $request['categories'] = $this->selectCategories($request['id']);
-
-    unset(
-      $request['document'],
-      $request['business_name'],
-      $request['tradename'],
-      $request['alias'],
-      $request['phone'],
-      $request['phone_2'],
-      $request['mobile_provider'],
-      $request['email'],
-      $request['seller'],
-      $request['mobile_seller'],
-      $request['city'],
-      $request['address'],
-    );
+    $request['trademarks'] = $this->selectTrademarks($request['id']);;
     return $request;
   }
 
@@ -132,7 +100,7 @@ class ProvidersModel extends Mysql
     string $mobile_provider,
     string $mobile_seller,
     string $alias,
-    string $city,
+    string $city_id,
     string $address
   ) {
 
@@ -148,7 +116,7 @@ class ProvidersModel extends Mysql
     $this->mobile_provider = $mobile_provider;
     $this->mobile_seller = $mobile_seller;
     $this->alias = $alias;
-    $this->city = $city;
+    $this->city_id = $city_id;
     $this->address = $address;
 
     $sql = "SELECT * FROM providers 
@@ -168,7 +136,7 @@ class ProvidersModel extends Mysql
         mobile_provider,
         mobile_seller,
         alias,
-        city,
+        city_id,
         address
       ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
       $arrData = array(
@@ -182,7 +150,7 @@ class ProvidersModel extends Mysql
         $this->mobile_provider,
         $this->mobile_seller,
         $this->alias,
-        $this->city,
+        $this->city_id,
         $this->address
       );
       $request = $this->insert_company($query_insert, $arrData, $this->db_company);
@@ -204,7 +172,7 @@ class ProvidersModel extends Mysql
     string $mobile_provider,
     string $mobile_seller,
     string $alias,
-    string $city,
+    string $city_id,
     string $address,
     int $status
   ) {
@@ -222,7 +190,7 @@ class ProvidersModel extends Mysql
     $this->mobile_provider = $mobile_provider;
     $this->mobile_seller = $mobile_seller;
     $this->alias = $alias;
-    $this->city = $city;
+    $this->city_id = $city_id;
     $this->address = $address;
     $this->status = $status;
 
@@ -244,7 +212,7 @@ class ProvidersModel extends Mysql
         mobile_provider = ?,
         mobile_seller = ?,
         alias = ?,
-        city = ?,
+        city_id = ?,
         address = ?,
         status = ? WHERE id = $this->id";
       $arrData = array(
@@ -258,7 +226,7 @@ class ProvidersModel extends Mysql
         $this->mobile_provider,
         $this->mobile_seller,
         $this->alias,
-        $this->city,
+        $this->city_id,
         $this->address,
         $this->status
       );
@@ -283,26 +251,27 @@ class ProvidersModel extends Mysql
     return $request;
   }
 
-  public function selectBankAccount(int $id)
+  public function selectBankAccounts(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $arr = array(
-      "account_number" => "",
-      "bank_entity_id" => "",
-      "document" => "",
-      "beneficiary" => "",
-      "account_type" => "",
-      'bank_entity' => "",
-    );
     $this->id = $id;
-    $sql = "SELECT * FROM providers_bank_accounts WHERE provider_id = $this->id";
-    $request = $this->select_company($sql, $this->db_company) ?
-      $this->select_company($sql, $this->db_company) :
-      $arr;
-    $request['bank_entity'] = $this->System->selectBankEntity($request['bank_entity_id']);
-    return $request;
+
+    $rows = "
+      SELECT *
+      FROM providers_bank_accounts
+      WHERE provider_id = $this->id
+      ORDER BY id ASC
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+
+    for ($i = 0; $i < count($items); $i++) {
+      $items[$i]['bank_entity'] = $this->System->selectBankEntity($items[$i]['bank_entity_id']);
+    }
+    return $items;
   }
+
 
   public function insertBankEntity(
     int $provider_id,
@@ -351,51 +320,14 @@ class ProvidersModel extends Mysql
     return $request;
   }
 
-  public function updateBankEntity(
-    int $provider_id,
-    string $account_number,
-    int $bank_entity,
-    string $document_beneficiary,
-    string $beneficiary,
-    string $account_type
-  ) {
-
+  public function deleteBankAccounts(int $id)
+  {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
+    $this->id = $id;
 
-    $this->provider_id = $provider_id;
-    $this->account_number = $account_number;
-    $this->bank_entity = $bank_entity;
-    $this->document_beneficiary = $document_beneficiary;
-    $this->beneficiary = $beneficiary;
-    $this->account_type = $account_type;
-
-    $sql = "SELECT * FROM providers_bank_accounts
-    WHERE account_number = '$this->account_number' AND provider_id != '$this->provider_id'";
-    $request = $this->select_all_company($sql, $this->db_company);
-
-    if (empty($request)) {
-
-      $sql = "UPDATE providers_bank_accounts SET
-        account_number = ?,
-        bank_entity_id = ?,
-        document = ?,
-        beneficiary = ?,
-        account_type = ?
-        WHERE provider_id = $this->provider_id";
-      $arrData = array(
-        $this->account_number,
-        $this->bank_entity,
-        $this->document_beneficiary,
-        $this->beneficiary,
-        $this->account_type
-      );
-
-      $request = $this->update_company($sql, $arrData, $this->db_company);
-    } else {
-      $request = -2;
-    }
-
+    $sql = "DELETE FROM providers_bank_accounts WHERE provider_id = $this->id";
+    $request = $this->delete_company($sql, $this->db_company);
     return $request;
   }
 
@@ -451,6 +383,62 @@ class ProvidersModel extends Mysql
     $this->id = $id;
 
     $sql = "DELETE FROM providers_categories WHERE provider_id = $this->id";
+    $request = $this->delete_company($sql, $this->db_company);
+    return $request;
+  }
+
+  public function selectTrademarks(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+
+    $rows = "
+      SELECT *
+      FROM providers_trademarks
+      WHERE provider_id = $this->id
+      ORDER BY id ASC
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+    $trademark = [];
+    for ($i = 0; $i < count($items); $i++) {
+      array_push($trademark, $items[$i]['trademark']);
+    }
+    return $trademark;
+  }
+
+  public function insertTrademarks(
+    int $provider_id,
+    string $trademark
+  ) {
+
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->provider_id = $provider_id;
+    $this->trademark = $trademark;
+
+    $query_insert = "INSERT INTO providers_trademarks (
+        provider_id,
+        trademark
+      ) VALUES (?,?)";
+    $arrData = array(
+      $this->provider_id,
+      $this->trademark
+    );
+
+    $request = $this->insert_company($query_insert, $arrData, $this->db_company);
+
+    return $request;
+  }
+
+  public function deleteTrademarks(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+
+    $sql = "DELETE FROM providers_trademarks WHERE provider_id = $this->id";
     $request = $this->delete_company($sql, $this->db_company);
     return $request;
   }

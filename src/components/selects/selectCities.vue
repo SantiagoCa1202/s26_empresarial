@@ -1,13 +1,10 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
     <label :for="id" class="form-label w-100">
-      Proveedor
+      Ciudad
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
-      <a @click="getRow" class="text-primary float-end pointer" v-if="!all">
-        <s26-icon icon="link"></s26-icon>
-      </a>
     </label>
     <div
       :id="id"
@@ -45,8 +42,7 @@
           @click="$emit('input', option.id)"
           @keyup.13="$emit('input', option.id)"
         >
-          {{ option.tradename }} -
-          {{ option.alias }}
+          {{ option.name }}
         </div>
       </div>
       <div class="actions-select pt-1 px-2">
@@ -85,6 +81,7 @@ export default {
     value: {},
     all: Boolean,
     s26_required: Boolean,
+    checkbook: Boolean,
   },
   data: function () {
     return {
@@ -105,8 +102,8 @@ export default {
       this.$emit("change");
       if (this.value != 0) {
         this.axios
-          .get("/providers/getProvider/" + this.value)
-          .then((res) => (this.selected = res.data.alias))
+          .get("/system/getCity/" + this.value)
+          .then((res) => (this.selected = res.data.name))
           .catch((err) => console.log(err));
         return this.selected;
       } else {
@@ -119,9 +116,10 @@ export default {
       const params = {
         name: this.search,
         perPage: this.perPage,
+        checkbook: this.checkbook,
       };
       this.axios
-        .get("/providers/getProviders/", {
+        .get("/system/getCities/", {
           params,
         })
         .then((res) => {
@@ -134,10 +132,6 @@ export default {
       let perPage = this.rows - this.perPage;
       this.perPage = perPage > 25 ? this.perPage + 25 : this.rows;
       this.allRows();
-    },
-    getRow() {
-      $s26.create_cookie("id", this.value, "providers");
-      window.open(BASE_URL + "/providers", "_blank");
     },
   },
 };

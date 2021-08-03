@@ -30,11 +30,8 @@ class System extends Controllers
     $id = intval(strClean($id));
     if ($id > 0) {
       $arrData = $this->model->selectBankEntity($id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
+
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -58,11 +55,8 @@ class System extends Controllers
     $id = intval(strClean($id));
     if ($id > 0) {
       $arrData = $this->model->selectDocument($id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
+
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -86,11 +80,8 @@ class System extends Controllers
     $id = intval(strClean($id));
     if ($id > 0) {
       $arrData = $this->model->selectPaymentMethod($id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
+
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -103,11 +94,8 @@ class System extends Controllers
       'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
     ];
     $arrData = $this->model->selectIcons($perPage, $filter);
-    if (empty($arrData)) {
-      $arrRes = 0;
-    } else {
-      $arrRes = $arrData;
-    }
+    $arrRes = (empty($arrData)) ? 0 : $arrData;
+
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
@@ -117,11 +105,33 @@ class System extends Controllers
     $id = intval(strClean($id));
     if ($id > 0) {
       $arrData = $this->model->selectIcon($id);
-      if (empty($arrData)) {
-        $arrRes = 0;
-      } else {
-        $arrRes = $arrData;
-      }
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
+
+      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
+
+  public function getCities()
+  {
+    $perPage = intval($_GET['perPage']);
+    $filter = [
+      'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
+    ];
+    $arrData = $this->model->selectCities($perPage, $filter);
+    $arrRes = (empty($arrData)) ? 0 : $arrData;
+
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
+  public function getCity($id)
+  {
+    $id = intval(strClean($id));
+    if ($id > 0) {
+      $arrData = $this->model->selectCity($id);
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
+
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();

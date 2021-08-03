@@ -2,7 +2,6 @@
   <s26-modal-multiple
     id="readProvider"
     title="Información de Proveedor"
-    v-model="level_select"
     :levels="levels"
     body_style="min-height: 345px; height: 345px"
     @hideModal="hideModal"
@@ -13,26 +12,18 @@
         <s26-input-read label="Id" :content="form.id"> </s26-input-read>
       </div>
       <div class="col-8">
-        <s26-input-read label="Ruc" :content="form.trade_information.document">
+        <s26-input-read label="Ruc" :content="form.document"> </s26-input-read>
+      </div>
+      <div class="col-12">
+        <s26-input-read label="Razón Socail" :content="form.business_name">
         </s26-input-read>
       </div>
       <div class="col-12">
-        <s26-input-read
-          label="Razón Socail"
-          :content="form.trade_information.business_name"
-        >
-        </s26-input-read>
-      </div>
-      <div class="col-12">
-        <s26-input-read
-          label="Nombre Comercial"
-          :content="form.trade_information.tradename"
-        >
+        <s26-input-read label="Nombre Comercial" :content="form.tradename">
         </s26-input-read>
       </div>
       <div class="col-8">
-        <s26-input-read label="Alias" :content="form.trade_information.alias">
-        </s26-input-read>
+        <s26-input-read label="Alias" :content="form.alias"> </s26-input-read>
       </div>
       <div class="col-4">
         <s26-input-read
@@ -48,97 +39,85 @@
     </template>
 
     <template v-slot:level-1>
-      <div class="col-12 col-sm-6">
-        <s26-input-read
-          label="Teléfono Convencional"
-          :content="form.contacts.phone"
-        >
+      <div class="col-12 col-sm-4">
+        <s26-input-read label="Teléfono" :content="form.phone">
         </s26-input-read>
       </div>
-      <div class="col-12 col-sm-6">
-        <s26-input-read
-          label="Teléfono Convencional 2"
-          :content="form.contacts.phone_2"
-        >
+      <div class="col-12 col-sm-4">
+        <s26-input-read label="Teléfono 2" :content="form.phone_2">
         </s26-input-read>
       </div>
-      <div class="col-12">
-        <s26-input-read
-          label="N° Celular Empresarial"
-          :content="form.contacts.mobile_provider"
-        >
+      <div class="col-4">
+        <s26-input-read label="N° Celular" :content="form.mobile_provider">
         </s26-input-read>
       </div>
       <div class="col-12">
-        <s26-input-read label="Email" :content="form.contacts.email">
-        </s26-input-read>
+        <s26-input-read label="Email" :content="form.email"> </s26-input-read>
       </div>
       <div class="col-12 col-sm-6">
-        <s26-input-read label="Vendedor" :content="form.contacts.seller">
+        <s26-input-read label="Vendedor" :content="form.seller">
         </s26-input-read>
       </div>
       <div class="col-12 col-sm-6">
         <s26-input-read
           label="N° Celular Vendedor"
-          :content="form.contacts.mobile_seller"
+          :content="form.mobile_seller"
         >
         </s26-input-read>
       </div>
+      <div class="col-5">
+        <s26-input-read label="Ciudad" :content="form.city.name">
+        </s26-input-read>
+      </div>
+      <div class="col-7">
+        <s26-input-read label="Dirección" :content="form.address">
+        </s26-input-read>
+      </div>
     </template>
-
     <template v-slot:level-2>
-      <div class="col-12">
-        <s26-input-read label="Ciudad" :content="form.current_address.city">
-        </s26-input-read>
-      </div>
-      <div class="col-12">
-        <s26-input-read
-          label="Dirección"
-          :content="form.current_address.address"
-        >
-        </s26-input-read>
+      <div
+        class="col-12 row container-account"
+        v-for="(account, index) in form.bank_accounts"
+        :key="index"
+      >
+        <div class="col-12 col-sm-6">
+          <s26-input-read
+            label="Número de Cuenta"
+            :content="form.bank_accounts[index]['account_number']"
+          >
+          </s26-input-read>
+        </div>
+        <div class="col-12 col-sm-6">
+          <s26-input-read
+            label="Cédula / Ruc"
+            :content="form.bank_accounts[index]['document']"
+          >
+          </s26-input-read>
+        </div>
+        <div class="col-12">
+          <s26-input-read
+            label="Entidad Bancaria"
+            :content="form.bank_accounts[index]['bank_entity']['bank_entity']"
+          >
+          </s26-input-read>
+        </div>
+        <div class="col-8">
+          <s26-input-read
+            label="Beneficiario"
+            :content="form.bank_accounts[index]['beneficiary']"
+          >
+          </s26-input-read>
+        </div>
+        <div class="col-4">
+          <s26-input-read
+            label="Tipo de Cuenta"
+            :content="form.bank_accounts[index]['account_type']"
+          >
+          </s26-input-read>
+        </div>
       </div>
     </template>
-
     <template v-slot:level-3>
-      <div class="col-12 col-sm-6">
-        <s26-input-read
-          label="Número de Cuenta"
-          :content="form.bank_accounts.account_number"
-        >
-        </s26-input-read>
-      </div>
-      <div class="col-12 col-sm-6">
-        <s26-input-read
-          label="Cédula / Ruc"
-          :content="form.bank_accounts.document"
-        >
-        </s26-input-read>
-      </div>
-      <div class="col-12">
-        <s26-input-read
-          label="Entidad Bancaria"
-          :content="form.bank_accounts.bank_entity.bank_entity"
-        >
-        </s26-input-read>
-      </div>
-      <div class="col-12">
-        <s26-input-read
-          label="Beneficiario"
-          :content="form.bank_accounts.beneficiary"
-        >
-        </s26-input-read>
-      </div>
-      <div class="col-12">
-        <s26-input-read
-          label="Tipo de Cuenta"
-          :content="form.bank_accounts.account_type"
-        >
-        </s26-input-read>
-      </div>
-    </template>
-
-    <template v-slot:level-4>
       <div class="container-categories">
         <div
           :class="[
@@ -149,6 +128,13 @@
           :key="cat.id"
         >
           {{ cat.name }}
+        </div>
+      </div>
+    </template>
+    <template v-slot:level-4>
+      <div class="container-categories">
+        <div class="cat focus" v-for="mark in form.trademarks" :key="mark">
+          {{ mark }}
         </div>
       </div>
     </template>
@@ -172,22 +158,20 @@ export default {
       categories: [],
       levels: [
         "Información Comercial",
-        "Contactos",
-        "Dirección Actual",
+        "Información de Contacto",
         "Cuenta Bancaria",
         "Categorías",
+        "Marcas",
       ],
-      level_select: 0,
       form: {
-        trade_information: {},
-        contacts: {},
-        current_address: {},
         bank_accounts: {
           bank_entity: {
             bank_entity: "",
           },
         },
+        city: {},
         categories: [],
+        trademarks: [],
         status: 1,
         created_at: "",
       },
@@ -256,7 +240,17 @@ export default {
   color: #fff;
 }
 .container-categories .cat.focus {
-  background-color: #168596;
+  background-color: var(--bs-primary);
   color: #fff;
+}
+.container-account {
+  position: relative;
+  border-radius: 0.25rem !important;
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+  border: 1px solid #e8e8e8;
 }
 </style>

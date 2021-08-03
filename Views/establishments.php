@@ -13,7 +13,8 @@
           <div class="container">
             <s26-form-input label="N° de Establecimiento" size="sm" id="n_establishment" type="text" v-model="filter.n_establishment" maxlength="11" @keyup="allRows" number autofocus></s26-form-input>
             <s26-form-input label="Nombre Comercial" size="sm" id="tradename" type="text" v-model="filter.tradename" maxlength="100" @keyup="allRows"></s26-form-input>
-            <s26-form-input label="Ciudad" size="sm" id="city" type="text" v-model="filter.city" maxlength="100" @keyup="allRows" text></s26-form-input>
+            <s26-select-cities size="sm" id="city" v-model="filter.city_id" all @change="allRows">
+            </s26-select-cities>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
           </div>
         </template>
@@ -49,7 +50,7 @@
             <td class="length-description">
               {{ item.tradename }}
             </td>
-            <td class="length-int">{{ item.city }}</td>
+            <td class="length-int">{{ item.city.name }}</td>
             <td class="length-int">{{ item.phone }}</td>
             <td :class="[
                 'length-status',

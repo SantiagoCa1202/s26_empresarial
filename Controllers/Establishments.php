@@ -25,7 +25,7 @@ class Establishments extends Controllers
       $filter = [
         'n_establishment' => !empty($_GET['n_establishment']) ? intval($_GET['n_establishment']) : '',
         'tradename' => isset($_GET['tradename']) ? strClean($_GET['tradename']) : '',
-        'city' => isset($_GET['city']) ? strClean($_GET['city']) : '',
+        'city_id' => !empty($_GET['city_id']) ? intval($_GET['city_id']) : '',
         'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
       ];
       $arrData = $this->model->selectEstablishments($perPage, $filter);
