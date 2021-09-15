@@ -232,4 +232,39 @@ class SystemModel extends Mysql
 
     return $request;
   }
+
+  public function selectColors(int $perPage, array $filter)
+  {
+    $this->name = $filter['name'];
+    $this->perPage = $perPage;
+
+    $info = "SELECT COUNT(*) as count 
+      FROM colors
+      WHERE name LIKE '%$this->name%' 
+    ";
+    $info_table = $this->info_table($info);
+
+    $rows = "
+      SELECT *
+      FROM colors
+      WHERE name LIKE '%$this->name%' 
+      ORDER BY id ASC LIMIT 0, $this->perPage 
+    ";
+
+    $items = $this->select_all($rows);
+
+    return [
+      'items' => $items,
+      'info' => $info_table
+    ];
+  }
+
+  public function selectColor(int $id)
+  {
+    $this->id = $id;
+    $sql = "SELECT * FROM colors WHERE id = $this->id";
+    $request = $this->select($sql);
+
+    return $request;
+  }
 }

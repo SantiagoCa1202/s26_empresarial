@@ -6,50 +6,12 @@ if (element) {
     el: "#s26-products-view",
     data: function() {
       return {
-        fields: [
-          {
-            name: "Código",
-            class: "length-int",
-          },
-          {
-            name: "Producto",
-            class: "length-description",
-          },
-          {
-            name: "Serie",
-            class: "length-action",
-          },
-          {
-            name: "Marca",
-            class: "length-action",
-          },
-          {
-            name: "Proveedor",
-            class: "length-action",
-          },
-          {
-            name: "Categoría",
-            class: "length-action",
-          },
-          {
-            name: "Stock",
-            class: "length-action text-center",
-          },
-          {
-            name: "Costo",
-            class: "length-action",
-          },
-          {
-            name: "PVP",
-            class: "length-action",
-          },
-        ],
         filter: {
           id: "",
           auxiliary_code: "",
           ean_code: "",
           name: "",
-          serie: "",
+          model: "",
           trademark: "",
           provider: "",
           category: "",
@@ -67,10 +29,12 @@ if (element) {
           total_pvp: "",
         },
         perPage: 25,
+        loading_data: false,
         idRow: null,
         activeSidebar: true,
         action: "",
         url_export: "",
+        code: "",
       };
     },
     created() {
@@ -81,6 +45,7 @@ if (element) {
     },
     methods: {
       allRows() {
+        this.loading_data = true;
         const params = {
           id: this.filter.id,
           auxiliary_code: this.filter.auxiliary_code,
@@ -101,6 +66,7 @@ if (element) {
           })
           .then((res) => {
             console.log(res);
+            this.loading_data = false;
             this.items = res.data.items;
             this.info.rows = res.data.info.count;
             this.info.total_stock = res.data.info.total_stock;
@@ -126,6 +92,13 @@ if (element) {
         if (!$s26.readCookie("id") && type == "watch") {
           $s26.create_cookie("id", id, "products");
         }
+      },
+      get_code: function(code) {
+        this.code = code;
+      },
+      getProvider(id) {
+        $s26.create_cookie("id", id, "providers");
+        window.open(BASE_URL + "/providers", "_blank");
       },
     },
   });

@@ -136,4 +136,29 @@ class System extends Controllers
     }
     die();
   }
+
+  public function getColors()
+  {
+    $perPage = intval($_GET['perPage']);
+    $filter = [
+      'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
+    ];
+    $arrData = $this->model->selectColors($perPage, $filter);
+    $arrRes = (empty($arrData)) ? 0 : $arrData;
+
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
+  public function getColor($id)
+  {
+    $id = intval(strClean($id));
+    if ($id > 0) {
+      $arrData = $this->model->selectColor($id);
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
+
+      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
 }

@@ -65,6 +65,45 @@ class PhotosModel extends Mysql
     ];
   }
 
+  public function selectPhotosIn(String $arrPhotos)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->arrPhotos = $arrPhotos;
+    if ($this->arrPhotos) {
+
+      $where = " id in ($this->arrPhotos) ";
+
+
+      $info = "SELECT COUNT(*) as count 
+      FROM photos
+      WHERE $where 
+    ";
+      $info_table = $this->info_table_company($info, $this->db_company);
+
+      $rows = "
+      SELECT *
+      FROM photos
+      WHERE $where
+    ";
+
+      $items = $this->select_all_company($rows, $this->db_company);
+
+      for ($i = 0; $i < count($items); $i++) {
+        $items[$i]['href'] =  asset('media/uploads/photos/') . $items[$i]['src'];
+      }
+      return [
+        'items' => $items,
+        'info' => $info_table
+      ];
+    } else {
+      return [
+        'items' => [],
+        'info' => 0
+      ];
+    }
+  }
+
   public function selectPhoto(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];

@@ -18,8 +18,18 @@
     >
       {{ money ? $s26.currency(content) : content }}
     </div>
-    <i v-if="money" class="form-icon-dollar">
-      <s26-icon icon="dollar-sign"></s26-icon>
+
+    <i
+      :class="[
+        'form-icon',
+        money ? 'form-icon-start' : '',
+        percentage || search ? 'form-icon-end' : '',
+      ]"
+      :style="label ? '' : 'top: .4rem'"
+    >
+      <s26-icon icon="dollar-sign" v-if="money"></s26-icon>
+      <s26-icon icon="percentage" v-if="percentage"></s26-icon>
+      <s26-icon icon="search" v-if="search"></s26-icon>
     </i>
   </div>
 </template>
@@ -31,6 +41,8 @@ export default {
     variant: String,
     link: String,
     money: Boolean,
+    percentage: Boolean,
+    search: Boolean,
   },
   methods: {
     getRow() {

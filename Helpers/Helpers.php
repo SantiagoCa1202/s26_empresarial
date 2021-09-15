@@ -127,7 +127,7 @@ function uploadFile(string $tmp_name, string $name)
 }
 
 //RESPUESTAS DE SERVIDOR 
-function s26_res($name, $res, $type = 0)
+function s26_res($name, $res, $type = 1)
 {
 
   if ($res > 0) {
@@ -137,13 +137,11 @@ function s26_res($name, $res, $type = 0)
       $arrRes = array('type' => 2, 'msg' => $name . ' actualizado correctamente.');
     } else if ($type == 3) {
       $arrRes = array('type' => 2, 'msg' => $name . ' eliminado correctamente.');
+    } else if ($type == 4) {
+      $arrRes = array('type' => 1, 'msg' => $name . ' asignado correctamente.');
     }
   } else if ($res == 0) {
-    if ($type == 1) {
-      $arrRes = array('type' => 0, 'msg' => 'Error al Eliminar ' . $name);
-    } else if ($type == 2) {
-      $arrRes = array('type' => 0, 'msg' => 'Error al Eliminar ' . $name);
-    } else if ($type == 3) {
+    if ($type == 1 || $type == 2 || $type == 3) {
       $arrRes = array('type' => 0, 'msg' => 'Error al Eliminar ' . $name);
     }
   } else if ($res == -1) {
@@ -158,6 +156,8 @@ function s26_res($name, $res, $type = 0)
     $arrRes = array('type' => 0, 'msg' => 'No tiene permiso para realizar esta acción.');
   } else if ($res == -6) {
     $arrRes = array('type' => 0, 'msg' => 'El Registro ya existe, restauralo desde la papelera.');
+  } else if ($res == -7) {
+    $arrRes = array('type' => 3, 'msg' => 'Existe Un Registro Similar.');
   } else {
     $arrRes = array('type' => 0, 'msg' => 'Error del Sistema, comunique a servicio al técnico.');
   }
@@ -198,6 +198,19 @@ function strClean($strString)
   $string = str_ireplace("==", "", $string);
   $string = strtolower($string);
   return $string;
+}
+
+// limpiador de array
+function arrClean($arr, $type = "")
+{
+  $new_arr = [];
+
+  if (count($arr) > 0) {
+    for ($i = 0; $i < count($arr); $i++) {
+      array_push($new_arr, $type == "int" ? intval($arr[$i]) : strClean($arr[$i]));
+    }
+  }
+  return $new_arr;
 }
 
 //genera una contraseña de 10 caracteres

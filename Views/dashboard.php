@@ -6,14 +6,12 @@
 <br>
 <br>
 <br>
-<script>
-  let f = '2021-7-5';
 
-  let fecha = new Date(f);
-  console.log(fecha.toLocaleDateString())
-</script>
 <?php
 
+$el = true;
+
+echo boolval($el);
 // // Get user IP address
 // if ( isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
 //   $ip = $_SERVER['HTTP_CLIENT_IP'];

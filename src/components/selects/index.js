@@ -52,4 +52,7 @@ Vue.component("s26-select-check", selectCheck);
 
 import selectCities from "./selectCities.vue";
 Vue.component("s26-select-cities", selectCities);
+
+import selectColor from "./selectColor.vue";
+Vue.component("s26-select-color", selectColor);
 export default s26Selects;

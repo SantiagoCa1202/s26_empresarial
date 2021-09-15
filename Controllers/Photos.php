@@ -36,6 +36,17 @@ class Photos extends Controllers
     die();
   }
 
+  public function getPhotosIn()
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $arrPhotos = !empty($_GET['arrPhotos']) ? strClean($_GET['arrPhotos']) : '';
+      $arrData = $this->model->selectPhotosIn($arrPhotos);
+
+      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
+
   public function getPhoto($id)
   {
     if ($_SESSION['permitsModule']['r']) {

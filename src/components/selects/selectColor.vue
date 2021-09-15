@@ -1,13 +1,10 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
     <label :for="id" class="form-label w-100">
-      {{ label }}
+      Color
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
-      <a @click="getRow" class="text-primary float-end pointer" v-if="!all">
-        <s26-icon icon="link"></s26-icon>
-      </a>
     </label>
     <div
       :id="id"
@@ -27,30 +24,12 @@
       </div>
       <div class="s26-select-container-options">
         <div
-          :class="['s26-select-options', value === '' ? 'focus' : '']"
-          tabindex="0"
-          @click="$emit('input', '')"
-          @keyup.13="$emit('input', '')"
-        >
-          {{ all ? "Todos" : "-- seleccionar --" }}
-        </div>
-        <div
-          :class="['s26-select-options', value === 0 ? 'focus' : '']"
+          :class="['s26-select-options', value == 0 ? 'focus' : '']"
           tabindex="0"
           @click="$emit('input', 0)"
           @keyup.13="$emit('input', 0)"
-          v-if="is_null"
         >
-          Sin Documento
-        </div>
-        <div
-          :class="['s26-select-options', value === -1 ? 'focus' : '']"
-          tabindex="0"
-          @click="$emit('input', -1)"
-          @keyup.13="$emit('input', -1)"
-          v-if="assign"
-        >
-          Por Asignar
+          {{ all ? "Todos" : "-- seleccionar --" }}
         </div>
         <div
           :class="[
@@ -63,7 +42,16 @@
           @click="$emit('input', option.id)"
           @keyup.13="$emit('input', option.id)"
         >
-          {{ option.type_doc.alias }} - {{ option.n_document }}
+          <span
+            :class="['btn-icon me-2', option.name == 'blanco' ? 'border' : '']"
+            :style="{
+              background: '#' + option.hexadecimal,
+              color: option.name == 'blanco' ? '#243a46' : '#fff',
+            }"
+          >
+            <s26-icon icon="palette"></s26-icon>
+          </span>
+          {{ option.name }}
         </div>
       </div>
       <div class="actions-select pt-1 px-2">
@@ -89,7 +77,7 @@
     <input
       type="hidden"
       :s26-required="s26_required"
-      select="true"
+      int="true"
       v-model="value"
     />
     <p class="invalid-feedback" v-if="s26_required"></p>
@@ -102,13 +90,6 @@ export default {
     value: {},
     all: Boolean,
     s26_required: Boolean,
-    label: {
-      type: String,
-      default: "Comprobantes",
-    },
-    type_doc: {},
-    is_null: Boolean,
-    assign: Boolean,
   },
   data: function () {
     return {
@@ -127,33 +108,26 @@ export default {
       $(`div.s26-select-container`).hide("200");
       this.perPage = 50;
       this.$emit("change");
-      if (this.value > 0) {
+      if (this.value != 0) {
         this.axios
-          .get("/buys/getBuy/" + this.value)
-          .then(
-            (res) =>
-              (this.selected = `${res.data.type_doc.alias} - ${res.data.n_document}`)
-          )
+          .get("/system/getColor/" + this.value)
+          .then((res) => (this.selected = res.data.name))
           .catch((err) => console.log(err));
         return this.selected;
-      } else if (this.value === 0) {
-        return "Sin Documento";
-      } else if (this.value === -1) {
-        return "Por Asignar";
-      } else if (this.value === "") {
+      } else {
         return this.all ? "Todos" : "-- seleccionar --";
       }
     },
+    
   },
   methods: {
     allRows() {
       const params = {
-        n_document: this.search,
+        name: this.search,
         perPage: this.perPage,
-        type_doc_id: this.type_doc,
       };
       this.axios
-        .get("/buys/getBuys/", {
+        .get("/system/getColors/", {
           params,
         })
         .then((res) => {
@@ -166,10 +140,6 @@ export default {
       let perPage = this.rows - this.perPage;
       this.perPage = perPage > 25 ? this.perPage + 25 : this.rows;
       this.allRows();
-    },
-    getRow() {
-      $s26.create_cookie("id", this.value, "buys");
-      window.open(BASE_URL + "/buys", "_blank");
     },
   },
 };

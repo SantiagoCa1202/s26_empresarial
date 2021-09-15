@@ -50,6 +50,15 @@ Vue.component("s26-form-bank-account", formBankAccount);
 import formCheckBook from "./formCheckBook.vue";
 Vue.component("s26-form-check", formCheckBook);
 
+import formProduct from "./formProduct.vue";
+Vue.component("s26-form-product", formProduct);
+
+import formAmountProduct from "./formAmountProduct.vue";
+Vue.component("s26-form-amount-product", formAmountProduct);
+
+import formValCode from "./formValCode.vue";
+Vue.component("s26-form-val-code", formValCode);
+
 import formDelete from "./formDelete.vue";
 Vue.component("s26-delete", formDelete);
 

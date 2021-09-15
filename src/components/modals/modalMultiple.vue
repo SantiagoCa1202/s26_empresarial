@@ -228,6 +228,11 @@ export default {
         }, 600);
       }
     },
+    start() {
+      this.level_select = 0;
+      $(`.level`).removeClass("check");
+      $(`.level:nth-child(1)`).addClass("check");
+    },
   },
 };
 </script>

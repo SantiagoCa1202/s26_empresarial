@@ -39,7 +39,7 @@ class UsersModel extends Mysql
   {
 
 
-    $user_access = ($_SESSION['userData']['user_access'] == 0) ?
+    $user_access = ($_SESSION['userData']['user_access'] == 2) ?
       " AND u.establishment_id = '{$_SESSION['userData']['establishment_id']}'"
       : "";
 

@@ -34,6 +34,7 @@
       v-bind:value="value"
       v-on:input="$emit('input', $event.target.value)"
       @keyup="$emit('keyup')"
+      @keyup.enter="$emit('enter')"
       :text="text"
       :number="number"
       :email="email"
@@ -44,10 +45,21 @@
       :money="money"
       :validate="validate"
       :disabled="disabled"
+      :title="title"
     />
-    <i v-if="money" class="form-icon-dollar">
-      <s26-icon icon="dollar-sign"></s26-icon>
+    <i
+      :class="[
+        'form-icon',
+        money ? 'form-icon-start' : '',
+        percentage || search ? 'form-icon-end' : '',
+      ]"
+      :style="label ? '' : 'top: .4rem'"
+    >
+      <s26-icon icon="dollar-sign" v-if="money"></s26-icon>
+      <s26-icon icon="percentage" v-if="percentage"></s26-icon>
+      <s26-icon icon="search" v-if="search"></s26-icon>
     </i>
+
     <p class="invalid-feedback" v-if="s26_required || validate">
       {{ message }}
     </p>
@@ -62,8 +74,14 @@ export default {
       type: String,
       default: "",
     },
-    type: String,
-    size: String,
+    type: {
+      type: String,
+      default: "text",
+    },
+    size: {
+      type: String,
+      default: "sm",
+    },
     maxlength: String,
     minlength: String,
     strictlength: String,
@@ -72,18 +90,23 @@ export default {
       type: String,
       default: "",
     },
-    value: {},
+    value: {
+      default: "",
+    },
     name: String,
     text: Boolean,
     number: Boolean,
     email: Boolean,
     money: Boolean,
+    percentage: Boolean,
+    search: Boolean,
     s26_required: Boolean,
     autofocus: Boolean,
     autocomplete: String,
     length: Boolean,
     validate: Boolean,
     disabled: Boolean,
+    title: String,
   },
   created() {
     setTimeout(() => {

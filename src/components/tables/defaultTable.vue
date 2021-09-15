@@ -5,17 +5,33 @@
         <thead>
           <tr>
             <th class="length-int" v-if="id">id</th>
-            <th v-for="field in fields" :key="field.id" :class="[field.class]">
-              {{ field.name }}
-            </th>
+            <template v-if="fields">
+              <th
+                v-for="field in fields"
+                :key="field.id"
+                :class="[field.class]"
+              >
+                {{ field.name }}
+              </th>
+            </template>
+            <slot name="head" v-else></slot>
             <th class="length-action" v-if="action">acción</th>
             <th class="length-action" v-if="info">info</th>
           </tr>
         </thead>
         <tbody>
           <slot name="body"></slot>
+          <template v-if="loading">
+            <tr v-for="i in 9" :key="i" class="skeleton-table">
+              <td colspan="20"></td>
+            </tr>
+          </template>
           <tr>
-            <td class="font-weight-bold" colspan="25" v-if="rows == 0">
+            <td
+              class="font-weight-bold"
+              colspan="25"
+              v-if="rows == 0 && !loading_data"
+            >
               Sin Registros
             </td>
           </tr>
@@ -43,11 +59,31 @@ export default {
     action: Boolean,
     id: Boolean,
     info: Boolean,
+    loading_data: Boolean,
   },
-  data: function () {
-    return {};
+  computed: {
+    loading() {
+      if (this.loading_data) {
+        setTimeout(() => {
+          $(".skeleton-table td").each(function (i) {
+            var t = $(this);
+            setTimeout(function () {
+              t.addClass("animation");
+            }, (i + 1) * 50);
+          });
+          $(".skeleton-table").each(function (i) {
+            var t = $(this);
+            setTimeout(function () {
+              t.addClass("animation");
+            }, (i + 1) * 50);
+          });
+        }, 10);
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
-  mounted() {},
   methods: {
     loadMore() {
       let perPage = this.rows - this.value;
@@ -57,3 +93,57 @@ export default {
   },
 };
 </script>
+<style scoped>
+.skeleton-table td {
+  cursor: wait;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  border: none;
+  height: 38.1875px;
+  overflow: hidden;
+}
+.skeleton-table td.animation::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(
+    to right,
+    rgb(216 216 216 / 8%) 0%,
+    rgb(0 0 0 / 8%) 20%,
+    rgba(0, 0, 0, 0.08) 40%,
+    rgb(216 216 216 / 8%) 100%
+  );
+  background-size: 50% 40px;
+  background-repeat: no-repeat;
+  animation: shimmer 2s ease-in-out infinite;
+  animation-direction: alternate;
+  top: 0;
+  left: 0;
+}
+.skeleton-table {
+  opacity: 0;
+}
+.skeleton-table.animation {
+  opacity: 1;
+  animation: flicker 2s linear 1;
+}
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+    background-size: 50% 40px;
+  }
+  100% {
+    background-position: 200% 0;
+    background-size: 50% 40px;
+  }
+}
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+</style>

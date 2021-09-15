@@ -1,7 +1,7 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
     <label :for="id" class="form-label w-100">
-      Proveedor
+      {{ multiple ? "Proveedores" : "Proveedor" }}
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
@@ -27,23 +27,36 @@
       </div>
       <div class="s26-select-container-options">
         <div
-          :class="['s26-select-options', value == 0 ? 'focus' : '']"
+          :class="[
+            's26-select-options',
+            value === '' || value.length == 0 ? 'focus' : '',
+          ]"
           tabindex="0"
-          @click="$emit('input', 0)"
-          @keyup.13="$emit('input', 0)"
+          @click="selectNull(!multiple ? '' : [])"
+          @keyup.13="selectNull(!multiple ? '' : [])"
         >
           {{ all ? "Todos" : "-- seleccionar --" }}
+        </div>
+        <div
+          :class="['s26-select-options', value === 0 ? 'focus' : '']"
+          tabindex="0"
+          @click="selectNull(0)"
+          @keyup.13="selectNull(0)"
+          v-if="is_null"
+        >
+          Sin Proveedor
         </div>
         <div
           :class="[
             's26-select-options s26-align-y-center',
             value == option.id ? 'focus' : '',
+            selecteds.indexOf(option.id) > -1 ? 'focus' : '',
           ]"
           tabindex="0"
           v-for="option in options"
           :key="option.id"
-          @click="$emit('input', option.id)"
-          @keyup.13="$emit('input', option.id)"
+          @click="!multiple ? change(option.id) : selectMultiple(option.id)"
+          @keyup.13="!multiple ? change(option.id) : selectMultiple(option.id)"
         >
           {{ option.tradename }} -
           {{ option.alias }}
@@ -72,7 +85,7 @@
     <input
       type="hidden"
       :s26-required="s26_required"
-      int="true"
+      select="true"
       v-model="value"
     />
     <p class="invalid-feedback" v-if="s26_required"></p>
@@ -85,10 +98,13 @@ export default {
     value: {},
     all: Boolean,
     s26_required: Boolean,
+    multiple: Boolean,
+    is_null: Boolean,
   },
   data: function () {
     return {
       selected: "",
+      selecteds: [],
       options: [],
       search: "",
       perPage: 50,
@@ -100,16 +116,24 @@ export default {
   },
   computed: {
     select: function () {
-      $(`div.s26-select-container`).hide("200");
-      this.perPage = 50;
-      this.$emit("change");
-      if (this.value != 0) {
+      if (!this.multiple) $(`div.s26-select-container`).hide("200");
+      if (
+        (!this.multiple && this.value > 0) ||
+        (this.multiple && this.value.length > 0)
+      ) {
+        let id = !this.multiple ? this.value : this.value[0];
         this.axios
-          .get("/providers/getProvider/" + this.value)
+          .get("/providers/getProvider/" + id)
           .then((res) => (this.selected = res.data.alias))
           .catch((err) => console.log(err));
-        return this.selected;
-      } else {
+        return `${this.selected} ${
+          this.multiple && this.value.length > 1
+            ? " +" + (this.value.length - 1)
+            : ""
+        }`;
+      } else if (this.value === 0) {
+        return "Sin Proveedor";
+      } else if (this.value === "" || this.value.length == 0) {
         return this.all ? "Todos" : "-- seleccionar --";
       }
     },
@@ -138,6 +162,25 @@ export default {
     getRow() {
       $s26.create_cookie("id", this.value, "providers");
       window.open(BASE_URL + "/providers", "_blank");
+    },
+    selectMultiple(id) {
+      if (this.selecteds.indexOf(id) > -1) {
+        let i = this.selecteds.indexOf(id);
+        this.selecteds.splice(i, 1);
+      } else {
+        this.selecteds.push(id);
+      }
+      this.change(this.selecteds);
+    },
+    selectNull(val = "") {
+      $(`div.s26-select-container`).hide("200");
+      this.change(val);
+      this.selecteds = [];
+    },
+    change(val) {
+      this.$emit("input", val);
+      this.perPage = 50;
+      this.$emit("change");
     },
   },
 };

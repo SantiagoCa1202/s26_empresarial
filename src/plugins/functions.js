@@ -387,6 +387,21 @@ const val_form = (form) => {
       );
       return;
     }
+
+    if ($(input).attr("select") && !Number.isInteger(parseInt(input.value))) {
+      invalidInput(
+        input,
+        ` 
+          <span class="fw-bold"> 
+            ${$(input)
+              .siblings("label")
+              .text()} 
+          </span> 
+          es obligatorio.
+        `
+      );
+      return;
+    }
   }
   return true;
 };

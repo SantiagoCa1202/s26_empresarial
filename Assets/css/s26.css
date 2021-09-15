@@ -89,6 +89,10 @@ input[email] {
 
 /* Colors */
 
+.s26-text-blue {
+  color: var(--s26-blue)
+}
+
 .s26-text-purple {
   color: var(--bs-purple)
 }
@@ -101,10 +105,19 @@ input[email] {
   background-color: var(--s26-blue-gray);
 }
 
+.s26-bg-dark-blue {
+  color: #fff;
+  background-color: var(--s26-dark-blue);
+}
+
 /* Config Reset */
 
 .btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-warning, .btn-info, .btn-light, .btn-dark, .btn-link, .form-control:focus, .custom-select:focus {
   box-shadow: none !important;
+}
+
+.fw-600 {
+  font-weight: 600
 }
 
 /* Reset a */
@@ -133,7 +146,7 @@ textarea.resize-none {
   transition: .3s;
 }
 
-.col-form-label, label, .form-control-sm, .form-control:focus, .form-icon-dollar {
+.col-form-label, label, .form-control-sm, .form-control:focus, .form-icon {
   color: var(--s26-blue)
 }
 
@@ -145,10 +158,16 @@ textarea.resize-none {
   text-align: right;
 }
 
-.s26-form-group .form-icon-dollar {
+.s26-form-group .form-icon-start {
   position: absolute;
   top: 2.25rem;
   left: 0.5rem;
+}
+
+.s26-form-group .form-icon-end {
+  position: absolute;
+  top: 2.25rem;
+  right: 0.5rem;
 }
 
 /* Config Reset Modal */
@@ -244,16 +263,17 @@ div.ajs-modal {
 
 div.ajs-modal .ajs-dialog {
   width: 500px;
+  border-radius: .9rem;
+  background: #fff;
 }
 
 div.alertify .ajs-header {
-  background: white;
+  background: none;
   border: 0;
   display: flex;
   align-items: center;
   font-size: 1rem;
   color: var(--s26-blue);
-  border-radius: .3rem;
 }
 
 div.alertify .ajs-body {
@@ -261,10 +281,9 @@ div.alertify .ajs-body {
 }
 
 div.alertify .ajs-footer {
-  background: white;
+  background: none;
   border: 0;
   padding: .75rem;
-  border-radius: .3rem;
 }
 
 /* CUSTOM BTN S26 */
@@ -791,28 +810,9 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   position: relative
 }
 
-.s26-table tbody tr:hover {
+.s26-table tbody tr:not(.skeleton-table):hover {
   cursor: pointer;
   box-shadow: 0 10px 5px -6px rgb(93 130 170 / 21%);
-}
-
-.s26-table .s26-nav-dropdown .s26-list-dropdown {
-  position: absolute;
-  width: 90px;
-  right: 40%;
-  z-index: 1040;
-  border: 1px solid #ccd2db;
-  box-shadow: 0 2px 3px 0 #ccd2db;
-  border-radius: .28571429rem;
-}
-
-.s26-table .s26-nav-dropdown .s26-list-dropdown li {
-  text-align: left;
-  padding: .5rem;
-}
-
-.s26-table .s26-nav-dropdown .s26-list-dropdown li:hover {
-  background: rgba(0, 0, 0, 0.1)
 }
 
 /* CUSTOM CHECKBOX */
@@ -905,7 +905,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1060;
+  z-index: 1070;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -916,10 +916,6 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
 .s26-modal .modal-body {
   max-height: 450px;
   overflow: auto;
-}
-
-.modal-dialog-centered {
-  padding-top: 50px;
 }
 
 .s26-modal-content {

@@ -69,6 +69,19 @@
     ],
     "description": "S26 Default Input"
   },
+  "S26 Editor": {
+    "prefix": "s26-editor",
+    "body": [
+      "<s26-editor\r",
+      "\tid=\"$1\"\r",
+      "\tlabel=\"$2\"\r",
+      "\theight=\"$3\"\r",
+      "\tv-model=\"$4\"\r",
+      "\ts26_required\r",
+      "></s26-editor>"
+    ],
+    "description": "S26 Text Editor"
+  },
   "S26 Controller": {
     "prefix": "s26-controller",
     "body": [

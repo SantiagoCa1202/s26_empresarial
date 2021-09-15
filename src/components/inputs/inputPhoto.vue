@@ -1,23 +1,58 @@
 <template>
   <div class="container-img-estructure">
-    <div class="select-img-photo" @click="activeSelectPhoto = true">
-      {{ value == "" || value == 0 ? "Seleccionar Foto 1000x1000" : "" }}
-      <img
-        :id="'photo-' + id"
-        v-if="value !== '' && value != 0"
-        :src="info_photo.href"
-      />
+    <div
+      class="select-img-photo"
+      v-if="(value == '' || value == 0) && !multiple"
+      @click="activeSelectPhoto = true"
+    >
+      Seleccionar Foto 1000x1000
     </div>
-    <transition name="fade">
-      <button
-        type="button"
-        class="btn-icon btn-clear-img"
-        v-if="value !== ''"
-        @click="remove_photo"
+    <div
+      class="img-photo"
+      v-if="value !== '' && value != 0 && !multiple"
+      @click="activeSelectPhoto = true"
+    >
+      <img :id="'photo-' + id" :src="info_photo.href" />
+      <transition name="fade">
+        <button
+          type="button"
+          class="btn-icon btn-clear-img"
+          v-if="value !== ''"
+          @click="remove_photo"
+        >
+          <s26-icon icon="times"></s26-icon>
+        </button>
+      </transition>
+    </div>
+    <button
+      type="button"
+      class="btn btn-primary w-100 mb-3"
+      v-if="multiple"
+      @click="activeSelectPhoto = true"
+    >
+      <s26-icon icon="images"></s26-icon>
+      Seleccionar Fotos
+    </button>
+    <div class="row w-100" v-if="multiple">
+      <div
+        class="col-3 position-relative"
+        v-for="(photo, index) in info_photos"
+        :key="index"
       >
-        <s26-icon icon="times"></s26-icon>
-      </button>
-    </transition>
+        <img
+          class="w-100 shadow-sm"
+          :src="photo.href"
+          :alt="photo.description"
+        />
+        <button
+          type="button"
+          class="btn-icon btn-clear-img"
+          @click="remove_photo(photo.id)"
+        >
+          <s26-icon icon="times"></s26-icon>
+        </button>
+      </div>
+    </div>
     <transition name="fade">
       <div
         id="selectPhotos"
@@ -185,6 +220,7 @@ export default {
       upload_photos: [],
       upload_photos_data: {},
       info_photo: {},
+      info_photos: [],
     };
   },
   created() {
@@ -223,6 +259,22 @@ export default {
           console.log(err);
         });
     },
+    getPhotos() {
+      const params = {
+        arrPhotos: this.value.toString(),
+      };
+      this.axios
+        .get("/photos/getPhotosIn/", {
+          params,
+        })
+        .then((res) => {
+          console.log(res);
+          this.info_photos = res.data.items;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     selectPhoto(id) {
       let photo_id = parseInt(id);
       let i = this.selected_photos.indexOf(photo_id);
@@ -242,6 +294,9 @@ export default {
     addPhotos() {
       if (this.multiple) {
         this.$emit("input", this.selected_photos);
+        setTimeout(() => {
+          this.getPhotos();
+        }, 100);
       } else {
         this.$emit("input", this.selected_photos[0]);
         this.getPhoto(this.selected_photos[0]);
@@ -249,9 +304,17 @@ export default {
       this.selected_photos = [];
       this.activeSelectPhoto = false;
     },
-    remove_photo(id) {
-      this.$emit("input", "");
-      this.selected_photos = [];
+    remove_photo(id = "") {
+      if (this.multiple) {
+        let del = this.value.indexOf(parseInt(id));
+        let new_arr = this.value;
+        new_arr.splice(del, 1);
+        this.$emit("input", new_arr);
+        this.getPhotos();
+      } else {
+        this.$emit("input", "");
+        this.selected_photos = [];
+      }
     },
     loadMore() {
       let perPage = this.rows - this.perPage;
@@ -270,7 +333,8 @@ export default {
   flex-wrap: wrap;
 }
 
-.select-img-photo {
+.select-img-photo,
+.img-photo {
   width: 223px;
   height: 223px;
   border: 0.3rem dashed #e5e5e5;
@@ -284,11 +348,11 @@ export default {
   cursor: pointer;
 }
 
-.select-img-photo input {
+.img-photo input {
   display: none;
 }
 
-.select-img-photo img {
+.img-photo img {
   width: 223px;
   height: 223px;
   border-radius: 0.5rem;
@@ -298,8 +362,8 @@ export default {
 
 .btn-clear-img {
   position: absolute;
-  top: -2%;
-  right: 1%;
+  top: -0.5rem;
+  right: -0.5rem;
   width: 1.5rem;
   height: 1.5rem;
   display: flex;

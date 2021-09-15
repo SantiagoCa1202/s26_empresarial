@@ -29,8 +29,8 @@
         <div
           :class="['s26-select-options', value == 0 ? 'focus' : '']"
           tabindex="0"
-          @click="$emit('input', 0)"
-          @keyup.13="$emit('input', 0)"
+          @click="change"
+          @keyup.13="change"
         >
           {{ all ? "Todos" : "-- seleccionar --" }}
         </div>
@@ -42,8 +42,8 @@
           tabindex="0"
           v-for="option in options"
           :key="option.id"
-          @click="$emit('input', option.id)"
-          @keyup.13="$emit('input', option.id)"
+          @click="change(option.id)"
+          @keyup.13="change(option.id)"
         >
           <span
             class="btn-icon me-2"
@@ -106,11 +106,9 @@ export default {
   computed: {
     select: function () {
       $(`div.s26-select-container`).hide("200");
-      this.perPage = 50;
-      this.$emit("change");
       if (this.value != 0) {
         this.axios
-          .get("/categories/getCategory" + this.value)
+          .get("/categories/getCategory/" + this.value)
           .then((res) => (this.selected = res.data.name))
           .catch((err) => console.log(err));
         return this.selected;
@@ -143,6 +141,11 @@ export default {
     getRow() {
       $s26.create_cookie("id", this.value, "categories");
       window.open(BASE_URL + "/categories", "_blank");
+    },
+    change(val = 0) {
+      this.$emit("input", val);
+      this.perPage = 50;
+      this.$emit("change");
     },
   },
 };
