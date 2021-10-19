@@ -37,6 +37,7 @@
       @keyup.enter="$emit('enter')"
       :text="text"
       :number="number"
+      :step="step"
       :email="email"
       :s26-required="s26_required"
       :autofocus="autofocus"
@@ -96,6 +97,7 @@ export default {
     name: String,
     text: Boolean,
     number: Boolean,
+    step: String,
     email: Boolean,
     money: Boolean,
     percentage: Boolean,

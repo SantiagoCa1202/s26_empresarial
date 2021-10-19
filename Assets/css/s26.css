@@ -231,6 +231,10 @@ textarea.resize-none {
   align-items: center;
 }
 
+.s26-shadow-md {
+  box-shadow: 0 10px 5px -6px rgb(93 130 170 / 21%) !important;
+}
+
 /* OPACITY */
 
 .opacity-0 {
@@ -401,6 +405,13 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   position: relative;
   display: flex;
   align-items: center;
+}
+
+.s26-custom-select .s26-select-value div {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: .9rem;
 }
 
 .icon-angle-down {
@@ -897,6 +908,21 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   font-size: 2rem;
   font-weight: 700;
   text-shadow: 0 0.1rem 0.13rem rgb(0 0 0 / 50%);
+}
+
+/* HOVERS*/
+
+.global-hover:hover {
+  background: #b7b7b736;
+  border-radius: .5rem;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.global-focus {
+  background: #243a46c7;
+  border-radius: .5rem;
+  color: #fff;
 }
 
 /* CUSTOM MODAL */

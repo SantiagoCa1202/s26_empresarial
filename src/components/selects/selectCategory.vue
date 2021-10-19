@@ -23,36 +23,79 @@
     </div>
     <div class="s26-select-container">
       <div class="w-100 p-2 pb-0">
-        <s26-input-search v-model="search" @search="allRows" />
+        <s26-input-search
+          v-model="search"
+          @search="allRows"
+          v-if="level == 'categories'"
+        />
+        <button
+          class="btn btn-outline-primary btn-sm w-100 my-2"
+          v-if="level == 'subcategories'"
+          @click="changeLevel()"
+        >
+          Atras
+        </button>
       </div>
       <div class="s26-select-container-options">
         <div
           :class="['s26-select-options', value == 0 ? 'focus' : '']"
           tabindex="0"
-          @click="change"
-          @keyup.13="change"
+          @click="change(0)"
+          @keyup.13="change(0)"
         >
           {{ all ? "Todos" : "-- seleccionar --" }}
         </div>
-        <div
-          :class="[
-            's26-select-options s26-align-y-center',
-            value == option.id ? 'focus' : '',
-          ]"
-          tabindex="0"
-          v-for="option in options"
-          :key="option.id"
-          @click="change(option.id)"
-          @keyup.13="change(option.id)"
-        >
-          <span
-            class="btn-icon me-2"
-            :style="{ background: option.color, color: '#fff' }"
+        <transition-group name="slide-fade">
+          <div
+            class="position-absolute w-100"
+            v-if="level == 'categories'"
+            key="categories"
           >
-            <s26-icon :icon="option.icon.class"></s26-icon>
-          </span>
-          {{ option.name }}
-        </div>
+            <div
+              :class="[
+                's26-select-options s26-align-y-center',
+                category_id == option.id ? 'focus' : '',
+              ]"
+              tabindex="0"
+              v-for="option in options"
+              :key="option.id"
+              @click="changeLevel(option.id)"
+            >
+              <span
+                class="btn-icon me-2"
+                :style="{ background: option.color, color: '#fff' }"
+              >
+                <s26-icon :icon="option.icon.class"></s26-icon>
+              </span>
+              {{ option.name }}
+            </div>
+          </div>
+          <div
+            class="position-absolute w-100"
+            v-if="level == 'subcategories'"
+            key="subcategories"
+          >
+            <div
+              :class="[
+                's26-select-options s26-align-y-center',
+                value == option.id ? 'focus' : '',
+              ]"
+              tabindex="0"
+              v-for="option in options"
+              :key="option.id"
+              @click="change(option.id)"
+              @keyup.13="change(option.id)"
+            >
+              <span
+                class="btn-icon me-2"
+                :style="{ background: option.color, color: '#fff' }"
+              >
+                <s26-icon :icon="option.icon.class"></s26-icon>
+              </span>
+              {{ option.name }}
+            </div>
+          </div>
+        </transition-group>
       </div>
       <div class="actions-select pt-1 px-2">
         <button
@@ -98,6 +141,8 @@ export default {
       search: "",
       perPage: 50,
       rows: 0,
+      level: "categories",
+      category_id: "",
     };
   },
   mounted: function () {
@@ -108,11 +153,15 @@ export default {
       $(`div.s26-select-container`).hide("200");
       if (this.value != 0) {
         this.axios
-          .get("/categories/getCategory/" + this.value)
-          .then((res) => (this.selected = res.data.name))
+          .get("/categories/getSubCategory/" + this.value)
+          .then((res) => {
+            this.selected = res.data.name;
+            this.category_id = res.data.category_id;
+          })
           .catch((err) => console.log(err));
         return this.selected;
       } else {
+        this.category_id = "";
         return this.all ? "Todos" : "-- seleccionar --";
       }
     },
@@ -133,20 +182,48 @@ export default {
         })
         .catch((err) => console.log(err));
     },
+    getSubCategories(id) {
+      const params = {
+        category_id: id,
+        name: this.search,
+        perPage: this.perPage,
+      };
+      this.axios
+        .get("/categories/getSubcategories/", {
+          params,
+        })
+        .then((res) => {
+          this.options = res.data;
+          this.rows = res.data.info.count;
+        })
+        .catch((err) => console.log(err));
+    },
     loadMore() {
       let perPage = this.rows - this.perPage;
       this.perPage = perPage > 25 ? this.perPage + 25 : this.rows;
       this.allRows();
     },
     getRow() {
-      $s26.create_cookie("id", this.value, "categories");
+      $s26.create_cookie("id", this.category_id, "categories");
       window.open(BASE_URL + "/categories", "_blank");
     },
     change(val = 0) {
       this.$emit("input", val);
       this.perPage = 50;
       this.$emit("change");
+      this.allRows();
+      this.level = "categories";
+    },
+    changeLevel(id = "") {
+      this.level = this.level == "categories" ? "subcategories" : "categories";
+      if (id == "") {
+        this.allRows();
+      } else {
+        this.getSubCategories(id);
+      }
     },
   },
 };
 </script>
+
+

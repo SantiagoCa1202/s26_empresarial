@@ -1,15 +1,16 @@
 <template>
   <div class="container-img-estructure">
+    <!-- IMAGEN UNICA GRANDE -->
     <div
       class="select-img-photo"
-      v-if="(value == '' || value == 0) && !multiple"
+      v-if="(value == '' || value == 0) && !multiple && !min"
       @click="activeSelectPhoto = true"
     >
       Seleccionar Foto 1000x1000
     </div>
     <div
       class="img-photo"
-      v-if="value !== '' && value != 0 && !multiple"
+      v-if="value !== '' && value != 0 && !multiple && !min"
       @click="activeSelectPhoto = true"
     >
       <img :id="'photo-' + id" :src="info_photo.href" />
@@ -24,6 +25,7 @@
         </button>
       </transition>
     </div>
+    <!-- IMAGEN MULTIPLE GRANDE -->
     <button
       type="button"
       class="btn btn-primary w-100 mb-3"
@@ -190,6 +192,28 @@
         </div>
       </div>
     </transition>
+    <!-- IMAGEN UNICA MINIATURA -->
+    <div class="mb3" v-if="min">
+      <label class="form-label text-start">
+        Foto
+        <s26-icon
+          class="text-danger"
+          icon="times"
+          v-if="value !== '' && value > 0"
+          @click="remove_photo"
+        ></s26-icon>
+      </label>
+      <button
+        type="button"
+        :class="[
+          'btn btn-sm w-100 text-with',
+          value > 0 ? 'btn-primary' : 'btn-outline-secondary',
+        ]"
+        @click="activeSelectPhoto = true"
+      >
+        <s26-icon icon="images"></s26-icon>
+      </button>
+    </div>
     <transition name="fade">
       <s26-upload-photos
         v-if="activeUploadPhoto"
@@ -207,6 +231,7 @@ export default {
     id: String,
     value: {},
     multiple: Boolean,
+    min: Boolean,
   },
   data: function () {
     return {

@@ -71,6 +71,8 @@ class Products extends Controllers
 
   public function setProduct()
   {
+    // dep($_POST);
+    // exit;
     //EN PRODUCTOS
     $id = intval($_POST['id']);
     $auxiliary_code = strClean($_POST['auxiliary_code']);
@@ -85,6 +87,7 @@ class Products extends Controllers
     $category_id = intval($_POST['category_id']);
     $discontinued = boolval($_POST['discontinued']);
     $serial = boolval($_POST['serial']);
+    $color = boolval($_POST['color']);
     $discount = boolval($_POST['discount']);
     $offer = boolval($_POST['offer']);
     $pvp_manual = boolval($_POST['pvp_manual']);
@@ -112,6 +115,10 @@ class Products extends Controllers
     //EN PRODUCTOS SERIES
     $series = !empty($_POST['series']) ? arrClean($_POST['series']) : [];
 
+    //EN PRODUCTOS SERIES
+    $colors = !empty($_POST['colors']) ? $_POST['colors'] : [];
+
+
     //EN PRODUCTOS PROVEEDORES
     $providers = is_array($_POST['providers']) ? arrClean($_POST['providers'], "int") : [];
     //EN PRODUCTOS ENTRADAS 
@@ -128,12 +135,12 @@ class Products extends Controllers
       val_ean13($ean_code) &&
       valString($name, 3, 100) &&
       valString($description, 3, 100000) &&
-      valString($trademark, 3, 100) &&
       $category_id > 0 &&
       ($type_product == 'producto' || $type_product == 'servicio') &&
       ($type == 'original' || $type == 'réplica') &&
       ($remanufactured == 1 || $remanufactured == 0) &&
       ($serial == 1 || $serial == 0) &&
+      ($color == 1 || $color == 0) &&
       ($discount == 1 || $discount == 0) &&
       ($offer == 1 || $offer == 0) &&
       ($pvp_manual == 1 || $pvp_manual == 0) &&
@@ -317,6 +324,42 @@ class Products extends Controllers
             $arrRes = array('type' => 0, 'msg' => 'No se ingresaron Series, puedes ingresarlas más tarde.');
             array_push($response, $arrRes);
           }
+
+          //INSERTAR PRODUCTO EN COLORES 
+          $arrColors = [];
+          if (count($colors) > 0 && $color == 1) {
+            for ($i = 0; $i < count($colors); $i++) {
+              $request_colors = $this->model->insertColor(
+                $request_establishment,
+                strClean($colors[$i]['code']),
+                intval($colors[$i]['color_id']),
+                intval($colors[$i]['photo_id']),
+                intval($colors[$i]['amount']),
+                intval($colors[$i]['status']),
+              );
+
+              if ($request_colors > 0) {
+                //Insertar Entrada COLORES
+                $request_entry_colors = $this->model->insertEntryColors(
+                  $request_colors,
+                  intval($colors[$i]['amount'])
+                );
+
+                array_push($arrColors, $i);
+              }
+            }
+          }
+          if (count($arrColors) > 0) {
+            $arrRes = array(
+              'type' => 1,
+              'msg' => count($arrColors) . ' Colores guardadas correctamente.'
+            );
+            array_push($response, $arrRes);
+          } else {
+            $arrRes = array('type' => 0, 'msg' => 'No se ingresaron Colores, puedes ingresarlas más tarde.');
+            array_push($response, $arrRes);
+          }
+
           //INSERTAR PROVEEDORES
           $arrProviders = [];
           if (count($providers) > 0) {

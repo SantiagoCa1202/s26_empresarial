@@ -10,6 +10,7 @@
     @hideModal="hideModal"
     ref="modal_multiple"
   >
+    <!-- INFORMACION PRINCIPAL -->
     <template v-slot:level-0>
       <div class="col-2" v-if="id > 0">
         <s26-input-read label="Id" :content="form.id"> </s26-input-read>
@@ -47,8 +48,9 @@
       </div>
     </template>
     <template v-slot:level-1>
+      <!-- DATOS GENERALES -->
       <div class="col-12 mb-3">
-        <div class="row mx-0 rounded py-2 shadow-sm">
+        <div class="col-12 mb-3 row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Datos Generales</h2>
           <div class="col-2">
             <s26-form-input
@@ -103,10 +105,11 @@
           </div>
         </div>
       </div>
+      <!-- APROBACIONES -->
       <div class="col-12 mb-3">
-        <div class="row mx-0 rounded py-2 shadow-sm">
+        <div class="row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Aprobaciones</h2>
-          <div class="col-1">
+          <div class="col-2">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -158,19 +161,6 @@
               </label>
             </div>
           </div>
-          <div class="col-1">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="form.serial"
-                id="form-serial"
-              />
-              <label class="form-check-label" for="form-serial">
-                Seriado.
-              </label>
-            </div>
-          </div>
           <div class="col-2">
             <div class="form-check">
               <input
@@ -184,30 +174,57 @@
               </label>
             </div>
           </div>
-          <div class="col-2">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="form.offer"
-                id="form-offer"
-              />
-              <label class="form-check-label" for="form-offer"> Oferta. </label>
-            </div>
-            <s26-form-input
-              id="form-pvp_offer"
-              v-model="form.pvp_offer"
-              money
-              v-if="form.offer"
-              placeholder="000.00"
-            >
-            </s26-form-input>
+        </div>
+      </div>
+      <!-- INFO. DOC. DE COMPRA -->
+      <div class="col-12 mb-3">
+        <div class="row mx-0 rounded py-2 s26-shadow-md border">
+          <h2 class="h5 fw-bold s26-text-blue">Info. Documento de Compra</h2>
+          <div class="col-sm-3">
+            <s26-select-buys
+              label="N° de Doc."
+              id="form-document_id"
+              v-model="form.document_id"
+              @change="getBuy(form.document_id)"
+              is_null
+              assign
+              s26_required
+            ></s26-select-buys>
+          </div>
+          <div class="col-sm-2">
+            <s26-input-read label="Ruc" :content="buy.document">
+            </s26-input-read>
+          </div>
+          <div class="col-sm-5">
+            <s26-input-read label="Razón Social" :content="buy.business_name">
+            </s26-input-read>
+          </div>
+          <div class="col-2 mb-3">
+            <label class="form-label"> Iva </label>
+            <select class="form-select form-select-sm" v-model="form.iva">
+              <option value="0">0%</option>
+              <option value="12">12%</option>
+            </select>
           </div>
         </div>
       </div>
+      <!-- SERIADO -->
+      <div class="col-12 mb-3">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            v-model="form.serial"
+            id="form-serial"
+          />
+          <label class="form-check-label" for="form-serial">
+            Maneja Seriado.
+          </label>
+        </div>
+      </div>
       <transition name="fade">
-        <div class="col-12 mb-3" v-if="form.serial">
-          <div class="row mx-0 rounded py-2 shadow-sm">
+        <div class="col-12 mb-5" v-if="form.serial">
+          <div class="row mx-0 rounded py-2 shadow border">
             <h2 class="h5 fw-bold s26-text-blue">Seriado</h2>
             <div class="col-12">
               <s26-form-input
@@ -246,281 +263,496 @@
           </div>
         </div>
       </transition>
-      <div class="col-12 mb-3">
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            v-model="additional_information"
-            id="form-additional_information"
-          />
-          <label class="form-check-label" for="form-additional_information">
-            Información adicional.
-          </label>
-        </div>
-      </div>
-      <transition name="fade">
-        <div class="col-12 mb-3" v-if="additional_information">
-          <div class="row mx-0 rounded py-2 shadow-sm">
-            <h2 class="h5 fw-bold s26-text-blue">Especificaciones Técnicas</h2>
-            <div class="w-100 px-4">
-              <h3 class="h6 fw-600 s26-text-blue">
-                <s26-icon icon="shopping-bag"></s26-icon>
-                Producto
-              </h3>
-              <div class="row px-3 py-1">
-                <div class="col-3">
-                  <s26-form-input
-                    label="Largo"
-                    id="form-product_length"
-                    v-model="form.product_length"
-                    placeholder="Valor en cm."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-                <div class="col-3">
-                  <s26-form-input
-                    label="Alto"
-                    id="form-product_height"
-                    v-model="form.product_height"
-                    placeholder="Valor en cm."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-                <div class="col-3">
-                  <s26-form-input
-                    label="Ancho"
-                    id="form-product_width"
-                    v-model="form.product_width"
-                    placeholder="Valor en cm."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-                <div class="col-3">
-                  <s26-form-input
-                    label="Peso (kg)"
-                    id="form-product_weight"
-                    v-model="form.product_weight"
-                    placeholder="Valor en kg."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-              </div>
-            </div>
-            <div class="w-100 px-4">
-              <h3 class="h6 fw-600 s26-text-blue">
-                <s26-icon icon="box-open"></s26-icon>
-                Caja / Empaque
-              </h3>
-              <div class="row px-3 py-1">
-                <div class="col-2">
-                  <s26-form-input
-                    label="Largo"
-                    id="form-box_length"
-                    v-model="form.box_length"
-                    placeholder="Valor en cm."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-                <div class="col-2">
-                  <s26-form-input
-                    label="Alto"
-                    id="form-box_height"
-                    v-model="form.box_height"
-                    placeholder="Valor en cm."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-                <div class="col-2">
-                  <s26-form-input
-                    label="Ancho"
-                    id="form-box_width"
-                    v-model="form.box_width"
-                    placeholder="Valor en cm."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-                <div class="col-3">
-                  <s26-form-input
-                    label="Peso (kg) (Prod. + Caja)"
-                    id="form-box_weight"
-                    v-model="form.box_weight"
-                    placeholder="Valor en kg."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-                <div class="col-3">
-                  <s26-form-input
-                    label="Apilamiento Max."
-                    id="form-box_stacking"
-                    v-model="form.box_stacking"
-                    placeholder="Maximo de Cajas Apiladas."
-                    number
-                  >
-                  </s26-form-input>
-                </div>
-              </div>
-            </div>
-            <p class="text-primary">
-              *Recomendamos LLenar Esta Informacíon para que el cálculo de flete
-              sea mas exacto.
-            </p>
-          </div>
-        </div>
-      </transition>
     </template>
     <template v-slot:level-2>
-      <div class="col-sm-3">
-        <s26-select-buys
-          label="N° de Doc."
-          id="form-document_id"
-          v-model="form.document_id"
-          @change="getBuy(form.document_id)"
-          is_null
-          assign
-          s26_required
-        ></s26-select-buys>
-      </div>
-      <div class="col-sm-2">
-        <s26-input-read label="Ruc" :content="buy.document"> </s26-input-read>
-      </div>
-      <div class="col-sm-5">
-        <s26-input-read label="Razón Social" :content="buy.business_name">
-        </s26-input-read>
-      </div>
-      <div class="col-2 mb-3">
-        <label class="form-label"> Iva </label>
-        <select class="form-select form-select-sm" v-model="form.iva">
-          <option value="0">0%</option>
-          <option value="12">12%</option>
-        </select>
-      </div>
-      <div class="col-4">
-        <s26-form-input
-          label="Cantidad"
-          id="form-amount"
-          type="number"
-          v-model="form.amount"
-          number
-          s26_required
+      <!-- VARIANTES -->
+      <transition-group name="list" tag="div">
+        <div
+          class="col-12 row mx-0 rounded py-2 s26-shadow-md border mb-4"
+          v-for="(variant, index) in form.variants"
+          :key="variant.code"
         >
-        </s26-form-input>
-      </div>
-      <div class="col-4">
-        <s26-form-input
-          label="Stock Mínimo"
-          id="form-min_stock"
-          type="number"
-          v-model="form.min_stock"
-          number
-          s26_required
+          <div class="col-3">
+            <s26-input-read
+              label="Código"
+              :content="variant.code"
+            ></s26-input-read>
+          </div>
+          <div class="col-3">
+            <s26-select-status
+              label="Estado"
+              id="form-variant-status"
+              v-model="variant.status"
+              s26_required
+            >
+            </s26-select-status>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="Cantidad"
+              id="form-variant-amount"
+              type="number"
+              v-model="variant.amount"
+              number
+              s26_required
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="Stock Mínimo"
+              id="form-variant-min_stock"
+              type="number"
+              v-model="variant.min_stock"
+              number
+              s26_required
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="Stock Máximo"
+              id="form-variant-max_stock"
+              type="number"
+              v-model="variant.max_stock"
+              number
+              s26_required
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="Costo"
+              id="form-variant-cost"
+              v-model="variant.cost"
+              type="number"
+              money
+              s26_required
+              placeholder="50.00"
+              @keyup="calc_utility(index)"
+              @enter="apply_iva(index)"
+              title="presiona enter para calcular iva"
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="Utilidad %"
+              id="form-variant-utility"
+              v-model="variant.utility"
+              type="number"
+              s26_required
+              placeholder="40"
+              @keyup="calc_utility(index)"
+              percentage
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="PVP 1"
+              id="form-variant-pvp_1"
+              v-model="variant.pvp_1"
+              type="number"
+              min
+              step=".01"
+              money
+              s26_required
+              placeholder="60.00"
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="PVP 2"
+              id="form-variant-pvp_2"
+              v-model="variant.pvp_2"
+              type="number"
+              money
+              placeholder="70.00"
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="PVP 3"
+              id="form-variant-pvp_3"
+              v-model="variant.pvp_3"
+              type="number"
+              money
+              placeholder="80.00"
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
+            <s26-form-input
+              label="PVP Distribuidor"
+              id="form-variant-pvp_distributor"
+              v-model="variant.pvp_distributor"
+              type="number"
+              money
+              placeholder="80.00"
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-6"></div>
+          <div class="col-4 mb-3">
+            <label class="form-label text-start">variantes</label>
+            <button
+              type="button"
+              class="btn btn-sm w-100 text-with btn-outline-primary"
+              @click="toggle_modal_variants(index)"
+            >
+              Especificar Variantes
+            </button>
+          </div>
+          <div class="col-1">
+            <s26-input-photo
+              id="form-variant-img"
+              v-model="variant.photo_id"
+              min
+            >
+            </s26-input-photo>
+          </div>
+          <div class="col-1 s26-align-center">
+            <button
+              v-if="index > 0"
+              type="button"
+              class="btn-icon text-danger"
+              @click="form.variants.splice(index, 1)"
+            >
+              <s26-icon icon="minus"></s26-icon>
+            </button>
+          </div>
+        </div>
+      </transition-group>
+      <!-- AÑADIR VARIANTES -->
+      <transition name="fade">
+        <s26-modal-multiple
+          id="modal_variants"
+          title="Variantes"
+          :levels="['informacion']"
+          body_style="min-height: 440px;"
+          v-if="id_variant != null"
+          @onReset="onResetVariant"
+          @onSubmit="saveVariants"
+          @hideModal="toggle_modal_variants"
         >
-        </s26-form-input>
-      </div>
-      <div class="col-4">
-        <s26-form-input
-          label="Stock Máximo"
-          id="form-max_stock"
-          type="number"
-          v-model="form.max_stock"
-          number
-          s26_required
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-2">
-        <s26-form-input
-          label="Costo"
-          id="form-cost"
-          v-model="form.cost"
-          type="number"
-          money
-          s26_required
-          placeholder="50.00"
-          @keyup="calc_utility"
-          @enter="apply_iva"
-          title="presiona enter para calcular iva"
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-2">
-        <s26-form-input
-          label="Utilidad %"
-          id="form-utility"
-          v-model="form.utility"
-          type="number"
-          s26_required
-          placeholder="40"
-          @keyup="calc_utility"
-          percentage
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-2">
-        <s26-form-input
-          label="PVP 1"
-          id="form-pvp_1"
-          v-model="form.pvp_1"
-          type="number"
-          money
-          s26_required
-          placeholder="60.00"
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-2">
-        <s26-form-input
-          label="PVP 2"
-          id="form-pvp_2"
-          v-model="form.pvp_2"
-          type="number"
-          money
-          placeholder="70.00"
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-2">
-        <s26-form-input
-          label="PVP 3"
-          id="form-pvp_3"
-          v-model="form.pvp_3"
-          type="number"
-          money
-          placeholder="80.00"
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-2">
-        <s26-form-input
-          label="PVP Distribuidor"
-          id="form-pvp_distributor"
-          v-model="form.pvp_distributor"
-          type="number"
-          money
-          placeholder="80.00"
-        >
-        </s26-form-input>
-      </div>
-      <p class="text-primary">
-        *Recomendado ingresar PVP 1 como precio menor y PVP 3 como el precio mas
-        alto.
-      </p>
-      <p class="text-primary">
-        *La cantidad se asignara al establecimiento principal, puedes transferir
-        el stock a otros establecimientos mas tarde.
-      </p>
-    </template>
-    <template v-slot:level-3>
-      <s26-input-photo id="form-fotos" v-model="form.photos" multiple>
-      </s26-input-photo>
+          <template v-slot:level-0>
+            <div
+              :class="[
+                'col-12 row variants',
+                active_variants.color ? 'h-auto' : '',
+              ]"
+            >
+              <h2 class="h5 fw-bold mb-3 s26-text-blue">
+                Color
+                <span
+                  :class="[
+                    'float-end pointer',
+                    active_variants.color ? 'text-danger' : 'text-primary',
+                  ]"
+                  @click="active_variants.color = !active_variants.color"
+                >
+                  <s26-icon
+                    class="fw-bold"
+                    :icon="active_variants.color ? 'minus' : 'plus'"
+                  ></s26-icon>
+                </span>
+              </h2>
+              <div class="col-12">
+                <s26-select-color v-model="variants.color_id">
+                </s26-select-color>
+              </div>
+            </div>
+            <div
+              :class="[
+                'col-12 row variants',
+                active_variants.size ? 'h-auto' : '',
+              ]"
+            >
+              <h2 class="h5 fw-bold mb-3 s26-text-blue">
+                Talla
+                <span
+                  :class="[
+                    'float-end pointer',
+                    active_variants.size ? 'text-danger' : 'text-primary',
+                  ]"
+                  @click="active_variants.size = !active_variants.size"
+                >
+                  <s26-icon
+                    class="fw-bold"
+                    :icon="active_variants.size ? 'minus' : 'plus'"
+                  ></s26-icon>
+                </span>
+              </h2>
+              <div class="col-12">
+                <s26-form-input
+                  v-model="variants.size"
+                  placeholder="Ej: 3 a 6 meses"
+                >
+                </s26-form-input>
+              </div>
+            </div>
+            <div
+              :class="[
+                'col-12 row variants',
+                active_variants.fragance ? 'h-auto' : '',
+              ]"
+            >
+              <h2 class="h5 fw-bold mb-3 s26-text-blue">
+                Fragancia
+                <span
+                  :class="[
+                    'float-end pointer',
+                    active_variants.fragance ? 'text-danger' : 'text-primary',
+                  ]"
+                  @click="active_variants.fragance = !active_variants.fragance"
+                >
+                  <s26-icon
+                    class="fw-bold"
+                    :icon="active_variants.fragance ? 'minus' : 'plus'"
+                  ></s26-icon>
+                </span>
+              </h2>
+              <div class="col-12">
+                <s26-form-input
+                  v-model="variants.fragance"
+                  placeholder="Ej: Limon"
+                >
+                </s26-form-input>
+              </div>
+            </div>
+            <div
+              :class="[
+                'col-12 row variants',
+                active_variants.net_content ? 'h-auto' : '',
+              ]"
+            >
+              <h2 class="h5 fw-bold mb-3 s26-text-blue">
+                Contenido Neto
+                <span
+                  :class="[
+                    'float-end pointer',
+                    active_variants.net_content
+                      ? 'text-danger'
+                      : 'text-primary',
+                  ]"
+                  @click="
+                    active_variants.net_content = !active_variants.net_content
+                  "
+                >
+                  <s26-icon
+                    class="fw-bold"
+                    :icon="active_variants.net_content ? 'minus' : 'plus'"
+                  ></s26-icon>
+                </span>
+              </h2>
+              <div class="col-12">
+                <s26-form-input
+                  v-model="variants.net_content"
+                  placeholder="Ej: 50ml / 50l / 50gr / 50kg"
+                >
+                </s26-form-input>
+              </div>
+            </div>
+            <div
+              :class="[
+                'col-12 row variants',
+                active_variants.shape ? 'h-auto' : '',
+              ]"
+            >
+              <h2 class="h5 fw-bold mb-3 s26-text-blue">
+                Forma
+                <span
+                  :class="[
+                    'float-end pointer',
+                    active_variants.shape ? 'text-danger' : 'text-primary',
+                  ]"
+                  @click="active_variants.shape = !active_variants.shape"
+                >
+                  <s26-icon
+                    class="fw-bold"
+                    :icon="active_variants.shape ? 'minus' : 'plus'"
+                  ></s26-icon>
+                </span>
+              </h2>
+              <div class="col-12">
+                <s26-form-input
+                  v-model="variants.shape"
+                  placeholder="Ej: Triangulo"
+                >
+                </s26-form-input>
+              </div>
+            </div>
+            <div
+              :class="[
+                'col-12 row variants',
+                active_variants.package ? 'h-auto' : '',
+              ]"
+            >
+              <h2 class="h5 fw-bold mb-3 s26-text-blue">
+                Bulto
+                <span
+                  :class="[
+                    'float-end pointer',
+                    active_variants.package ? 'text-danger' : 'text-primary',
+                  ]"
+                  @click="active_variants.package = !active_variants.package"
+                >
+                  <s26-icon
+                    class="fw-bold"
+                    :icon="active_variants.package ? 'minus' : 'plus'"
+                  ></s26-icon>
+                </span>
+              </h2>
+              <div class="col-12">
+                <s26-form-input
+                  v-model="variants.package"
+                  placeholder="Ej: 4 unidades"
+                >
+                </s26-form-input>
+              </div>
+            </div>
+            <div
+              :class="[
+                'col-12 row variants',
+                active_variants.dimensions ? 'h-auto' : '',
+              ]"
+            >
+              <h2 class="h5 fw-bold mb-3 s26-text-blue">
+                Dimensiones
+                <span
+                  :class="[
+                    'float-end pointer',
+                    active_variants.dimensions ? 'text-danger' : 'text-primary',
+                  ]"
+                  @click="
+                    active_variants.dimensions = !active_variants.dimensions
+                  "
+                >
+                  <s26-icon
+                    class="fw-bold"
+                    :icon="active_variants.dimensions ? 'minus' : 'plus'"
+                  ></s26-icon>
+                </span>
+              </h2>
+              <div class="w-100 px-4">
+                <h3 class="h6 fw-600 s26-text-blue">
+                  <s26-icon icon="shopping-bag"></s26-icon>
+                  Producto
+                </h3>
+                <div class="row px-3 py-1">
+                  <div class="col-6">
+                    <s26-form-input
+                      label="Largo"
+                      v-model="variants.dimensions.product_length"
+                      placeholder="Valor en cm."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                  <div class="col-6">
+                    <s26-form-input
+                      label="Alto"
+                      v-model="variants.dimensions.product_height"
+                      placeholder="Valor en cm."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                  <div class="col-6">
+                    <s26-form-input
+                      label="Ancho"
+                      v-model="variants.dimensions.product_width"
+                      placeholder="Valor en cm."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                  <div class="col-6">
+                    <s26-form-input
+                      label="Peso (kg)"
+                      v-model="variants.dimensions.product_weight"
+                      placeholder="Valor en kg."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                </div>
+              </div>
+              <div class="w-100 px-4">
+                <h3 class="h6 fw-600 s26-text-blue">
+                  <s26-icon icon="box-open"></s26-icon>
+                  Caja / Empaque
+                </h3>
+                <div class="row px-3 py-1">
+                  <div class="col-4">
+                    <s26-form-input
+                      label="Largo"
+                      v-model="variants.dimensions.box_length"
+                      placeholder="Valor en cm."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                  <div class="col-4">
+                    <s26-form-input
+                      label="Alto"
+                      v-model="variants.dimensions.box_height"
+                      placeholder="Valor en cm."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                  <div class="col-4">
+                    <s26-form-input
+                      label="Ancho"
+                      v-model="variants.dimensions.box_width"
+                      placeholder="Valor en cm."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                  <div class="col-6">
+                    <s26-form-input
+                      label="Peso (kg) (Prod. + Caja)"
+                      v-model="variants.dimensions.box_weight"
+                      placeholder="Valor en kg."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                  <div class="col-6">
+                    <s26-form-input
+                      label="Apilamiento Max."
+                      v-model="variants.dimensions.box_stacking"
+                      placeholder="Maximo de Cajas Apiladas."
+                      number
+                    >
+                    </s26-form-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </s26-modal-multiple>
+      </transition>
+      <button
+        type="button"
+        class="btn btn-primary w-100"
+        @click="action = 'val_code'"
+      >
+        Añadir Variante
+      </button>
+      <!-- Modal Validar Codigo En Variantes-->
+      <transition name="slide-fade">
+        <s26-form-val-code
+          v-model="action"
+          v-if="action == 'val_code'"
+          @get_code="get_code"
+        ></s26-form-val-code>
+      </transition>
     </template>
   </s26-modal-multiple>
 </template>
@@ -542,37 +774,46 @@ const def_form = () => {
     discontinued: 0,
     serial: 0,
     discount: 0,
-    offer: 0,
     pvp_manual: 0,
     iva: 12,
-    cost: "",
-    pvp_1: "",
-    pvp_2: "",
-    pvp_3: "",
-    pvp_distributor: "",
-    pvp_offer: "",
-    product_length: "",
-    product_width: "",
-    product_height: "",
-    product_weight: "",
-    box_length: "",
-    box_width: "",
-    box_height: "",
-    box_weight: "",
-    box_stacking: "",
-    status: 1,
-    utility: "50",
-    // EN PRODUCTOS FOTOS
-    photos: [],
+    status: 0,
     // EN PRODUCTOS SERIES
     series: [],
+    // EN PRODUCTOS VARIANTES
+    variants: [
+      {
+        code: "",
+        cost: "",
+        utility: "",
+        pvp_1: "",
+        variants: {},
+      },
+    ],
     // EN PRODUCTOS PROVEEDORES
     providers: [],
     // EN PRODUCTOS ENTRADAS
     document_id: "",
-    amount: "",
-    min_stock: "",
-    max_stock: "",
+  };
+};
+const def_variants = () => {
+  return {
+    color_id: "",
+    size: "",
+    fragance: "",
+    net_content: "",
+    shape: "",
+    package: "",
+    dimensions: {
+      product_length: "",
+      product_height: "",
+      product_width: "",
+      product_weight: "",
+      box_length: "",
+      box_height: "",
+      box_width: "",
+      box_weight: "",
+      box_stacking: "",
+    },
   };
 };
 export default {
@@ -589,20 +830,27 @@ export default {
   },
   data: function () {
     return {
+      action: null,
       form: def_form(),
       buy: {},
       serial: "",
-      additional_information: 0,
-      levels: [
-        "Información Principal",
-        "Información General",
-        "Precios y Stock",
-        "Fotos",
-      ],
+      levels: ["Información Principal", "Información General", "Variantes"],
+      id_variant: null,
+      variants: def_variants(),
+      active_variants: {
+        color: false,
+        size: false,
+        fragance: false,
+        net_content: false,
+        shape: false,
+        package: false,
+        dimensions: false,
+      },
     };
   },
   created() {
     if (this.id !== 0 && this.id !== null) this.infoData(this.id);
+    this.form.variants[0]["code"] = this.code;
   },
   methods: {
     infoData(id) {
@@ -622,17 +870,17 @@ export default {
           this.axios
             .post("/products/setProduct", formData)
             .then((res) => {
-              for (let i in res.data) {
-                if (res.data[i].type == 1 || res.data[i].type == 2) {
-                  this.onReset();
-                  this.$emit("input", "val_code");
-                  this.$alertify.success(res.data[i].msg);
-                } else if (res.data[i].type == 3) {
-                  this.$alertify.warning(res.data[i].msg);
-                } else {
-                  this.$alertify.error(res.data[i].msg);
-                }
-              }
+              // for (let i in res.data) {
+              //   if (res.data[i].type == 1 || res.data[i].type == 2) {
+              //     this.onReset();
+              //     this.$emit("input", "val_code");
+              //     this.$alertify.success(res.data[i].msg);
+              //   } else if (res.data[i].type == 3) {
+              //     this.$alertify.warning(res.data[i].msg);
+              //   } else {
+              //     this.$alertify.error(res.data[i].msg);
+              //   }
+              // }
               $s26.hide_loader_points();
               this.$emit("update");
             })
@@ -647,27 +895,32 @@ export default {
       } else {
         this.form = def_form();
       }
-      this.form.payment_type = 1;
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
     },
     hideModal() {
       this.$emit("input", null);
     },
-    calc_utility() {
-      if (this.form.utility !== "" && this.form.cost !== "") {
-        this.form.pvp_1 = parseFloat(
-          this.form.cost * (this.form.utility / 100 + 1)
+    calc_utility: function (i) {
+      if (
+        this.form.variants[i]["utility"] !== "" &&
+        this.form.variants[i]["cost"] !== ""
+      ) {
+        this.form.variants[i]["pvp_1"] = parseFloat(
+          this.form.variants[i]["cost"] *
+            (this.form.variants[i]["utility"] / 100 + 1)
         ).toFixed(2);
       } else {
-        this.form.pvp_1 =
-          this.form.cost !== ""
-            ? parseFloat(this.form.cost).toFixed(2)
+        this.form.variants[i]["pvp_1"] =
+          this.form.variants[i]["cost"] !== ""
+            ? parseFloat(this.form.variants[i]["cost"]).toFixed(2)
             : parseFloat(0).toFixed(2);
       }
     },
-    apply_iva() {
-      if (this.form.cost != "") {
-        this.form.cost = (this.form.cost * _iva__).toFixed(2);
+    apply_iva(i) {
+      if (this.form.variants[i]["cost"] != "") {
+        this.form.variants[i]["cost"] = (
+          this.form.variants[i]["cost"] * _iva__
+        ).toFixed(2);
       }
     },
     getBuy(id) {
@@ -691,6 +944,39 @@ export default {
       } else {
         this.$alertify.error("Ingrese un Número de Serie");
       }
+    },
+    get_code: function (code) {
+      if (this.action == "new_product") {
+        this.form.variants.push({
+          code: code,
+          cost: "",
+          utility: "",
+          pvp_1: "",
+        });
+      } else {
+        this.$alertify.error("el código ya se encuentra registrado");
+        this.action = "val_code";
+      }
+    },
+    toggle_modal_variants(id = null) {
+      this.id_variant = id >= 0 ? id : null;
+    },
+    saveVariants() {
+      this.form.variants[this.id_variant]["variants"] = this.variants;
+      this.onResetVariant();
+      this.id_variant = null;
+    },
+    onResetVariant() {
+      this.variants = def_variants();
+      this.active_variants = {
+        color: false,
+        size: false,
+        fragance: false,
+        net_content: false,
+        shape: false,
+        package: false,
+        dimensions: false,
+      };
     },
   },
 };
@@ -723,5 +1009,18 @@ export default {
 .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
   opacity: 0;
   transform: translateY(30px);
+}
+
+.variants {
+  height: 38px;
+  overflow: hidden;
+  box-shadow: 0 10px 5px -6px rgb(93 130 170 / 21%) !important;
+  border: 1px solid #dee2e6 !important;
+  border-radius: 0.25rem !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  margin-bottom: 1.5rem !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
 }
 </style>

@@ -73,6 +73,10 @@ import {
   faPalette,
   faPercentage,
   faCircle,
+  faBaby,
+  faBabyCarriage,
+  faBed,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -150,7 +154,11 @@ library.add(
   faCalendarAlt,
   faPalette,
   faPercentage,
-  faCircle
+  faCircle,
+  faBaby,
+  faBabyCarriage,
+  faBed,
+  faMinus
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

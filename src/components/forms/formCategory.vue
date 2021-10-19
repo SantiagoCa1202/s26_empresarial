@@ -1,9 +1,9 @@
 <template>
   <s26-modal-multiple
     id="formCategory"
-    :title="(id == 0 ? 'Nueva ' : 'Editar ') + 'Categoria'"
+    :title="title"
     :levels="levels"
-    body_style="min-height: 375px;"
+    body_style="min-height: 440px;"
     @onReset="onReset"
     @onSubmit="onSubmit"
     @hideModal="hideModal"
@@ -21,17 +21,6 @@
           s26_required
         >
         </s26-form-input>
-      </div>
-      <div class="col-12">
-        <s26-textarea
-          id="form-description"
-          label="Descripción"
-          rows="5"
-          v-model="form.description"
-          maxlength="100"
-          s26_required
-        >
-        </s26-textarea>
       </div>
       <div class="col-5">
         <s26-select-status
@@ -60,15 +49,13 @@
           v-model="form.color"
         />
       </div>
-      <div class="col-12" v-if="id !== 0">
-        <span class="fw-bold">Creado el:</span>
-        {{ $s26.formatDate(form.created_at, "xl") }}
-      </div>
-    </template>
-    <template v-slot:level-1>
-      <div class="col-12 s26-align-center">
+      <div class="col-12 s26-align-center mb-3">
         <s26-input-photo id="form-img" v-model="form.photo_id">
         </s26-input-photo>
+      </div>
+      <div class="col-12" v-if="id !== 0 && form.created_at != ''">
+        <span class="fw-bold">Creado el:</span>
+        {{ $s26.formatDate(form.created_at, "xl") }}
       </div>
     </template>
   </s26-modal-multiple>
@@ -78,7 +65,6 @@ const def_form = () => {
   return {
     id: "",
     name: "",
-    description: "",
     photo_id: "",
     icon_id: 1,
     color: "#243a46",
@@ -100,28 +86,74 @@ export default {
   data: function () {
     return {
       form: def_form(),
-      levels: ["Información de Categoria", "Imagen / Foto"],
+      levels: ["Información de Categoria"],
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
+    if (this.id !== 0 && this.id !== null && this.value == "update") {
+      this.infoData(this.id);
+    } else if (
+      this.id !== 0 &&
+      this.id !== null &&
+      this.value == "updateSubcategory"
+    ) {
+      this.infoDataSubcategory(this.id);
+    }
+  },
+  computed: {
+    title: function () {
+      if (this.value == "update") {
+        return (this.id == 0 ? "Nueva " : "Editar ") + "Categoria";
+      } else if (this.value == "subcategory") {
+        return "Añadir Subcategoria";
+      } else if (this.value == "updateSubcategory") {
+        return "Editar Subcategoria";
+      }
+    },
   },
   methods: {
     infoData(id) {
       this.axios
         .get("/categories/getCategory/" + id)
-        .then((res) => (this.form = res.data))
+        .then((res) => {
+          this.form = res.data;
+          if (this.value == "subcategory") {
+            this.form.name = "";
+            this.form.created_at = "";
+          }
+        })
+        .catch((err) => console.log(err));
+    },
+    infoDataSubcategory(id) {
+      this.axios
+        .get("/categories/getSubcategory/" + id)
+        .then((res) => {
+          this.form = res.data;
+          if (this.value == "subcategory") {
+            this.form.name = "";
+            this.form.created_at = "";
+          }
+        })
         .catch((err) => console.log(err));
     },
     onSubmit() {
-      this.form.id = this.id;
+      let dir = "setCategory";
+
+      if (this.value == "subcategory") {
+        this.form.id = 0;
+        this.form.category_id = this.id;
+        dir = "setSubcategory";
+      } else if (this.value == "updateSubcategory") {
+        this.form.id = this.id;
+        dir = "setSubcategory";
+      }
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} la Categoria?.`,
         () => {
           let formData = $s26.json_to_formData(this.form);
           $s26.show_loader_points();
           this.axios
-            .post("/categories/setCategory", formData)
+            .post("/categories/" + dir, formData)
             .then((res) => {
               if (res.data.type == 1) {
                 this.onReset();

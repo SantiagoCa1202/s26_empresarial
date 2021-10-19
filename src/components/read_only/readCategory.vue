@@ -5,53 +5,38 @@
     </template>
     <template v-slot:body>
       <div class="row">
-        <div class="col-8">
-          <div class="row">
-            <div class="col-12 col-sm-6">
-              <s26-input-read label="id" :content="form.id"> </s26-input-read>
-            </div>
-            <div class="col-6">
-              <s26-input-read label="Nombre" :content="form.name">
-              </s26-input-read>
-            </div>
-            <div class="col-12">
-              <s26-textarea-read
-                label="Descripción"
-                :content="form.description"
-                rows="4"
-              >
-              </s26-textarea-read>
-            </div>
-            <div class="col-12">
-              <s26-input-read
-                label="Estado"
-                :content="form.status == 1 ? 'Activo' : 'Inactivo'"
-              >
-              </s26-input-read>
-            </div>
-            <div class="col-12">
-              <span class="fw-bold"> Creado el: </span>
-              {{ $s26.formatDate(form.created_at, "xl") }}
-            </div>
+        <div class="col-12 col-sm-6">
+          <s26-input-read label="id" :content="form.id"> </s26-input-read>
+        </div>
+        <div class="col-6">
+          <s26-input-read label="Nombre" :content="form.name"> </s26-input-read>
+        </div>
+        <div class="col-12">
+          <s26-input-read
+            label="Estado"
+            :content="form.status == 1 ? 'Activo' : 'Inactivo'"
+          >
+          </s26-input-read>
+        </div>
+        <div class="col-6 p-2 s26-align-center">
+          <div
+            class="w-100 h-100 rounded s26-align-center"
+            :style="'background:' + form.color"
+          >
+            <s26-icon
+              :icon="form.icon ? form.icon : 'project-diagram'"
+              class="fs-1 text-white"
+            ></s26-icon>
           </div>
         </div>
-        <div class="col-4">
-          <div class="p-2 h-50 s26-align-center">
-            <div
-              class="w-100 h-100 rounded s26-align-center"
-              :style="'background:' + form.color"
-            >
-              <s26-icon
-                :icon="form.icon ? form.icon : 'project-diagram'"
-                class="fs-1 text-white"
-              ></s26-icon>
-            </div>
+        <div class="col-6 p-2 s26-align-center">
+          <div class="w-100 h-100 rounded s26-align-center">
+            <img :src="form.photo" class="rounded w-100" />
           </div>
-          <div class="p-2 h-50 s26-align-center">
-            <div class="w-100 h-100 rounded s26-align-center">
-              <img :src="form.photo" class="rounded w-100" />
-            </div>
-          </div>
+        </div>
+        <div class="col-12">
+          <span class="fw-bold"> Creado el: </span>
+          {{ $s26.formatDate(form.created_at, "xl") }}
         </div>
       </div>
     </template>

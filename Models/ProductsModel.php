@@ -470,6 +470,57 @@ class ProductsModel extends Mysql
     return $request;
   }
 
+  public function insertColor(
+    int $product_establishment_id,
+    string $code,
+    int $color_id,
+    int $photo_id,
+    int $amount,
+    int $status,
+  ) {
+
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->product_establishment_id = $product_establishment_id;
+    $this->code = $code;
+    $this->color_id = $color_id;
+    $this->photo_id = $photo_id;
+    $this->amount = $amount;
+    $this->status = $status;
+
+    $query_insert = "INSERT INTO products_colors (product_establishment_id, ean_code, color_id, photo_id, stock, status) VALUES (?,?,?,?,?,?)";
+    $arrData = array(
+      $this->product_establishment_id,
+      $this->code,
+      $this->color_id,
+      $this->photo_id,
+      $this->amount,
+      $this->status,
+    );
+    $request = $this->insert_company($query_insert, $arrData, $this->db_company);
+    return $request;
+  }
+
+  public function insertEntryColors(
+    int $product_color_id,
+    int $amount,
+  ) {
+
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->product_color_id = $product_color_id;
+    $this->amount = $amount;
+
+    $query_insert = "INSERT INTO products_entries_colors (product_color_id, amount) VALUES (?,?)";
+    $arrData = array(
+      $this->product_color_id,
+      $this->amount
+    );
+    $request = $this->insert_company($query_insert, $arrData, $this->db_company);
+    return $request;
+  }
+
+
   public function selectProviders(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];

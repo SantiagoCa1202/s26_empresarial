@@ -1,6 +1,6 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
-    <label :for="id" class="form-label w-100">
+    <label :for="id" class="form-label w-100" v-if="label">
       Color
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
@@ -13,7 +13,13 @@
       @click="$s26.activeSelect"
       @keypress.13="$s26.activeSelect"
     >
-      <div>
+      <div class="d-flex">
+        <span class="me-2" :style="{ color: '#' + color }">
+          <s26-icon
+            :class="select == 'blanco' ? 'border' : ''"
+            icon="palette"
+          ></s26-icon>
+        </span>
         {{ select }}
       </div>
       <s26-icon icon="angle-down" class="icon-angle-down"></s26-icon>
@@ -39,7 +45,7 @@
           tabindex="0"
           v-for="option in options"
           :key="option.id"
-          @click="$emit('input', option.id)"
+          @click="selectMultiple(option.id)"
           @keyup.13="$emit('input', option.id)"
         >
           <span
@@ -90,10 +96,13 @@ export default {
     value: {},
     all: Boolean,
     s26_required: Boolean,
+    multiple: Boolean,
+    label: Boolean,
   },
   data: function () {
     return {
       selected: "",
+      color: "",
       options: [],
       search: "",
       perPage: 50,
@@ -111,14 +120,16 @@ export default {
       if (this.value != 0) {
         this.axios
           .get("/system/getColor/" + this.value)
-          .then((res) => (this.selected = res.data.name))
+          .then((res) => {
+            this.selected = res.data.name;
+            this.color = res.data.hexadecimal;
+          })
           .catch((err) => console.log(err));
         return this.selected;
       } else {
         return this.all ? "Todos" : "-- seleccionar --";
       }
     },
-    
   },
   methods: {
     allRows() {
@@ -140,6 +151,24 @@ export default {
       let perPage = this.rows - this.perPage;
       this.perPage = perPage > 25 ? this.perPage + 25 : this.rows;
       this.allRows();
+    },
+    selectMultiple(id) {
+      if (this.multiple) {
+        if (this.selecteds.indexOf(id) > -1) {
+          let i = this.selecteds.indexOf(id);
+          this.selecteds.splice(i, 1);
+        } else {
+          this.selecteds.push(id);
+        }
+        this.change(this.selecteds);
+      } else {
+        this.$emit("input", id);
+      }
+    },
+    change(val) {
+      this.$emit("input", val);
+      this.perPage = 50;
+      this.$emit("change");
     },
   },
 };

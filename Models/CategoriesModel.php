@@ -6,7 +6,6 @@ class CategoriesModel extends Mysql
 {
   public $id;
   public $name;
-  public $description;
   public $photo;
   public $icon;
   public $color;
@@ -29,7 +28,6 @@ class CategoriesModel extends Mysql
 
     $this->id = $filter['id'];
     $this->name = $filter['name'];
-    $this->description = $filter['description'];
     $this->date = $filter['date'];
     $this->status = $filter['status'];
     $this->perPage = $perPage;
@@ -40,7 +38,6 @@ class CategoriesModel extends Mysql
     $where = "
       id LIKE '%$this->id%' AND
       name LIKE '%$this->name%' AND
-      description LIKE '%$this->description%' AND
       status LIKE '%$this->status%' AND 
       status > 0 
       $date_range
@@ -64,12 +61,35 @@ class CategoriesModel extends Mysql
     for ($i = 0; $i < count($items); $i++) {
       $items[$i]['icon'] = $this->Icon->selectIcon($items[$i]['icon_id']);
       $items[$i]['photo'] = $this->Photo->selectPhoto($items[$i]['photo_id']);
+      $items[$i]['subcategories'] = $this->selectSubcategories($items[$i]['id']);
     }
+
     return [
       'items' => $items,
       'dates' => $this->select_dates_company('created_at', 'categories', $this->db_company),
       'info' => $info_table
     ];
+  }
+
+  public function selectSubcategories(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+
+    $rows = "
+      SELECT *
+      FROM subcategories
+      WHERE category_id = $this->id AND status > 0
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+
+    for ($i = 0; $i < count($items); $i++) {
+      $items[$i]['icon'] = $this->Icon->selectIcon($items[$i]['icon_id']);
+      $items[$i]['photo'] = $this->Photo->selectPhoto($items[$i]['photo_id']);
+    }
+    return $items;
   }
 
   public function selectCategory(int $id)
@@ -85,9 +105,21 @@ class CategoriesModel extends Mysql
     return $request;
   }
 
+  public function selectSubcategory(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+    $sql = "SELECT * FROM subcategories WHERE id = $this->id";
+    $request = $this->select_company($sql, $this->db_company);
+
+    $request['icon'] = $this->Icon->selectIcon($request['icon_id']);
+    $request['photo'] = $this->Photo->selectPhoto($request['photo_id']);
+    return $request;
+  }
+
   public function insertCategory(
     string $name,
-    string $description,
     string $photo,
     int $icon,
     string $color,
@@ -97,7 +129,6 @@ class CategoriesModel extends Mysql
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->name = $name;
-    $this->description = $description;
     $this->photo = $photo;
     $this->icon = $icon;
     $this->color = $color;
@@ -107,10 +138,9 @@ class CategoriesModel extends Mysql
     $request = $this->select_all_company($sql, $this->db_company);
 
     if (empty($request)) {
-      $query_insert = "INSERT INTO categories (name, description, photo_id, icon_id, color, status) VALUES (?,?,?,?,?,?)";
+      $query_insert = "INSERT INTO categories (name, photo_id, icon_id, color, status) VALUES (?,?,?,?,?)";
       $arrData = array(
         $this->name,
-        $this->description,
         $this->photo,
         $this->icon,
         $this->color,
@@ -126,7 +156,6 @@ class CategoriesModel extends Mysql
   public function updateCategory(
     int $id,
     string $name,
-    string $description,
     string $photo,
     int $icon,
     string $color,
@@ -137,7 +166,6 @@ class CategoriesModel extends Mysql
 
     $this->id = $id;
     $this->name = $name;
-    $this->description = $description;
     $this->photo = $photo;
     $this->icon = $icon;
     $this->color = $color;
@@ -148,10 +176,86 @@ class CategoriesModel extends Mysql
 
     if (empty($request)) {
 
-      $sql = "UPDATE categories SET name = ?, description = ?, photo_id = ?, icon_id = ?, color = ?, status = ? WHERE id = $this->id";
+      $sql = "UPDATE categories SET name = ?, photo_id = ?, icon_id = ?, color = ?, status = ? WHERE id = $this->id";
       $arrData = array(
         $this->name,
-        $this->description,
+        $this->photo,
+        $this->icon,
+        $this->color,
+        $this->status
+      );
+
+      $request = $this->update_company($sql, $arrData, $this->db_company);
+    } else {
+      $request = -2;
+    }
+    return $request;
+  }
+
+  public function insertSubcategory(
+    string $category_id,
+    string $name,
+    string $photo,
+    int $icon,
+    string $color,
+    int $status
+  ) {
+
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->category_id = $category_id;
+    $this->name = $name;
+    $this->photo = $photo;
+    $this->icon = $icon;
+    $this->color = $color;
+    $this->status = $status;
+
+    $sql = "SELECT * FROM subcategories WHERE name = '$this->name'";
+    $request = $this->select_all_company($sql, $this->db_company);
+
+    if (empty($request)) {
+      $query_insert = "INSERT INTO subcategories (category_id, name, photo_id, icon_id, color, status) VALUES (?,?,?,?,?,?)";
+      $arrData = array(
+        $this->category_id,
+        $this->name,
+        $this->photo,
+        $this->icon,
+        $this->color,
+        $this->status
+      );
+      $request = $this->insert_company($query_insert, $arrData, $this->db_company);
+    } else {
+      $request = -2;
+    }
+    return $request;
+  }
+
+  public function updateSubcategory(
+    int $id,
+    string $name,
+    string $photo,
+    int $icon,
+    string $color,
+    int $status
+  ) {
+
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+    $this->name = $name;
+    $this->photo = $photo;
+    $this->icon = $icon;
+    $this->color = $color;
+    $this->status = $status;
+
+    $sql = "SELECT * FROM subcategories WHERE id != '$this->id' AND name = '$this->name'";
+    $request = $this->select_all_company($sql, $this->db_company);
+
+    if (empty($request)) {
+
+      $sql = "UPDATE subcategories SET name = ?, photo_id = ?, icon_id = ?, color = ?, status = ? WHERE id = $this->id";
+      $arrData = array(
+        $this->name,
         $this->photo,
         $this->icon,
         $this->color,
@@ -172,6 +276,18 @@ class CategoriesModel extends Mysql
     $this->id = $id;
 
     $sql = "UPDATE categories SET status = 0 WHERE id = $this->id";
+    $request = $this->delete_company($sql, $this->db_company);
+
+    return $request;
+  }
+
+  public function deleteSubcategory(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+
+    $sql = "UPDATE subcategories SET status = 0 WHERE id = $this->id";
     $request = $this->delete_company($sql, $this->db_company);
 
     return $request;

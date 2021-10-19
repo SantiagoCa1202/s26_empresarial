@@ -37,9 +37,12 @@ if (element) {
         filter: def_filter(),
         s26_data: { info: {} },
         idRow: null,
+        idSubRow: null,
         activeSidebar: true,
         action: "",
         url_export: "",
+        url_delete: "categories/delCategory/",
+        level: "categories",
       };
     },
     created() {
@@ -56,7 +59,10 @@ if (element) {
           .get("/categories/getCategories/", {
             params,
           })
-          .then((res) => (this.s26_data = res.data))
+          .then((res) => {
+            console.log(res);
+            this.s26_data = res.data;
+          })
           .catch((err) => console.log(err));
         this.url_export = $s26.url_get("/categories/exportCategories/", params);
       },
@@ -71,6 +77,17 @@ if (element) {
         if (!$s26.readCookie("id") && type == "watch") {
           $s26.create_cookie("id", id, "categories");
         }
+        this.url_delete =
+          type == "deleteSubCategory"
+            ? "categories/delSubcategory/"
+            : "categories/delCategory/";
+      },
+      setSubCategory(id) {
+        this.level =
+          this.level == "subcategory" && this.idSubRow == id
+            ? "categories"
+            : "subcategory";
+        this.idSubRow = this.idSubRow == id ? null : id;
       },
     },
   });
