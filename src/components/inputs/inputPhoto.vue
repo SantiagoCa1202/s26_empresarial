@@ -37,7 +37,7 @@
     </button>
     <div class="row w-100" v-if="multiple">
       <div
-        class="col-3 position-relative"
+        :class="['position-relative', 'col-' + col]"
         v-for="(photo, index) in info_photos"
         :key="index"
       >
@@ -232,6 +232,10 @@ export default {
     value: {},
     multiple: Boolean,
     min: Boolean,
+    col: {
+      type: String,
+      default: 3
+    }
   },
   data: function () {
     return {

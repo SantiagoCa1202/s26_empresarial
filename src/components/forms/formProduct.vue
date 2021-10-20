@@ -15,18 +15,6 @@
       <div class="col-2" v-if="id > 0">
         <s26-input-read label="Id" :content="form.id"> </s26-input-read>
       </div>
-      <div class="col-2">
-        <s26-input-read label="Código" :content="code"> </s26-input-read>
-      </div>
-      <div class="col-2">
-        <s26-form-input
-          label="Código Auxiliar"
-          id="form-auxiliary_code"
-          v-model="form.auxiliary_code"
-          maxlength="13"
-        >
-        </s26-form-input>
-      </div>
       <div class="col">
         <s26-form-input
           label="Nombre"
@@ -272,13 +260,21 @@
           v-for="(variant, index) in form.variants"
           :key="variant.code"
         >
-          <div class="col-3">
+          <div class="col-2">
             <s26-input-read
               label="Código"
               :content="variant.code"
             ></s26-input-read>
           </div>
-          <div class="col-3">
+          <div class="col-2">
+            <s26-form-input
+              label="Sku"
+              id="form-variant-sku"
+              v-model="variant.sku"
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-2">
             <s26-select-status
               label="Estado"
               id="form-variant-status"
@@ -395,8 +391,15 @@
             >
             </s26-form-input>
           </div>
-          <div class="col-6"></div>
-          <div class="col-4 mb-3">
+          <div class="col-8">
+            <s26-form-input
+              label="Info. Adicional"
+              id="form-variant-additional_info"
+              v-model="variant.additional_info"
+            >
+            </s26-form-input>
+          </div>
+          <div class="col-3 mb-3">
             <label class="form-label text-start">variantes</label>
             <button
               type="button"
@@ -405,14 +408,6 @@
             >
               Especificar Variantes
             </button>
-          </div>
-          <div class="col-1">
-            <s26-input-photo
-              id="form-variant-img"
-              v-model="variant.photo_id"
-              min
-            >
-            </s26-input-photo>
           </div>
           <div class="col-1 s26-align-center">
             <button
@@ -423,6 +418,15 @@
             >
               <s26-icon icon="minus"></s26-icon>
             </button>
+          </div>
+          <div class="col-12" style="height: 125px; overflow: auto">
+            <s26-input-photo
+              id="form-variant-img"
+              v-model="variant.photos"
+              multiple
+              col="1"
+            >
+            </s26-input-photo>
           </div>
         </div>
       </transition-group>
@@ -761,8 +765,6 @@ const def_form = () => {
   return {
     // EN PRODUCTOS
     id: "",
-    auxiliary_code: "",
-    ean_code: "",
     name: "",
     description: "",
     trademark: "",
@@ -786,7 +788,7 @@ const def_form = () => {
         cost: "",
         utility: "",
         pvp_1: "",
-        variants: {},
+        variants: def_variants(),
       },
     ],
     // EN PRODUCTOS PROVEEDORES
@@ -870,17 +872,27 @@ export default {
           this.axios
             .post("/products/setProduct", formData)
             .then((res) => {
-              // for (let i in res.data) {
-              //   if (res.data[i].type == 1 || res.data[i].type == 2) {
-              //     this.onReset();
-              //     this.$emit("input", "val_code");
-              //     this.$alertify.success(res.data[i].msg);
-              //   } else if (res.data[i].type == 3) {
-              //     this.$alertify.warning(res.data[i].msg);
-              //   } else {
-              //     this.$alertify.error(res.data[i].msg);
-              //   }
-              // }
+              if (res.data.length > 0) {
+                let response = "";
+                for (let i in res.data) {
+                  response += `<li class="${
+                    res.data[i].type == 1
+                      ? "text-success"
+                      : res.data[i].type == 2
+                      ? "text-warning"
+                      : res.data[i].type == 0
+                      ? "text-danger"
+                      : "s26-text-blue"
+                  }">
+                  ${res.data[i].msg}
+                  </li>`;
+                }
+                this.$alertify.confirm(`<nav>${response}</nav>`);
+              } else {
+                this.$alertify.confirm(
+                  "Ocurrio un Error de Sistema, comunicarse a servicio al cliente. "
+                );
+              }
               $s26.hide_loader_points();
               this.$emit("update");
             })
@@ -952,6 +964,7 @@ export default {
           cost: "",
           utility: "",
           pvp_1: "",
+          variants: def_variants(),
         });
       } else {
         this.$alertify.error("el código ya se encuentra registrado");
