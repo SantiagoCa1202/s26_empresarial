@@ -22,9 +22,21 @@ class Products extends Controllers
   {
     if ($_SESSION['permitsModule']['r']) {
       $perPage = intval($_GET['perPage']);
+      $filter = [
+        'variants' => !empty($_GET['variants']) ? intval($_GET['variants']) : '',
+        'sku' => !empty($_GET['sku']) ? strClean($_GET['sku']) : '',
+        'product' => !empty($_GET['product']) ? strClean($_GET['product']) : '',
+        'model' => !empty($_GET['model']) ? strClean($_GET['model']) : '',
+        'trademark' => !empty($_GET['trademark']) ? strClean($_GET['trademark']) : '',
+        'provider' => !empty($_GET['provider']) ? intval($_GET['provider']) : '',
+        'category' => !empty($_GET['category']) ? strClean($_GET['category']) : '',
+        'pvp' => !empty($_GET['pvp']) ? floatval($_GET['pvp']) : '',
+        'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
+      ];
 
-      // $arrData = $this->model->selectProducts($perPage, $filter);
-      // echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+      $arrData = $this->model->selectProducts($perPage, $filter);
+
+      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
     }
     die();
   }
@@ -57,9 +69,28 @@ class Products extends Controllers
     die();
   }
 
+  // OBTENER VARIANTES 
+  public function getVariants($id)
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $arrData = $this->model->selectVariants($id);
+      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
+
+  // OBTENER PROVEEDORES 
+  public function getProviders($id)
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $arrData = $this->model->selectProviders($id);
+      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
+
   public function setProduct()
   {
-
     //EN PRODUCTOS
     $id = intval($_POST['id']);
     $name = strClean($_POST['name']);
@@ -167,79 +198,29 @@ class Products extends Controllers
             // INSERTAR VARIANTES
             $request_variant = $this->model->insertVariant(
               $request,
-              $variants[$i]['code'],
-              $variants[$i]['sku'],
-              $variants[$i]['amount'],
-              $variants[$i]['min_stock'],
-              $variants[$i]['max_stock'],
-              $variants[$i]['cost'],
-              $variants[$i]['pvp_1'],
-              $variants[$i]['pvp_2'],
-              $variants[$i]['pvp_3'],
-              $variants[$i]['pvp_distributor'],
-              $variants[$i]['additional_info'],
-              $variants[$i]['status'],
+              strClean($variants[$i]['code']),
+              strClean($variants[$i]['sku']),
+              intval($variants[$i]['amount']),
+              intval($variants[$i]['min_stock']),
+              intval($variants[$i]['max_stock']),
+              floatval($variants[$i]['cost']),
+              floatval($variants[$i]['pvp_1']),
+              floatval($variants[$i]['pvp_2']),
+              floatval($variants[$i]['pvp_3']),
+              floatval($variants[$i]['pvp_distributor']),
+              intval($variants[$i]['variants']['color_id']),
+              strClean($variants[$i]['variants']['size']),
+              strClean($variants[$i]['variants']['fragance']),
+              strClean($variants[$i]['variants']['net_content']),
+              strClean($variants[$i]['variants']['shape']),
+              strClean($variants[$i]['variants']['package']),
+              strClean($variants[$i]['additional_info']),
+              intval($variants[$i]['status']),
             );
 
             if ($request_variant > 0) {
               array_push($res_variant, $i);
 
-              //INSERTAR VARIANTES
-
-              // COLOR
-              $request_variants_color = $this->model->insertVariants(
-                $request_variant,
-                'color',
-                $variants[$i]['variants']['color_id'],
-              );
-              if ($request_variant > 0) {
-                array_push($res_variants, $request_variants_color);
-              }
-              // TALLA
-              $request_variants_size = $this->model->insertVariants(
-                $request_variant,
-                'talla',
-                $variants[$i]['variants']['size'],
-              );
-              if ($request_variant > 0) {
-                array_push($res_variants, $request_variants_size);
-              }
-              // FRAGANCIA
-              $request_variants_fragance = $this->model->insertVariants(
-                $request_variant,
-                'fragancia',
-                $variants[$i]['variants']['fragance'],
-              );
-              if ($request_variant > 0) {
-                array_push($res_variants, $request_variants_fragance);
-              }
-              // CONTENIDO NETO
-              $request_variants_net_content = $this->model->insertVariants(
-                $request_variant,
-                'contenido neto',
-                $variants[$i]['variants']['net_content'],
-              );
-              if ($request_variant > 0) {
-                array_push($res_variants, $request_variants_net_content);
-              }
-              // FORMA
-              $request_variants_shape = $this->model->insertVariants(
-                $request_variant,
-                'forma',
-                $variants[$i]['variants']['shape'],
-              );
-              if ($request_variant > 0) {
-                array_push($res_variants, $request_variants_shape);
-              }
-              // BULTO
-              $request_variants_package = $this->model->insertVariants(
-                $request_variant,
-                'bulto',
-                $variants[$i]['variants']['package'],
-              );
-              if ($request_variant > 0) {
-                array_push($res_variants, $request_variants_package);
-              }
               //DIMESIONES
               $request_variants_dimensions = $this->model->insertVariantDimensions(
                 $request_variant,
@@ -260,14 +241,14 @@ class Products extends Controllers
               // INSERTAR ENTRADA VARIANTE
               $request_entry_variant = $this->model->insertEntryVariant(
                 $request_variant,
-                $variants[$i]['amount'],
-                $variants[$i]['cost'],
+                intval($variants[$i]['amount']),
+                floatval($variants[$i]['cost']),
               );
               if ($request_variant > 0) {
                 array_push($res_variants, $request_entry_variant);
               }
               // INSERTAR VARIANTE EN ESTABLECIMIENTO
-              $request_variant_establishment = $this->model->insertVariantEstablishment($request_variant, $matrix);
+              $request_variant_establishment = $this->model->insertVariantEstablishment($request_variant, $matrix, intval($variants[$i]['amount']));
 
               if ($request_variant_establishment > 0) {
                 array_push($res_variants, $request_variant_establishment);
@@ -275,7 +256,7 @@ class Products extends Controllers
                 //Insertar Entrada Establecimientos
                 $request_entry_establishment = $this->model->insertEntryEstablishment(
                   $request_variant,
-                  $variants[$i]['amount'],
+                  intval($variants[$i]['amount']),
                   $matrix,
                   $matrix,
                 );
@@ -283,9 +264,10 @@ class Products extends Controllers
               }
 
               // INSERTAR FOTOS DE VARIANTES
-              if (count($variants[$i]['photos']) > 0) {
+              $variants_photos = !empty($variants[$i]['photos']) ? $variants[$i]['photos'] : [];
+              if (count($variants_photos) > 0) {
                 for ($p = 0; $p < count($variants[$i]['photos']); $p++) {
-                  $request_photo = $this->model->insertPhotos($request_variant, $variants[$i]['photos'][$p]);
+                  $request_photo = $this->model->insertPhotos($request_variant, intval($variants[$i]['photos'][$p]));
 
                   if ($request_photo > 0) {
                     array_push($arrPhotos, $p);
@@ -306,7 +288,7 @@ class Products extends Controllers
             array_push($response, $arrRes);
           }
           // RESPUESTA VARIANTES 
-          if (count($res_variants) == count($variants) * 10) {
+          if (count($res_variants) == count($variants) * 4) {
             $arrRes = array(
               'type' => 1,
               'msg' => 'Variantes de Producto guardadas correctamente.'

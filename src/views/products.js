@@ -2,33 +2,35 @@ import Vue from "vue";
 
 let element = !!document.getElementById("s26-products-view");
 if (element) {
+  const def_filter = () => {
+    return {
+      variants: "",
+      sku: "",
+      product: "",
+      model: "",
+      trademark: "",
+      provider: "",
+      category: "",
+      pvp: "",
+      status: "",
+      perPage: 25,
+    };
+  };
   new Vue({
     el: "#s26-products-view",
     data: function() {
       return {
-        filter: {
-          id: "",
-          auxiliary_code: "",
-          ean_code: "",
-          name: "",
-          model: "",
-          trademark: "",
-          provider: "",
-          category: "",
-          cost: "",
-          pvp: "",
-          status: "",
+        filter: def_filter(),
+        s26_data: {
+          info: {
+            rows: "",
+            total_stock: "",
+            total_entries: "",
+            total_outputs: "",
+            total_cost: "",
+            total_pvp: "",
+          },
         },
-        items: [],
-        info: {
-          rows: "",
-          total_stock: "",
-          total_entries: "",
-          total_outputs: "",
-          total_cost: "",
-          total_pvp: "",
-        },
-        perPage: 25,
         loading_data: false,
         idRow: null,
         activeSidebar: true,
@@ -46,44 +48,22 @@ if (element) {
     methods: {
       allRows() {
         this.loading_data = true;
-        const params = {
-          id: this.filter.id,
-          auxiliary_code: this.filter.auxiliary_code,
-          ean_code: this.filter.ean_code,
-          name: this.filter.name,
-          serie: this.filter.serie,
-          trademark: this.filter.trademark,
-          provider: this.filter.provider,
-          category: this.filter.category,
-          cost: this.filter.cost,
-          pvp: this.filter.pvp,
-          status: this.filter.status,
-          perPage: this.perPage,
-        };
+        const params = {};
+        for (let fil in this.filter) params[fil] = this.filter[fil];
         this.axios
           .get("/products/getProducts/", {
             params,
           })
           .then((res) => {
             console.log(res);
+            this.s26_data = res.data;
             this.loading_data = false;
-            this.items = res.data.items;
-            this.info.rows = res.data.info.count;
-            this.info.total_stock = res.data.info.total_stock;
-            this.info.total_entries = res.data.info.total_entries;
-            this.info.total_outputs = res.data.info.total_outputs;
-            this.info.total_cost = res.data.info.total_cost;
-            this.info.total_pvp = res.data.info.total_pvp;
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => console.log(err));
         this.url_export = $s26.url_get("/products/exportProducts/", params);
       },
       onReset() {
-        for (let fil in this.filter) {
-          this.filter[fil] = "";
-        }
+        this.filter = def_filter();
         this.allRows();
       },
       setIdRow(id, type) {

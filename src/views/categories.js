@@ -60,7 +60,6 @@ if (element) {
             params,
           })
           .then((res) => {
-            console.log(res);
             this.s26_data = res.data;
           })
           .catch((err) => console.log(err));

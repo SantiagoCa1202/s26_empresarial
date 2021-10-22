@@ -14,6 +14,7 @@
       :class="[
         'form-control form-control-sm',
         money ? 'form-control-dollars' : '',
+        variant_input,
       ]"
     >
       {{ money ? $s26.currency(content) : content }}
@@ -39,6 +40,10 @@ export default {
     label: String,
     content: {},
     variant: String,
+    variant_input: {
+      type: String,
+      default: "",
+    },
     link: String,
     money: Boolean,
     percentage: Boolean,

@@ -40,7 +40,7 @@
       <div class="col-12 mb-3">
         <div class="col-12 mb-3 row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Datos Generales</h2>
-          <div class="col-2">
+          <div class="col-4 col-sm-2">
             <s26-form-input
               label="Marca"
               id="form-trademark"
@@ -49,7 +49,7 @@
             >
             </s26-form-input>
           </div>
-          <div class="col-2">
+          <div class="col-4 col-sm-2">
             <s26-form-input
               label="Modelo"
               id="form-model"
@@ -58,14 +58,14 @@
             >
             </s26-form-input>
           </div>
-          <div class="col-2">
+          <div class="col-4 col-sm-2">
             <s26-select-category
               id="form-category"
               v-model="form.category_id"
               s26_required
             ></s26-select-category>
           </div>
-          <div class="col-2">
+          <div class="col-4 col-sm-2">
             <s26-select-provider
               id="form-providers"
               v-model="form.providers"
@@ -74,14 +74,14 @@
               is_null
             ></s26-select-provider>
           </div>
-          <div class="col-2 mb-3">
+          <div class="col-4 col-sm-2 mb-3">
             <label class="form-label"> Tipo de Producto </label>
             <select class="form-select form-select-sm" v-model="form.type">
               <option value="original">Original</option>
               <option value="réplica">réplica</option>
             </select>
           </div>
-          <div class="col-2 mb-3">
+          <div class="col-4 col-sm-2 mb-3">
             <label class="form-label"> Tipo </label>
             <select
               class="form-select form-select-sm"
@@ -97,7 +97,7 @@
       <div class="col-12 mb-3">
         <div class="row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Aprobaciones</h2>
-          <div class="col-2">
+          <div class="col-4 col-sm-2">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -110,7 +110,7 @@
               </label>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-4 col-sm-2">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -123,7 +123,7 @@
               </label>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-4 col-sm-2">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -136,7 +136,7 @@
               </label>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-6 col-sm-2">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -149,7 +149,7 @@
               </label>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-6 col-sm-2">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -322,6 +322,7 @@
               id="form-variant-cost"
               v-model="variant.cost"
               type="number"
+              step=".01"
               money
               s26_required
               placeholder="50.00"
@@ -350,7 +351,6 @@
               id="form-variant-pvp_1"
               v-model="variant.pvp_1"
               type="number"
-              min
               step=".01"
               money
               s26_required
@@ -364,6 +364,7 @@
               id="form-variant-pvp_2"
               v-model="variant.pvp_2"
               type="number"
+              step=".01"
               money
               placeholder="70.00"
             >
@@ -375,6 +376,7 @@
               id="form-variant-pvp_3"
               v-model="variant.pvp_3"
               type="number"
+              step=".01"
               money
               placeholder="80.00"
             >
@@ -386,6 +388,7 @@
               id="form-variant-pvp_distributor"
               v-model="variant.pvp_distributor"
               type="number"
+              step=".01"
               money
               placeholder="80.00"
             >
@@ -778,17 +781,26 @@ const def_form = () => {
     discount: 0,
     pvp_manual: 0,
     iva: 12,
-    status: 0,
+    status: 1,
     // EN PRODUCTOS SERIES
     series: [],
     // EN PRODUCTOS VARIANTES
     variants: [
       {
         code: "",
+        sku: "",
+        status: 1,
+        amount: "",
+        min_stock: "",
+        max_stock: "",
         cost: "",
-        utility: "",
         pvp_1: "",
+        pvp_2: "",
+        pvp_3: "",
+        pvp_distributor: "",
+        additional_info: "",
         variants: def_variants(),
+        photos: "",
       },
     ],
     // EN PRODUCTOS PROVEEDORES
@@ -887,7 +899,9 @@ export default {
                   ${res.data[i].msg}
                   </li>`;
                 }
-                this.$alertify.confirm(`<nav>${response}</nav>`);
+                this.$alertify.alert(`<nav>${response}</nav>`, () => {
+                  this.$emit("input", null);
+                });
               } else {
                 this.$alertify.confirm(
                   "Ocurrio un Error de Sistema, comunicarse a servicio al cliente. "
@@ -905,7 +919,7 @@ export default {
       if (this.id !== 0 && this.id) {
         this.infoData(this.id);
       } else {
-        this.form = def_form();
+        this.hideModal();
       }
       $("[s26-required], [s26-pass-conf]").removeClass("is-invalid");
     },
@@ -961,10 +975,19 @@ export default {
       if (this.action == "new_product") {
         this.form.variants.push({
           code: code,
+          sku: "",
+          status: 1,
+          amount: "",
+          min_stock: "",
+          max_stock: "",
           cost: "",
-          utility: "",
           pvp_1: "",
+          pvp_2: "",
+          pvp_3: "",
+          pvp_distributor: "",
+          additional_info: "",
           variants: def_variants(),
+          photos: "",
         });
       } else {
         this.$alertify.error("el código ya se encuentra registrado");

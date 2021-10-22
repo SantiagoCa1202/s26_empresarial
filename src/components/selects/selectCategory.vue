@@ -1,7 +1,9 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
     <label :for="id" class="form-label w-100">
-      Categoria
+      {{
+        arr[0] == "subcat" && all && value != 0 ? "SubCategoria" : "Categoria"
+      }}
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
@@ -83,8 +85,8 @@
               tabindex="0"
               v-for="option in options"
               :key="option.id"
-              @click="change(option.id)"
-              @keyup.13="change(option.id)"
+              @click="change(all ? 'subcat-' + option.id : option.id)"
+              @keyup.13="change(all ? 'subcat-' + option.id : option.id)"
             >
               <span
                 class="btn-icon me-2"
@@ -143,6 +145,8 @@ export default {
       rows: 0,
       level: "categories",
       category_id: "",
+      click: 0,
+      arr: "",
     };
   },
   mounted: function () {
@@ -151,12 +155,27 @@ export default {
   computed: {
     select: function () {
       $(`div.s26-select-container`).hide("200");
+      let url = "";
+      if (this.all && this.value != 0) {
+        this.arr = this.value.split("-");
+        url =
+          this.arr[0] == "subcat"
+            ? "getSubCategory/" + this.arr[1]
+            : "getCategory/" + this.arr[1];
+      } else {
+        url = "getSubCategory/" + this.value;
+      }
       if (this.value != 0) {
         this.axios
-          .get("/categories/getSubCategory/" + this.value)
+          .get("/categories/" + url)
           .then((res) => {
             this.selected = res.data.name;
-            this.category_id = res.data.category_id;
+            if (this.all) {
+              this.category_id =
+                this.arr[0] == "subcat" ? res.data.category_id : res.data.id;
+            } else {
+              this.category_id = res.data.category_id;
+            }
           })
           .catch((err) => console.log(err));
         return this.selected;
@@ -215,11 +234,35 @@ export default {
       this.level = "categories";
     },
     changeLevel(id = "") {
-      this.level = this.level == "categories" ? "subcategories" : "categories";
-      if (id == "") {
-        this.allRows();
+      if (this.all) {
+        this.click++;
+        if (this.click === 1) {
+          var self = this;
+          setTimeout(function () {
+            switch (self.click) {
+              case 1:
+                self.level =
+                  self.level == "categories" ? "subcategories" : "categories";
+                if (id == "") {
+                  self.allRows();
+                } else {
+                  self.getSubCategories(id);
+                }
+                break;
+              default:
+                self.change("cat-" + id);
+            }
+            self.click = 0;
+          }, 200);
+        }
       } else {
-        this.getSubCategories(id);
+        this.level =
+          this.level == "categories" ? "subcategories" : "categories";
+        if (id == "") {
+          this.allRows();
+        } else {
+          this.getSubCategories(id);
+        }
       }
     },
   },

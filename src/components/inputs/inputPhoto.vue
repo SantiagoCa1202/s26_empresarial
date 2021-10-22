@@ -229,13 +229,15 @@ export default {
   props: {
     label: String,
     id: String,
-    value: {},
+    value: {
+      default: "",
+    },
     multiple: Boolean,
     min: Boolean,
     col: {
       type: String,
-      default: 3
-    }
+      default: 3,
+    },
   },
   data: function () {
     return {

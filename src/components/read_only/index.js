@@ -44,4 +44,7 @@ Vue.component("s26-read-credit-note", readCreditNotes);
 import readWithholdings from "./readWithholdings.vue";
 Vue.component("s26-read-withholding", readWithholdings);
 
+import readSingleProduct from "./readSingleProduct.vue";
+Vue.component("s26-read-single-product", readSingleProduct);
+
 export default s26ReadOnly;

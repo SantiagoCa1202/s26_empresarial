@@ -2,6 +2,7 @@
 require_once('ProvidersModel.php');
 require_once('EstablishmentsModel.php');
 require_once('CategoriesModel.php');
+require_once('SystemModel.php');
 
 class ProductsModel extends Mysql
 {
@@ -50,61 +51,106 @@ class ProductsModel extends Mysql
     $this->Provider = new ProvidersModel;
     $this->Category = new CategoriesModel;
     $this->Establishment = new EstablishmentsModel;
+    $this->System = new SystemModel;
   }
 
   public function selectProducts(int $perPage, array $filter)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $this->id = $filter['id'];
-    $this->auxiliary_code = $filter['auxiliary_code'];
-    $this->ean_code = $filter['ean_code'];
-    $this->name = $filter['name'];
-    $this->serie = $filter['serie'];
+    $this->variants = $filter['variants'];
+    $this->sku = $filter['sku'];
+    $this->product = $filter['product'];
+    $this->model = $filter['model'];
     $this->trademark = $filter['trademark'];
     $this->provider = $filter['provider'];
     $this->category = $filter['category'];
-    $this->cost = $filter['cost'];
     $this->pvp = $filter['pvp'];
     $this->status = $filter['status'];
     $this->perPage = $perPage;
-    $this->establishment_id = $_SESSION['userData']['establishment_id'];
 
-    $where = '
-      p.id LIKE "%' . $this->id . '%" AND
-      p.auxiliary_code LIKE "%' . $this->auxiliary_code . '%" AND
-      p.ean_code LIKE "%' . $this->ean_code . '%" AND
-      p.name LIKE "%' . $this->name . '%" AND
-      p.model LIKE "%' . $this->serie . '%" AND
-      p.trademark LIKE "%' . $this->trademark . '%" AND
-      p.category_id LIKE "%' . $this->category . '%" AND
-      p.cost LIKE "%' . $this->cost . '%" AND
-      (
-        p.pvp_1 LIKE "%' . $this->pvp . '%" OR
-        p.pvp_2 LIKE "%' . $this->pvp . '%" OR
-        p.pvp_3 LIKE "%' . $this->pvp . '%" OR 
-        p.pvp_distributor LIKE "%' . $this->pvp . '%"
-      ) AND
-      p.status LIKE "%' . $this->status . '%" AND 
-      p.status > 0 AND 
-      pe.establishment_id = ' . $_SESSION['userData']['establishment_id'];
+    // BUSCAR EN CATEGORIAS / SUBCATEGORIAS
+    $arrCat = explode("-", $this->category);
+    if ($arrCat[0] == 'cat') {
+      $search_cat = "c.id LIKE '%{$arrCat[1]}%' AND";
+    } else if ($arrCat[0] == 'subcat') {
+      $search_cat = "sc.id LIKE '%{$arrCat[1]}%' AND";
+    } else {
+      $search_cat = "";
+    }
 
-    $info = "SELECT COUNT(*) as count, 
-      SUM(pe.stock) as total_stock, 
-      SUM(p.cost*pe.stock) as total_cost,
-      SUM(p.pvp_1*pe.stock) as total_pvp
-      FROM products AS p
-      JOIN products_establishments AS pe
-      ON p.id = pe.product_id
-      WHERE $where
+    $info = "SELECT COUNT(DISTINCT p.id) as count, SUM(pv.stock) as total_stock, SUM(pv.cost) as total_cost, SUM(pv.pvp) as total_pvp
+      FROM products p
+      LEFT JOIN (SELECT product_id, ean_code, sku, SUM(stock) as stock, SUM(cost) as cost, SUM(pvp_1) as pvp
+        FROM products_variant
+        WHERE ean_code LIKE '%$this->variants%' AND
+        sku LIKE '%$this->sku%' AND
+        (
+          pvp_1 LIKE '%$this->pvp%' OR
+          pvp_2 LIKE '%$this->pvp%' OR
+          pvp_3 LIKE '%$this->pvp%' OR
+          pvp_distributor LIKE '%$this->pvp%'
+        )
+        GROUP BY product_id
+      ) pv
+      ON p.id = pv.product_id
+      LEFT JOIN (SELECT product_id, provider_id
+        FROM products_providers
+        WHERE provider_id LIKE '%$this->provider%'
+        GROUP BY product_id
+      ) pprov
+      ON p.id = pprov.product_id
+      JOIN subcategories sc
+      ON p.category_id = sc.id
+      JOIN categories c
+      ON sc.category_id = c.id
+
+      WHERE p.name LIKE '%$this->product%' AND
+      p.model LIKE '%$this->model%' AND
+      p.trademark LIKE '%$this->trademark%' AND
+      $search_cat
+      p.status LIKE '%$this->status%' AND
+      pv.ean_code LIKE '%$this->variants%' AND
+      pv.sku LIKE '%$this->sku%' AND
+      pprov.provider_id LIKE '%$this->provider%'
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "SELECT *, p.id as id, p.status as status
+    $rows = "SELECT DISTINCT p.id, p.name, p.model, p.trademark, sc.name as category, pv.stock, p.status, pv.min_stock
       FROM products p
-      JOIN products_establishments pe
-      ON p.id = pe.product_id
-      WHERE $where 
+      LEFT JOIN (SELECT product_id, ean_code, sku, SUM(stock) as stock, SUM(min_stock) as min_stock
+        FROM products_variant
+        WHERE ean_code LIKE '%$this->variants%' AND
+        sku LIKE '%$this->sku%' AND
+        (
+          pvp_1 LIKE '%$this->pvp%' OR
+          pvp_2 LIKE '%$this->pvp%' OR
+          pvp_3 LIKE '%$this->pvp%' OR
+          pvp_distributor LIKE '%$this->pvp%'
+        )
+        GROUP BY product_id
+      ) pv
+      ON p.id = pv.product_id
+      LEFT JOIN (SELECT product_id, provider_id
+        FROM products_providers
+        WHERE provider_id LIKE '%$this->provider%'
+        GROUP BY product_id
+      ) pprov
+      ON p.id = pprov.product_id
+      JOIN subcategories sc
+      ON p.category_id = sc.id
+      JOIN categories c
+      ON sc.category_id = c.id
+
+
+      WHERE p.name LIKE '%$this->product%' AND
+      p.model LIKE '%$this->model%' AND
+      p.trademark LIKE '%$this->trademark%' AND
+      $search_cat
+      p.status LIKE '%$this->status%' AND
+      pv.ean_code LIKE '%$this->variants%' AND
+      pv.sku LIKE '%$this->sku%' AND
+      pprov.provider_id LIKE '%$this->provider%'
       ORDER BY p.id DESC LIMIT 0, $this->perPage
     ";
 
@@ -143,6 +189,105 @@ class ProductsModel extends Mysql
 
     return $items;
   }
+
+  public function selectVariants(int $product_id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->product_id = $product_id;
+
+    $info = "SELECT COUNT(pv.id) as count, SUM(pv.stock) as total_stock, SUM(pv.min_stock) as total_min_stock
+      FROM products_variant pv
+      JOIN products_variant_dimensions pvd
+      ON pv.id = pvd.product_variant_id 
+      WHERE pv.product_id = $this->product_id
+    ";
+    $info_table = $this->info_table_company($info, $this->db_company);
+
+    $rows = "SELECT *, pv.id as id
+      FROM products_variant pv
+      JOIN products_variant_dimensions pvd
+      ON pv.id = pvd.product_variant_id 
+      WHERE pv.product_id = $this->product_id
+
+      ORDER BY pv.id DESC
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+
+    for ($i = 0; $i < count($items); $i++) {
+      $items[$i]['color'] = $this->System->selectColor($items[$i]['color_id']);
+      $items[$i]['establishment_stock'] = $this->selectStockEstablishments($items[$i]['id']);
+    }
+
+    return [
+      'items' => $items,
+      'info' => $info_table,
+    ];
+  }
+
+  public function selectProviders(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+
+    $info = "SELECT COUNT(pp.id) as count
+      FROM products_providers pp 
+      JOIN providers p
+      ON pp.provider_id = p.id
+      WHERE pp.product_id = $this->id
+    ";
+    $info_table = $this->info_table_company($info, $this->db_company);
+
+    $rows = "
+      SELECT *, p.id as id
+      FROM products_providers pp 
+      JOIN providers p
+      ON pp.provider_id = p.id
+      WHERE pp.product_id = $this->id
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+    return [
+      'items' => $items,
+      'info' => $info_table,
+    ];
+  }
+
+  public function selectStockEstablishments(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->product_variant_id = $id;
+
+    $info = "SELECT COUNT(pe.id) as count, SUM(pe.stock) as stock
+      FROM products_establishments pe
+      JOIN s26_empresarial.establishments es
+      ON pe.establishment_id = es.id
+      JOIN s26_empresarial.cities c
+      ON es.city_id = c.id
+      WHERE pe.product_variant_id = $this->product_variant_id
+    ";
+    $info_table = $this->info_table_company($info, $this->db_company);
+
+    $rows = "
+      SELECT pe.id, pe.stock, pe.establishment_id, es.tradename, c.name as city, es.address, pe.product_variant_id, es.n_establishment
+      FROM products_establishments pe
+      JOIN s26_empresarial.establishments es
+      ON pe.establishment_id = es.id
+      JOIN s26_empresarial.cities c
+      ON es.city_id = c.id
+      WHERE pe.product_variant_id = $this->product_variant_id
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+    return [
+      'items' => $items,
+      'info' => $info_table,
+    ];
+  }
+
 
   public function insertProduct(
     string $name,
@@ -253,17 +398,20 @@ class ProductsModel extends Mysql
 
   public function insertVariantEstablishment(
     int $product_variant_id,
-    int $establishment_id
+    int $establishment_id,
+    int $amount
   ) {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->product_variant_id = $product_variant_id;
     $this->establishment_id = $establishment_id;
+    $this->amount = $amount;
 
-    $query_insert = "INSERT INTO products_establishments (product_variant_id, establishment_id) VALUES (?,?)";
+    $query_insert = "INSERT INTO products_establishments (product_variant_id, establishment_id, stock) VALUES (?,?,?)";
     $arrData = array(
       $this->product_variant_id,
-      $this->establishment_id
+      $this->establishment_id,
+      $this->amount
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     return $request;
@@ -306,6 +454,12 @@ class ProductsModel extends Mysql
     float $pvp_2,
     float $pvp_3,
     float $pvp_distributor,
+    int $color_id,
+    string $size,
+    string $fragance,
+    string $net_content,
+    string $shape,
+    string $package,
     string $additional_info,
     int $status,
 
@@ -324,6 +478,12 @@ class ProductsModel extends Mysql
     $this->pvp_2 = $pvp_2;
     $this->pvp_3 = $pvp_3;
     $this->pvp_distributor = $pvp_distributor;
+    $this->color_id = $color_id;
+    $this->size = $size;
+    $this->fragance = $fragance;
+    $this->net_content = $net_content;
+    $this->shape = $shape;
+    $this->package = $package;
     $this->additional_info = $additional_info;
     $this->status = $status;
 
@@ -339,9 +499,15 @@ class ProductsModel extends Mysql
       pvp_2,
       pvp_3,
       pvp_distributor,
+      color_id,
+      size,
+      fragance,
+      net_content,
+      shape,
+      package,
       additional_info,
       status
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $arrData = array(
       $this->product_id,
       $this->code,
@@ -354,6 +520,12 @@ class ProductsModel extends Mysql
       $this->pvp_2,
       $this->pvp_3,
       $this->pvp_distributor,
+      $this->color_id,
+      $this->size,
+      $this->fragance,
+      $this->net_content,
+      $this->shape,
+      $this->package,
       $this->additional_info,
       $this->status,
     );
@@ -382,29 +554,6 @@ class ProductsModel extends Mysql
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     return $request;
-  }
-
-  public function insertVariants(
-    int $product_variant_id,
-    string $type_variant,
-    string $description,
-  ) {
-
-    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
-
-    $this->product_variant_id = $product_variant_id;
-    $this->type_variant = $type_variant;
-    $this->description = $description;
-
-    $query_insert = "INSERT INTO products_variants (product_variant_id, type_variant, description) VALUES (?,?,?)";
-    $arrData = array(
-      $this->product_variant_id,
-      $this->type_variant,
-      $this->description
-    );
-    $request = $this->insert_company($query_insert, $arrData, $this->db_company);
-    return $request;
-
   }
 
   public function insertVariantDimensions(
@@ -449,7 +598,6 @@ class ProductsModel extends Mysql
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     return $request;
-
   }
 
   public function insertPhotos(
@@ -513,24 +661,6 @@ class ProductsModel extends Mysql
     $sql = "DELETE FROM products_series WHERE product_id = $this->id";
     $request = $this->delete_company($sql, $this->db_company);
     return $request;
-  }
-
-  public function selectProviders(int $id)
-  {
-    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
-
-    $this->id = $id;
-
-    $rows = "
-      SELECT *, p.id as id
-      FROM products_providers pp 
-      JOIN providers p
-      ON pp.provider_id = p.id
-      WHERE product_id = $this->id
-    ";
-
-    $items = $this->select_all_company($rows, $this->db_company);
-    return $items;
   }
 
   public function insertProvider(
