@@ -26,7 +26,6 @@ $amount = [
 $total = 0;
 for ($i = 0; $i < count($amount); $i++) {
   $total += $amount[$i]['cant'];
-
 }
 
 echo $total;
@@ -52,7 +51,6 @@ echo $total;
 
 
 DELETE FROM `products`;
-DELETE FROM `products_entries`;
 DELETE FROM `products_entries_establishments`;
 DELETE FROM `products_entries_variants`;
 DELETE FROM `products_establishments`;
@@ -60,10 +58,8 @@ DELETE FROM `products_photos`;
 DELETE FROM `products_providers`;
 DELETE FROM `products_series`;
 DELETE FROM `products_variant`;
-DELETE FROM `products_variants`;
 DELETE FROM `products_variant_dimensions`;
 alter table products AUTO_INCREMENT=1;
-alter table products_entries AUTO_INCREMENT=1;
 alter table products_entries_establishments AUTO_INCREMENT=1;
 alter table products_entries_variants AUTO_INCREMENT=1;
 alter table products_establishments AUTO_INCREMENT=1;
@@ -71,5 +67,30 @@ alter table products_photos AUTO_INCREMENT=1;
 alter table products_providers AUTO_INCREMENT=1;
 alter table products_series AUTO_INCREMENT=1;
 alter table products_variant AUTO_INCREMENT=1;
-alter table products_variants AUTO_INCREMENT=1;
 alter table products_variant_dimensions AUTO_INCREMENT=1;
+
+
+//PROCEDIMIENTO ALMACENADO
+
+DELIMITER $$
+
+CREATE PROCEDURE update_cost_variant(n_amount int, n_cost decimal(10,2), variant_id int)
+BEGIN
+DECLARE new_stock int;
+DECLARE new_total decimal(10,2);
+DECLARE new_cost decimal(10,2);
+
+DECLARE current_stock int;
+DECLARE current_cost decimal(10,2);
+
+SELECT cost,stock INTO current_cost,current_stock FROM products_variant WHERE id = variant_id;
+SET new_stock = current_stock + n_amount;
+SET new_total = (current_stock * current_cost) + (n_amount * n_cost);
+SET new_cost = new_total / new_stock;
+
+UPDATE producto SET existencia = new_stock, precio = new_cost WHERE codproducto = variant_id;
+
+SELECT new_stock,new_cost;
+
+END;$$
+DELIMITER ;

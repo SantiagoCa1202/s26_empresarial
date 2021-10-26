@@ -67,7 +67,7 @@
                   </div>
                 </div>
                 <div class="category-body row mx-0">
-                  <div :class="['col-3 s26-align-y-center p-2 pointer row mx-0 global-hover', sub.id == idSubRow ? 'global-focus' : '', sub.status == 2 ? 'opacity-50' : '']" v-for="sub in item.subcategories" :key="sub.id" @click="item.status == 1 ? setSubCategory(sub.id) : ''">
+                  <div :class="['col-3 s26-align-y-center p-2 pointer row mx-0 global-hover', sub.id == idSubRow ? 'global-focus' : '', sub.status == 2 ? 'opacity-50' : '']" v-for="sub in item.subcategories.items" :key="sub.id" @click="item.status == 1 ? setSubCategory(sub.id) : ''">
                     <div class="btn-icon s26-align-center me-3 col-3" :style="'background-color:' + sub.color">
                       <s26-icon :icon="sub.icon.class" class="text-white"></s26-icon>
                     </div>

@@ -2,15 +2,21 @@
   <s26-modal id="readCategory" @hideModal="hideModal" size="xl">
     <template v-slot:header>
       <h5 class="p-2">
-        <span class="h5 fw-600">
-          {{ form.product.trademark }} - {{ form.product.name }}
+        <span v-show="form.product.trademark != ''" class="h5 fw-600">
+          {{ form.product.trademark }} -
         </span>
-        / {{ form.product.model }}
+        <span v-show="form.product.name != ''" class="h5 fw-600">
+          {{ form.product.name }}
+        </span>
+        <span v-show="form.product.model != ''" class="h6">
+          / {{ form.product.model }}
+        </span>
         <span
           v-show="value != 'watch-providers'"
           :class="[
             'btn btn-sm fw-600',
-            form.variants.info.total_stock <= form.variants.info.total_min_stock
+            parseInt(form.variants.info.total_stock) <=
+            parseInt(form.variants.info.total_min_stock)
               ? 'btn-danger'
               : 'btn-primary',
           ]"

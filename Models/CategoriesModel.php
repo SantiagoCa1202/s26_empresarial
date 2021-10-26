@@ -77,6 +77,14 @@ class CategoriesModel extends Mysql
 
     $this->id = $id;
 
+    $info = "SELECT COUNT(*) as count 
+      FROM subcategories
+      WHERE category_id = $this->id AND status > 0
+    ";
+
+    $info_table = $this->info_table_company($info, $this->db_company);
+
+
     $rows = "
       SELECT *
       FROM subcategories
@@ -89,7 +97,10 @@ class CategoriesModel extends Mysql
       $items[$i]['icon'] = $this->Icon->selectIcon($items[$i]['icon_id']);
       $items[$i]['photo'] = $this->Photo->selectPhoto($items[$i]['photo_id']);
     }
-    return $items;
+    return [
+      'info' => $info_table,
+      'items' => $items
+    ];
   }
 
   public function selectCategory(int $id)

@@ -79,19 +79,33 @@ class ProductsModel extends Mysql
       $search_cat = "";
     }
 
-    $info = "SELECT COUNT(DISTINCT p.id) as count, SUM(pv.stock) as total_stock, SUM(pv.cost) as total_cost, SUM(pv.pvp) as total_pvp
+    $info = "SELECT COUNT(DISTINCT p.id) as count, 
+      SUM(pv.stock) as total_stock, 
+      SUM(pv.cost) as total_cost, 
+      SUM(pv.pvp) as total_pvp, 
+      SUM(pv.total_entries) as total_entries
       FROM products p
-      LEFT JOIN (SELECT product_id, ean_code, sku, SUM(stock) as stock, SUM(cost) as cost, SUM(pvp_1) as pvp
-        FROM products_variant
-        WHERE ean_code LIKE '%$this->variants%' AND
-        sku LIKE '%$this->sku%' AND
+      LEFT JOIN (SELECT pv.id, pv.product_id, pv.ean_code, pv.sku, 
+        SUM(pv.stock) as stock, 
+        SUM(pv.cost * pv.stock) as cost, 
+        SUM(pv.pvp_1 * pv.stock) as pvp, 
+        SUM(pev.amount_entries) as total_entries
+        FROM products_variant pv
+        LEFT JOIN (SELECT product_variant_id, 
+          SUM(amount) as amount_entries
+          FROM products_entries_variants
+          GROUP BY product_variant_id
+        ) pev
+        ON pv.id = pev.product_variant_id
+        WHERE pv.ean_code LIKE '%$this->variants%' AND
+        pv.sku LIKE '%$this->sku%' AND
         (
-          pvp_1 LIKE '%$this->pvp%' OR
-          pvp_2 LIKE '%$this->pvp%' OR
-          pvp_3 LIKE '%$this->pvp%' OR
-          pvp_distributor LIKE '%$this->pvp%'
+          pv.pvp_1 LIKE '%$this->pvp%' OR
+          pv.pvp_2 LIKE '%$this->pvp%' OR
+          pv.pvp_3 LIKE '%$this->pvp%' OR
+          pv.pvp_distributor LIKE '%$this->pvp%'
         )
-        GROUP BY product_id
+        GROUP BY pv.product_id
       ) pv
       ON p.id = pv.product_id
       LEFT JOIN (SELECT product_id, provider_id
@@ -226,6 +240,23 @@ class ProductsModel extends Mysql
     ];
   }
 
+  public function selectVariant(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+    $sql = "SELECT *, pv.id as id, p.id as product_id 
+    FROM products_variant pv
+    JOIN products p
+    ON pv.product_id = p.id
+     WHERE pv.id = $this->id";
+    $request = $this->select_company($sql, $this->db_company);
+
+    $request['color'] = $this->System->selectColor($request['color_id']);
+
+    return $request;
+  }
+
   public function selectProviders(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -347,7 +378,7 @@ class ProductsModel extends Mysql
   }
 
   public function updatePrices(
-    int $product_id,
+    int $variant_id,
     float $pvp_1,
     float $pvp_2,
     float $pvp_3,
@@ -355,7 +386,7 @@ class ProductsModel extends Mysql
   ) {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $this->product_id = $product_id;
+    $this->variant_id = $variant_id;
     $this->pvp_1 = $pvp_1;
     $this->pvp_2 = $pvp_2;
     $this->pvp_3 = $pvp_3;
@@ -363,7 +394,7 @@ class ProductsModel extends Mysql
 
 
 
-    $sql = "UPDATE products SET pvp_1 = ?, pvp_2 = ?, pvp_3 = ?, pvp_distributor = ? WHERE id = $this->product_id";
+    $sql = "UPDATE products_variant SET pvp_1 = ?, pvp_2 = ?, pvp_3 = ?, pvp_distributor = ? WHERE id = $this->variant_id";
     $arrData = array(
       $this->pvp_1,
       $this->pvp_2,
@@ -371,28 +402,6 @@ class ProductsModel extends Mysql
       $this->pvp_distributor,
     );
     $request = $this->update_company($sql, $arrData, $this->db_company);
-    return $request;
-  }
-
-  public function insertEntry(
-    int $product_id,
-    int $amount,
-    int $document_id,
-  ) {
-
-    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
-
-    $this->product_id = $product_id;
-    $this->amount = $amount;
-    $this->document_id = $document_id;
-
-    $query_insert = "INSERT INTO products_entries (product_id, amount, document_id) VALUES (?,?,?)";
-    $arrData = array(
-      $this->product_id,
-      $this->amount,
-      $this->document_id,
-    );
-    $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     return $request;
   }
 
@@ -537,7 +546,8 @@ class ProductsModel extends Mysql
   public function insertEntryVariant(
     int $product_variant_id,
     int $amount,
-    int $cost
+    int $cost,
+    int $document_id
   ) {
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -545,12 +555,14 @@ class ProductsModel extends Mysql
     $this->product_variant_id = $product_variant_id;
     $this->amount = $amount;
     $this->cost = $cost;
+    $this->document_id = $document_id;
 
-    $query_insert = "INSERT INTO products_entries_variants (product_variant_id,amount,cost) VALUES (?,?,?)";
+    $query_insert = "INSERT INTO products_entries_variants (product_variant_id,amount,cost, document_id) VALUES (?,?,?,?)";
     $arrData = array(
       $this->product_variant_id,
       $this->amount,
-      $this->cost
+      $this->cost,
+      $this->document_id,
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
     return $request;
@@ -632,20 +644,20 @@ class ProductsModel extends Mysql
 
   public function insertSerie(
     int $product_id,
-    int $entry_id,
+    int $document_id,
     string $serie,
   ) {
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->product_id = $product_id;
-    $this->entry_id = $entry_id;
+    $this->document_id = $document_id;
     $this->serie = $serie;
 
-    $query_insert = "INSERT INTO products_series (product_id, entry_id, serie) VALUES (?,?,?)";
+    $query_insert = "INSERT INTO products_series (product_id, document_id, serie) VALUES (?,?,?)";
     $arrData = array(
       $this->product_id,
-      $this->entry_id,
+      $this->document_id,
       $this->serie,
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
@@ -694,23 +706,25 @@ class ProductsModel extends Mysql
   }
 
   public function updateCost(
-    int $product_id,
+    int $variant_id,
     int $amount,
-    int $cost
+    float $cost
   ) {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
-    $this->product_id = $product_id;
+    $this->variant_id = $variant_id;
     $this->amount = $amount;
     $this->cost = $cost;
 
-    $query_insert = "CALL update_cost_product(?,?,?)";
+    $query_insert = "CALL update_cost_variant(?,?,?)";
     $arrData = array(
-      $this->product_id,
       $this->amount,
       $this->cost,
+      $this->variant_id,
     );
     $request = $this->update_company($query_insert, $arrData, $this->db_company);
     return $request;
   }
+
+  
 }

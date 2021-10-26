@@ -394,7 +394,7 @@
             >
             </s26-form-input>
           </div>
-          <div class="col-8">
+          <div class="col">
             <s26-form-input
               label="Info. Adicional"
               id="form-variant-additional_info"
@@ -412,9 +412,16 @@
               Especificar Variantes
             </button>
           </div>
-          <div class="col-1 s26-align-center">
+          <div class="col-1 s26-align-center" v-if="index > 0">
             <button
-              v-if="index > 0"
+              type="button"
+              class="btn-icon text-secondary"
+              @click="paste_data(index)"
+              title="Pegar Datos de la Primera Variante"
+            >
+              <s26-icon icon="copy"></s26-icon>
+            </button>
+            <button
               type="button"
               class="btn-icon text-danger"
               @click="form.variants.splice(index, 1)"
@@ -800,7 +807,7 @@ const def_form = () => {
         pvp_distributor: "",
         additional_info: "",
         variants: def_variants(),
-        photos: "",
+        photos: [1],
       },
     ],
     // EN PRODUCTOS PROVEEDORES
@@ -996,6 +1003,8 @@ export default {
     },
     toggle_modal_variants(id = null) {
       this.id_variant = id >= 0 ? id : null;
+      this.variants =
+        id >= 0 && id != null ? this.form.variants[id]["variants"] : "";
     },
     saveVariants() {
       this.form.variants[this.id_variant]["variants"] = this.variants;
@@ -1013,6 +1022,11 @@ export default {
         package: false,
         dimensions: false,
       };
+    },
+    paste_data(id) {
+      let code = this.form.variants[id]["code"];
+      Object.assign(this.form.variants[id], this.form.variants[0]);
+      this.form.variants[id]["code"] = code;
     },
   },
 };

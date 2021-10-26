@@ -79,6 +79,20 @@ class Products extends Controllers
     die();
   }
 
+  public function getVariant($id)
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $id = intval(strClean($id));
+      if ($id > 0) {
+        $arrData = $this->model->selectVariant($id);
+        $arrRes = (empty($arrData)) ? 0 : $arrData;
+
+        echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+      }
+    }
+    die();
+  }
+
   // OBTENER PROVEEDORES 
   public function getProviders($id)
   {
@@ -178,16 +192,6 @@ class Products extends Controllers
           for ($i = 0; $i < count($variants); $i++) {
             $amount += $variants[$i]['amount'];
           }
-          //Insertar Entrada
-          $request_entry = $this->model->insertEntry(
-            $request,
-            $amount,
-            $document_id
-          );
-
-          $arrRes = s26_res("Entrada", $request_entry);
-          array_push($response, $arrRes);
-
 
           // INSERTAR VARIANTES
           $res_variant = [];
@@ -243,6 +247,7 @@ class Products extends Controllers
                 $request_variant,
                 intval($variants[$i]['amount']),
                 floatval($variants[$i]['cost']),
+                intval($document_id)
               );
               if ($request_variant > 0) {
                 array_push($res_variants, $request_entry_variant);
@@ -314,7 +319,8 @@ class Products extends Controllers
           $arrSeries = [];
           if (count($series) > 0 && $serial == 1) {
             for ($i = 0; $i < count($series); $i++) {
-              $request_series = $this->model->insertSerie($request, $request_entry, $series[$i]);
+              $request_series = $this->model->insertSerie(
+                $request, intval($document_id), strClean($series[$i]));
 
               if ($request_series > 0) {
                 array_push($arrSeries, $i);
@@ -367,7 +373,8 @@ class Products extends Controllers
   public function addAmount()
   {
 
-    $product_id = intval($_POST['id']);
+    $variant_id = intval($_POST['id']);
+    $product_id = intval($_POST['product_id']);
     $amount = intval($_POST['amount']);
     $update_pvp = boolval($_POST['update_pvp']);
     $cost = floatval($_POST['cost']);
@@ -380,6 +387,7 @@ class Products extends Controllers
 
     $response = [];
     if (
+      $variant_id > 0 &&
       $product_id > 0 &&
       $amount > 0 &&
       $cost >= 0 &&
@@ -390,51 +398,61 @@ class Products extends Controllers
       $document_id >= -1
     ) {
       if ($_SESSION['permitsModule']['w']) {
-        //Insertar Entrada
+        //Insertar Entrada Producto
         $request = $this->model->insertEntry(
           $product_id,
           $amount,
-          $cost,
           $document_id
         );
-      } else {
-        $request = -5;
-      }
-      $arrRes = s26_res("Entrada", $request);
-      array_push($response, $arrRes);
-
-      if ($request > 0) {
-        //actualizar costo y stock
-        $request = $this->model->updateCost(
-          $product_id,
+        // Insertar Entrada Variante
+        $request_variant = $this->model->insertEntryVariant(
+          $variant_id,
           $amount,
           $cost
         );
-        $arrRes = s26_res("Costo", $request, 2);
-        array_push($response, $arrRes);
-        //actualizar precios 
-        if ($update_pvp) {
-          $request = $this->model->updatePrices(
-            $product_id,
-            $pvp_1,
-            $pvp_2,
-            $pvp_3,
-            $pvp_distributor,
+
+
+        if ($request > 0 && $request_variant > 0) {
+          //actualizar costo y stock
+          $request = $this->model->updateCost(
+            $variant_id,
+            $amount,
+            $cost
           );
-          $arrRes = s26_res("Precios", $request, 2);
+          $arrRes = s26_res("Costo", $request, 2);
+          array_push($response, $arrRes);
+          //actualizar precios 
+          if ($update_pvp) {
+            $request = $this->model->updatePrices(
+              $variant_id,
+              $pvp_1,
+              $pvp_2,
+              $pvp_3,
+              $pvp_distributor,
+            );
+            $arrRes = s26_res("Precios", $request, 2);
+            array_push($response, $arrRes);
+          }
+
+          //Insertar Entrada Establecimientos
+          $request_entry_establishment = $this->model->insertEntryEstablishment(
+            $variant_id,
+            $amount,
+            $matrix,
+            $matrix,
+          );
+          $arrRes = s26_res("Entrada en Establecimiento", $request_entry_establishment, 2);
           array_push($response, $arrRes);
         }
-
-        //Insertar Entrada Establecimientos
-        $request_entry_establishment = $this->model->insertEntryEstablishment(
-          $product_id,
-          $amount,
-          $matrix,
-          $matrix,
-        );
-        $arrRes = s26_res("Entrada en Establecimiento", $request_entry_establishment, 2);
-        array_push($response, $arrRes);
+      } else {
+        $request = -5;
+        $request_variant = -5;
       }
+      $arrRes = s26_res("Entrada de Producto", $request);
+      array_push($response, $arrRes);
+
+      $arrRes = s26_res("Entrada de Variante", $request_variant);
+      array_push($response, $arrRes);
     } else {
       $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
       array_push($response, $arrRes);

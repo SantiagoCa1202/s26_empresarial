@@ -212,7 +212,7 @@ export default {
           params,
         })
         .then((res) => {
-          this.options = res.data;
+          this.options = res.data.items;
           this.rows = res.data.info.count;
         })
         .catch((err) => console.log(err));

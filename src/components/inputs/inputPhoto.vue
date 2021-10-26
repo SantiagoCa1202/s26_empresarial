@@ -222,6 +222,7 @@
       >
       </s26-upload-photos>
     </transition>
+    {{ val }}
   </div>
 </template>
 <script>
@@ -235,7 +236,6 @@ export default {
     multiple: Boolean,
     min: Boolean,
     col: {
-      type: String,
       default: 3,
     },
   },
@@ -256,11 +256,17 @@ export default {
   },
   created() {
     setTimeout(() => {
-      if (this.value != 0) {
-        this.getPhoto(this.value);
-      }
       this.allRows();
     }, 100);
+  },
+  computed: {
+    val: function () {
+      if (this.value != 0 && !this.multiple) {
+        this.getPhoto(this.value);
+      } else if (this.value.length > 0 && this.multiple) {
+        this.getPhotos();
+      }
+    },
   },
   methods: {
     allRows() {
@@ -330,7 +336,6 @@ export default {
         }, 100);
       } else {
         this.$emit("input", this.selected_photos[0]);
-        this.getPhoto(this.selected_photos[0]);
       }
       this.selected_photos = [];
       this.activeSelectPhoto = false;

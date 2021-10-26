@@ -9,75 +9,119 @@
     @hideModal="hideModal"
   >
     <template v-slot:level-0>
-      <div class="col-sm-8">
-        <s26-select-buys
-          label="N° de Doc."
-          id="form-document_id"
-          v-model="form.document_id"
-          @change="getBuy(form.document_id)"
-          is_null
-          assign
-          s26_required
-        ></s26-select-buys>
+      <div class="col-12 row mx-0 variants">
+        <h2 class="h6 fw-600">Info. de Compra.</h2>
+        <div class="col-sm-8">
+          <s26-select-buys
+            label="N° de Doc."
+            id="form-document_id"
+            v-model="form.document_id"
+            @change="getBuy(form.document_id)"
+            is_null
+            assign
+            s26_required
+          ></s26-select-buys>
+        </div>
+        <div class="col-sm-4">
+          <s26-input-read label="Ruc" :content="buy.document"> </s26-input-read>
+        </div>
+        <div class="col-12">
+          <s26-input-read label="Razón Social" :content="buy.business_name">
+          </s26-input-read>
+        </div>
       </div>
-      <div class="col-sm-4">
-        <s26-input-read label="Ruc" :content="buy.document"> </s26-input-read>
+      <div class="col-12 row mx-0 variants">
+        <h2 class="h6 fw-600">Info. de Producto.</h2>
+        <div class="col-sm-4">
+          <s26-input-read label="Código" :content="data.ean_code">
+          </s26-input-read>
+        </div>
+        <div class="col-sm-8">
+          <s26-input-read
+            label="Nombre"
+            :content="data.name + ' - ' + data.model"
+          >
+          </s26-input-read>
+        </div>
+        <div class="col mb-2" v-show="data.color_id > 0">
+          <span class="fw-600">color:</span>
+          <span
+            class="fw-bold"
+            :style="{ color: `#${data.color.hexadecimal}` }"
+          >
+            <s26-icon icon="palette"></s26-icon>
+            {{ data.color.name }}
+          </span>
+        </div>
+        <div class="col mb-2" v-show="data.size != ''">
+          <span class="fw-600">Talla:</span>
+          {{ data.size }}
+        </div>
+        <div class="col mb-2" v-show="data.fragance != ''">
+          <span class="fw-600">Fragancia:</span>
+          {{ data.fragance }}
+        </div>
+        <div class="col mb-2" v-show="data.net_content != ''">
+          <span class="fw-600">Cont. Neto:</span>
+          {{ data.net_content }}
+        </div>
+        <div class="col mb-2" v-show="data.shape != ''">
+          <span class="fw-600">Forma:</span>
+          {{ data.shape }}
+        </div>
+        <div class="col mb-2" v-show="data.package != ''">
+          <span class="fw-600">Bulto:</span>
+          {{ data.package }}
+        </div>
       </div>
-      <div class="col-12">
-        <s26-input-read label="Razón Social" :content="buy.business_name">
-        </s26-input-read>
-      </div>
-      <div class="col-sm-4">
-        <s26-input-read label="Código" :content="data.ean_code">
-        </s26-input-read>
-      </div>
-      <div class="col-sm-8">
-        <s26-input-read label="Nombre" :content="data.name"> </s26-input-read>
-      </div>
-      <div class="col-4">
-        <s26-input-read label="Stock Actual" :content="data.stock">
-        </s26-input-read>
-      </div>
-      <div class="col-4">
-        <s26-form-input
-          label="Cantidad"
-          id="form-amount"
-          type="number"
-          v-model="form.amount"
-          @keyup="val_amount"
-          number
-          s26_required
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-4">
-        <s26-input-read label="Nuevo Stock" :content="new_stock">
-        </s26-input-read>
-      </div>
-      <div class="col-4">
-        <s26-input-read label="Costo Actual" :content="data.cost" money>
-        </s26-input-read>
-      </div>
-      <div class="col-4">
-        <s26-form-input
-          label="Costo"
-          id="form-cost"
-          v-model="form.cost"
-          type="number"
-          money
-          s26_required
-          placeholder="50.00"
-          @enter="apply_iva"
-          title="presiona enter para calcular iva"
-        >
-        </s26-form-input>
-      </div>
-      <div class="col-4">
-        <s26-input-read label="Nuevo Costo" :content="new_cost" money>
-        </s26-input-read>
-      </div>
-      <div class="col-12" v-if="data.cost != new_cost">
-        <p class="text-primary">*Recomendado Actualizar Precios.</p>
+
+      <div class="col-12 row mx-0 variants">
+        <h2 class="h6 fw-600">Stock y Costos.</h2>
+        <div class="col-4">
+          <s26-input-read label="Stock Actual" :content="data.stock">
+          </s26-input-read>
+        </div>
+        <div class="col-4">
+          <s26-form-input
+            label="Cantidad"
+            id="form-amount"
+            type="number"
+            v-model="form.amount"
+            @keyup="val_amount"
+            number
+            s26_required
+          >
+          </s26-form-input>
+        </div>
+        <div class="col-4">
+          <s26-input-read label="Nuevo Stock" :content="new_stock">
+          </s26-input-read>
+        </div>
+        <div class="col-4">
+          <s26-input-read label="Costo Actual" :content="data.cost" money>
+          </s26-input-read>
+        </div>
+        <div class="col-4">
+          <s26-form-input
+            label="Costo"
+            id="form-cost"
+            v-model="form.cost"
+            type="number"
+            money
+            s26_required
+            placeholder="50.00"
+            @enter="apply_iva"
+            title="presiona enter para calcular iva"
+          >
+          </s26-form-input>
+        </div>
+        <div class="col-4">
+          <s26-input-read label="Nuevo Costo" :content="new_cost" money>
+          </s26-input-read>
+        </div>
+        <div class="col-12" v-if="data.cost != new_cost">
+          <p class="text-primary">*Recomendado Actualizar Precios.</p>
+        </div>
       </div>
       <div class="col-12 mb-3">
         <div class="form-check">
@@ -113,6 +157,11 @@
             money
             s26_required
             placeholder="50.00"
+            @keyup="
+              form.utility = parseFloat(
+                (form.pvp_1 * 100) / form.cost - 100
+              ).toFixed(2)
+            "
           >
           </s26-form-input>
         </div>
@@ -169,8 +218,10 @@ export default {
         pvp_2: "",
         pvp_3: "",
         pvp_distributor: "",
+        color: {},
       },
       form: {
+        product_id: "",
         amount: 1,
         update_pvp: false,
         cost: "",
@@ -206,18 +257,19 @@ export default {
       let new_cost = parseFloat(new_total / this.new_stock);
 
       this.form.new_cost = new_cost.toFixed(2);
-      this.form.utility = parseInt(
+      this.form.utility = parseFloat(
         (this.data.pvp_1 / this.form.new_cost) * 100 - 100
-      );
+      ).toFixed(2);
       return this.form.new_cost;
     },
   },
   methods: {
     infoData(id) {
       this.axios
-        .get("/products/getProduct/" + id)
+        .get("/products/getVariant/" + id)
         .then((res) => {
           this.data = res.data;
+          this.form.product_id = this.data.product_id;
           this.form.cost = this.data.cost;
           this.form.pvp_1 = this.data.pvp_1;
           this.form.pvp_2 = this.data.pvp_2;
@@ -300,3 +352,16 @@ export default {
   },
 };
 </script>
+<style scoped>
+.variants {
+  overflow: hidden;
+  box-shadow: 0 10px 5px -6px rgb(93 130 170 / 21%) !important;
+  border: 1px solid #dee2e6 !important;
+  border-radius: 0.25rem !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  margin-bottom: 1.5rem !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+</style>

@@ -59,6 +59,12 @@
                 <s26-tarjet-info title="Stock" variant="warning" icon="chart-line">
                   {{ s26_data.info.total_stock }}
                 </s26-tarjet-info>
+                <s26-tarjet-info title="Entradas" variant="purple" icon="sign-in-alt">
+                  {{ s26_data.info.total_entries }}
+                </s26-tarjet-info>
+                <s26-tarjet-info title="Salidas" variant="orange" icon="sign-out-alt">
+                  {{ s26_data.info.total_outputs }}
+                </s26-tarjet-info>
                 <?php
                 if ($_SESSION['userData']['cost_products']) {
                 ?>
@@ -119,7 +125,7 @@
             }
             ?>
             <td class="length-action">
-              <button type="button" :class="['btn btn-link w-100 fw-600 fs-6', item.stock <= item.min_stock ? 'text-danger' : '']" @click="setIdRow(item.id, 'watch-stock')">
+              <button type="button" :class="['btn btn-link w-100 fw-600 fs-6', parseInt(item.stock) <= parseInt(item.min_stock) ? 'text-danger' : '']" @click="setIdRow(item.id, 'watch-stock')">
                 {{ item.stock }}
               </button>
             </td>

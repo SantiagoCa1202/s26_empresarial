@@ -79,6 +79,7 @@ import {
   faMinus,
   faLongArrowAltUp,
   faBarcode,
+  faCopy,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -162,7 +163,8 @@ library.add(
   faBed,
   faMinus,
   faLongArrowAltUp,
-  faBarcode
+  faBarcode,
+  faCopy
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);
