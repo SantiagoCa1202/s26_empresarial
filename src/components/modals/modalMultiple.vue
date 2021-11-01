@@ -145,6 +145,14 @@
               >
                 Resetear
               </button>
+              <button
+                v-if="readOnly && update"
+                type="button"
+                class="btn btn-outline-primary float-end mx-1"
+                @click="$emit('update')"
+              >
+                <s26-icon icon="sync-alt"></s26-icon>
+              </button>
             </div>
           </div>
           <slot name="footer"> </slot>
@@ -172,6 +180,7 @@ export default {
     readOnly: Boolean,
     form: String,
     expand: Boolean,
+    update: Boolean,
   },
   data() {
     return {

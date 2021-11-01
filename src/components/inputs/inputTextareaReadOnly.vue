@@ -37,4 +37,17 @@ export default {
 .textarea-read.row-5 {
   height: 10rem;
 }
+.textarea-read.row-6 {
+  height: 12rem;
+}
+.textarea-read.row-7 {
+  height: 14rem;
+}
+.textarea-read.row-8 {
+  height: 16rem;
+}
+.textarea-read.row-9 {
+  height: 18rem;
+}
+
 </style>

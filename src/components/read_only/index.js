@@ -47,4 +47,7 @@ Vue.component("s26-read-withholding", readWithholdings);
 import readSingleProduct from "./readSingleProduct.vue";
 Vue.component("s26-read-single-product", readSingleProduct);
 
+import readProduct from "./readProduct.vue";
+Vue.component("s26-read-product", readProduct);
+
 export default s26ReadOnly;

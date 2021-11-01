@@ -103,6 +103,37 @@ class Products extends Controllers
     die();
   }
 
+  // OBTENER SERIES 
+  public function getProductSeries()
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $filter = [
+        'product_id' => !empty($_GET['product_id']) ? intval($_GET['product_id']) : '',
+        'search_serie' => !empty($_GET['search_serie']) ? strClean($_GET['search_serie']) : '',
+      ];
+
+      $arrData = $this->model->selectProductSeries($filter);
+
+      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+
+  /////////////// Reporte de Producto
+  public function  reportProduct()
+  {
+    if ($_SESSION['permitsModule']['r']) {
+
+      $id = intval($_GET['id']);
+      $type = strClean($_GET['type']);
+      $arrData = $this->model->selectReportProduct($id, $type);
+      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
+
   public function setProduct()
   {
     //EN PRODUCTOS
@@ -320,7 +351,10 @@ class Products extends Controllers
           if (count($series) > 0 && $serial == 1) {
             for ($i = 0; $i < count($series); $i++) {
               $request_series = $this->model->insertSerie(
-                $request, intval($document_id), strClean($series[$i]));
+                $request,
+                intval($document_id),
+                strClean($series[$i])
+              );
 
               if ($request_series > 0) {
                 array_push($arrSeries, $i);

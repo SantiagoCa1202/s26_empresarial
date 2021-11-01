@@ -66,7 +66,7 @@
                 >
                 </s26-input-read>
               </div>
-              <div class="col-2">
+              <div class="col-2" v-if="form.variants.access_cost == 1">
                 <s26-input-read label="Costo" :content="variant.cost" money>
                 </s26-input-read>
               </div>

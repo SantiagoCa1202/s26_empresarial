@@ -184,6 +184,12 @@ class ProductsModel extends Mysql
     $sql = "SELECT * FROM products WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
 
+    $request['category'] = $this->Category->selectSubCategory($request['category_id']);
+    $request['providers'] = $this->selectProviders($request['id']);
+    $request['variants'] = $this->selectVariants($request['id']);
+    $request['access_cost'] = $_SESSION['userData']['cost_products'];
+    $request['access_providers'] = $_SESSION['permits'][36]['r'];
+
     return $request;
   }
 
@@ -230,11 +236,14 @@ class ProductsModel extends Mysql
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
+      $items[$i]['cost'] = $_SESSION['userData']['cost_products'] ?  $items[$i]['cost'] : 0;
       $items[$i]['color'] = $this->System->selectColor($items[$i]['color_id']);
       $items[$i]['establishment_stock'] = $this->selectStockEstablishments($items[$i]['id']);
+      $items[$i]['photos'] = $this->selectPhotos($items[$i]['id']);
     }
 
     return [
+      'access_cost' => $_SESSION['userData']['cost_products'],
       'items' => $items,
       'info' => $info_table,
     ];
@@ -286,6 +295,66 @@ class ProductsModel extends Mysql
     ];
   }
 
+  public function selectProductSeries(array $filter)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->product_id = $filter['product_id'];
+    $this->serie = $filter['search_serie'];
+
+    $info = "SELECT COUNT(id) as count
+      FROM products_series
+      WHERE product_id = $this->product_id AND serie LIKE '%$this->serie%'
+    ";
+    $info_table = $this->info_table_company($info, $this->db_company);
+
+    $rows = "
+      SELECT *
+      FROM products_series 
+      WHERE product_id = $this->product_id AND serie LIKE '%$this->serie%'
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+    return [
+      'items' => $items,
+      'info' => $info_table,
+    ];
+  }
+
+  public function selectPhotos(int $id)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+
+    $info = "SELECT COUNT(pp.id) as count
+      FROM products_photos pp 
+      JOIN photos p
+      ON pp.photo_id = p.id
+      WHERE pp.product_variant_id = $this->id
+    ";
+    $info_table = $this->info_table_company($info, $this->db_company);
+
+    $rows = "
+      SELECT *, pp.id as id
+      FROM products_photos pp 
+      JOIN photos p
+      ON pp.photo_id = p.id
+      WHERE pp.product_variant_id = $this->id
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+
+    for ($i = 0; $i < count($items); $i++) {
+      $items[$i]['src'] = asset('media/uploads/photos/') . $items[$i]['src'];
+    }
+
+    return [
+      'items' => $items,
+      'info' => $info_table,
+    ];
+  }
+
   public function selectStockEstablishments(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -319,6 +388,32 @@ class ProductsModel extends Mysql
     ];
   }
 
+  public function selectReportProduct(int $id, string $type)
+  {
+
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+    $this->type = $type;
+
+    $query = ($this->type == 'prod') ? 'pv.product_id' : 'pv.id';
+
+    $info = "SELECT SUM(pe.amount) as total_entries
+      FROM products_variant pv
+      JOIN products_entries_variants pe
+      ON pv.id = pe.product_variant_id
+      WHERE $query = $this->id
+    ";
+    $info_table = $this->info_table_company($info, $this->db_company);
+
+    $info_table['total_sales'] = 1;
+    $info_table['total_returns'] = 2;
+    $info_table['total_damaged'] = 3;
+    $info_table['total_settings'] = 4;
+    return [
+      'info' => $info_table,
+    ];
+  }
 
   public function insertProduct(
     string $name,
@@ -725,6 +820,4 @@ class ProductsModel extends Mysql
     $request = $this->update_company($query_insert, $arrData, $this->db_company);
     return $request;
   }
-
-  
 }
