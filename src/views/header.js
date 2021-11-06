@@ -23,7 +23,7 @@ if (element) {
       subHome: ["sales", "credits", "returns", "calculator", "close_box"],
       subProducts: [
         "products",
-        "products_entry",
+        "productsEntries",
         "products_outlet",
         "products_returned",
         "products_damaged",

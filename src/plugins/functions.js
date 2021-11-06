@@ -124,6 +124,13 @@ const formatDate = (date = "", size = "sm") => {
     if (size == "sm") {
       let arrDate = date.split("-");
       return arrDate[2] + "/" + arrDate[1] + "/" + arrDate[0]; // 20/07/2021
+    } else if (size == "sm2") {
+      let options = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+      };
+      return new_date.toLocaleDateString("es-ES", options); // 16 De Julio De 2021
     } else if (size == "md") {
       let options = {
         year: "numeric",

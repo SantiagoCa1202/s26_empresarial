@@ -120,7 +120,6 @@
           <s26-form-customer v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-customer>
         </transition>
       <?php
-
       }
       ?>
       <?php

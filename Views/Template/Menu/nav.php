@@ -101,7 +101,7 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][14]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/products_entry" :class="focusSubMenu('products_entry')">
+                <a href="<?= BASE_URL ?>/productsEntries" :class="focusSubMenu('productsEntries')">
                   Entradas
                 </a>
               </li>
