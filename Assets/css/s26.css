@@ -600,6 +600,9 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   display: none;
 }
 
+.s26-checkbox-switch input[type="checkbox"]:disabled+label {
+  opacity: 0.5;
+}
 /* CUSTOM NOTIFIER */
 
 .alertify-notifier div.ajs-message.ajs-success {
@@ -768,7 +771,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   width: 75%;
 }
 
-/* Custpm Tables */
+/* Custom Tables */
 
 .s26-container-table {
   overflow-x: auto;
@@ -780,7 +783,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   text-indent: initial;
   border-collapse: collapse;
   border-collapse: separate;
-  border-spacing: 0 1rem;
+  border-spacing: 0 .7rem;
   text-transform: capitalize;
   margin-top: -.9rem;
 }
@@ -816,7 +819,7 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   border-right: none;
   border-bottom: 1px solid #e2e2e2;
   border-top: 1px solid #e2e2e2;
-  padding: .5rem .75rem;
+  padding: .2rem .75rem;
   vertical-align: middle;
   position: relative
 }

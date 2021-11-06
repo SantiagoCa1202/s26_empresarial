@@ -1,6 +1,12 @@
 <template>
-  <section :class="['main', { 'mainWidth-100': !sidebar }]">
-    <div class="s26-container-table">
+  <section
+    :class="[
+      'main',
+      { 'mainWidth-100': !sidebar },
+      relative ? 'position-relative' : '',
+    ]"
+  >
+    <div :class="['s26-container-table', 'h-' + height]">
       <table class="s26-table" ref="s26-table">
         <thead>
           <tr>
@@ -60,6 +66,10 @@ export default {
     id: Boolean,
     info: Boolean,
     loading_data: Boolean,
+    relative: Boolean,
+    height: {
+      default: "",
+    },
   },
   computed: {
     loading() {
@@ -99,7 +109,7 @@ export default {
   position: relative;
   background-color: rgba(0, 0, 0, 0.08) !important;
   border: none;
-  height: 38.1875px;
+  height: 26.06px;
   overflow: hidden;
 }
 .skeleton-table td.animation::before {

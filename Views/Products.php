@@ -100,7 +100,6 @@
           }
           ?>
           <th class="length-action text-center">Stock</th>
-          <th class="length-action text-center">Estado</th>
         </template>
         <template v-slot:body v-if="!loading_data">
           <tr v-for="item in s26_data.items" :key="item.id">
@@ -109,7 +108,7 @@
             <td class="length-action">{{ item.trademark }}</td>
             <td class="length-description">{{ item.category }}</td>
             <td class="length-action ">
-              <button type="button" class="btn btn-link w-100" @click="setIdRow(item.id, 'watch-variants')">
+              <button type="button" class="btn btn-link w-100 py-0" @click="setIdRow(item.id, 'watch-variants')">
                 <s26-icon icon="search"></s26-icon>
               </button>
             </td>
@@ -117,7 +116,7 @@
             if ($_SESSION['permits'][36]['r']) {
             ?>
               <td class="length-action">
-                <button type="button" class="btn btn-link w-100" @click="setIdRow(item.id, 'watch-providers')">
+                <button type="button" class="btn btn-link w-100 py-0" @click="setIdRow(item.id, 'watch-providers')">
                   <s26-icon icon="search"></s26-icon>
                 </button>
               </td>
@@ -125,12 +124,9 @@
             }
             ?>
             <td class="length-action">
-              <button type="button" :class="['btn btn-link w-100 fw-600 fs-6', parseInt(item.stock) <= parseInt(item.min_stock) ? 'text-danger' : '']" @click="setIdRow(item.id, 'watch-stock')">
+              <button type="button" :class="['btn btn-link w-100 py-0 fw-600 fs-6', parseInt(item.stock) <= parseInt(item.min_stock) ? 'text-danger' : '']" @click="setIdRow(item.id, 'watch-stock')">
                 {{ item.stock }}
               </button>
-            </td>
-            <td :class="['length-action text-center', item.status == 1 ? 'text-success' : 'text-danger']">
-              {{ item.status == 1 ? 'activo' : 'inactivo' }}
             </td>
             <td class="length-action">
               <s26-dropdown>
@@ -151,12 +147,10 @@
                   </li>
                 <?php
                 }
+                if ($_SESSION['permitsModule']['u']) {
                 ?>
-                <?php
-                if ($_SESSION['permitsModule']['d']) {
-                ?>
-                  <li class="list-group-item border-0" @click="setIdRow(item.id, 'delete')">
-                    Eliminar
+                  <li class="list-group-item border-0" @click="setIdRow(item.id, 'disable')">
+                    Desactivar
                   </li>
                 <?php
                 }
@@ -190,7 +184,7 @@
         </transition>
         <!-- Modal Nuevo-->
         <transition name="slide-fade">
-          <s26-form-product v-model="action" :id="idRow" v-if="action == 'new_product'" @update="allRows" :code="code"></s26-form-product>
+          <s26-form-product v-model="action" :id="idRow" v-if="action == 'new_product' || action == 'update'" @update="allRows" :code="code"></s26-form-product>
         </transition>
         <!-- Modal Cantidad-->
         <transition name="slide-fade">
@@ -201,8 +195,8 @@
       if ($_SESSION['permitsModule']['d']) {
       ?>
         <!-- Modal Eliminar -->
-        <transition name="slide-fade">
-          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'products/delProduct/' + idRow"></s26-delete>
+        <transition name="fade">
+          <s26-disable-product v-model="action" :id="idRow" v-if="action == 'disable'" @update="allRows"></s26-disable-product>
         </transition>
       <?php
       }

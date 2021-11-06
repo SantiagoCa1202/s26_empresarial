@@ -31,7 +31,6 @@ class Products extends Controllers
         'provider' => !empty($_GET['provider']) ? intval($_GET['provider']) : '',
         'category' => !empty($_GET['category']) ? strClean($_GET['category']) : '',
         'pvp' => !empty($_GET['pvp']) ? floatval($_GET['pvp']) : '',
-        'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
       ];
 
       $arrData = $this->model->selectProducts($perPage, $filter);
@@ -49,7 +48,7 @@ class Products extends Controllers
         $arrData = $this->model->selectProduct($id);
         $arrRes = (empty($arrData)) ? 0 : $arrData;
 
-        echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+        echo json_encode($arrRes, JSON_NUMERIC_CHECK);
       }
     }
     die();
@@ -87,7 +86,7 @@ class Products extends Controllers
         $arrData = $this->model->selectVariant($id);
         $arrRes = (empty($arrData)) ? 0 : $arrData;
 
-        echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+        echo json_encode($arrRes, JSON_NUMERIC_CHECK);
       }
     }
     die();
@@ -151,18 +150,17 @@ class Products extends Controllers
     $discount = boolval($_POST['discount']);
     $pvp_manual = boolval($_POST['pvp_manual']);
     $iva = floatval($_POST['iva']);
-    $status = boolval($_POST['status']) == 1 ? 1 : 2;
 
     //EN PRODUCTOS SERIES
     $series = !empty($_POST['series']) ? arrClean($_POST['series']) : [];
 
-    //EN PRODUCTOS SERIES
+    //EN PRODUCTOS VARIANTES
     $variants = !empty($_POST['variants']) ? $_POST['variants'] : [];
 
     //EN PRODUCTOS PROVEEDORES
     $providers = is_array($_POST['providers']) ? arrClean($_POST['providers'], "int") : [];
     //EN PRODUCTOS ENTRADAS 
-    $document_id = intval($_POST['document_id']);
+    $document_id = !empty($_POST['document_id']) ? intval($_POST['document_id']) : '';
 
     //ESTABLECIMIENTO MATRIZ
     $matrix = $_SESSION['userData']['establishment']['company']['matrix_establishment_id'];
@@ -179,10 +177,9 @@ class Products extends Controllers
       ($serial == 1 || $serial == 0) &&
       ($discount == 1 || $discount == 0) &&
       ($pvp_manual == 1 || $pvp_manual == 0) &&
-      ($status == 1 || $status == 2) &&
       ($discontinued == 1 || $discontinued == 0) &&
       ($iva == 0 || $iva == 12) &&
-      count($variants) > 0
+      (count($variants) > 0 && $id == 0 || count($variants) == 0 && $id > 0)
     ) {
       if ($id == 0) {
 
@@ -202,7 +199,6 @@ class Products extends Controllers
             $discount,
             $pvp_manual,
             $iva,
-            $status,
           );
         } else {
           $request = -5;
@@ -211,7 +207,30 @@ class Products extends Controllers
       } else {
 
         //ACTUALIZAR PRODUCTO
+        if ($_SESSION['permitsModule']['u']) {
+
+          $request = $this->model->updateProduct(
+            $id,
+            $name,
+            $description,
+            $trademark,
+            $model,
+            $type_product,
+            $type,
+            $remanufactured,
+            $category_id,
+            $discontinued,
+            $serial,
+            $discount,
+            $pvp_manual,
+            $iva,
+          );
+        } else {
+          $request = -5;
+        }
+        $type = 2;
       }
+
       $arrRes = s26_res("Producto", $request, $type);
       array_push($response, $arrRes);
       if ($request > 0) {
@@ -250,7 +269,6 @@ class Products extends Controllers
               strClean($variants[$i]['variants']['shape']),
               strClean($variants[$i]['variants']['package']),
               strClean($variants[$i]['additional_info']),
-              intval($variants[$i]['status']),
             );
 
             if ($request_variant > 0) {
@@ -393,7 +411,30 @@ class Products extends Controllers
             $arrRes = array('type' => 2, 'msg' => 'No se ingresaron Proveedores, puedes ingresarlos más tarde.');
             array_push($response, $arrRes);
           }
-        } else {
+        } else if ($type == 2) {
+          //ELIMINAR PROVEEDORES 
+          $this->model->deleteProviders($id);
+          //INSERTAR PROVEEDORES
+          $arrProviders = [];
+          if (count($providers) > 0) {
+            for ($i = 0; $i < count($providers); $i++) {
+              $request_providers = $this->model->insertProvider($id, $providers[$i]);
+
+              if ($request_providers > 0) {
+                array_push($arrProviders, $i);
+              }
+            }
+          }
+          if (count($arrProviders) > 0) {
+            $arrRes = array(
+              'type' => 1,
+              'msg' => count($arrProviders) . ' Proveedores guardados correctamente.'
+            );
+            array_push($response, $arrRes);
+          } else {
+            $arrRes = array('type' => 2, 'msg' => 'No se ingresaron Proveedores, puedes ingresarlos más tarde.');
+            array_push($response, $arrRes);
+          }
         }
       }
     } else {
@@ -417,6 +458,11 @@ class Products extends Controllers
     $pvp_3 = floatval($_POST['pvp_3']);
     $pvp_distributor = floatval($_POST['pvp_distributor']);
     $document_id = intval($_POST['document_id']);
+    $serial = boolval($_POST['serial']);
+    
+    //EN PRODUCTOS SERIES
+    $series = !empty($_POST['series']) ? arrClean($_POST['series']) : [];
+
     $matrix = $_SESSION['userData']['establishment']['company']['matrix_establishment_id'];
 
     $response = [];
@@ -432,21 +478,16 @@ class Products extends Controllers
       $document_id >= -1
     ) {
       if ($_SESSION['permitsModule']['w']) {
-        //Insertar Entrada Producto
-        $request = $this->model->insertEntry(
-          $product_id,
-          $amount,
-          $document_id
-        );
         // Insertar Entrada Variante
         $request_variant = $this->model->insertEntryVariant(
-          $variant_id,
-          $amount,
-          $cost
+          intval($variant_id),
+          intval($amount),
+          floatval($cost),
+          intval($document_id)
         );
 
 
-        if ($request > 0 && $request_variant > 0) {
+        if ($request_variant > 0) {
           //actualizar costo y stock
           $request = $this->model->updateCost(
             $variant_id,
@@ -465,6 +506,32 @@ class Products extends Controllers
               $pvp_distributor,
             );
             $arrRes = s26_res("Precios", $request, 2);
+            array_push($response, $arrRes);
+          }
+
+          //INSERTAR SERIES
+          $arrSeries = [];
+          if (count($series) > 0 && $serial == 1) {
+            for ($i = 0; $i < count($series); $i++) {
+              $request_series = $this->model->insertSerie(
+                $request,
+                intval($document_id),
+                strClean($series[$i])
+              );
+
+              if ($request_series > 0) {
+                array_push($arrSeries, $i);
+              }
+            }
+          }
+          if (count($arrSeries) > 0) {
+            $arrRes = array(
+              'type' => 1,
+              'msg' => count($arrSeries) . ' Series guardadas correctamente.'
+            );
+            array_push($response, $arrRes);
+          } else {
+            $arrRes = array('type' => 2, 'msg' => 'No se ingresaron Series, puedes ingresarlas más tarde.');
             array_push($response, $arrRes);
           }
 
@@ -492,6 +559,40 @@ class Products extends Controllers
       array_push($response, $arrRes);
     }
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
+  public function toggleProduct()
+  {
+    if ($_SESSION['permitsModule']['u']) {
+      $variants = $_POST['variants']['items'];
+      $response = [];
+      $arrProd = [];
+      foreach ($variants as $variant) {
+        $establishment_variant = $variant['establishment_stock']['items'];
+        foreach ($establishment_variant as $estab) {
+          if ($estab['stock'] == 0) {
+            $id = intval($estab['id']);
+            array_push($arrProd, $id);
+            $status = $estab['status'] == 'true' ? 1 : 0;
+            $request = $this->model->updateStatus(
+              $id,
+              $status
+            );
+            if ($request > 0) {
+              array_push($response, $request);
+            };
+          }
+        }
+      }
+      if (count($response) == count($arrProd)) {
+        $arrRes = s26_res("Estado de Producto", 1, 1);
+        echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+      } else {
+        $arrRes = array('type' => 0, 'msg' => 'Error al Actualizar los Datos.');;
+        echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+      }
+    }
     die();
   }
 }

@@ -196,6 +196,41 @@
           </s26-form-input>
         </div>
       </template>
+      <!-- SERIADO -->
+      <div class="col-12 mb-5" v-if="form.serial">
+        <div class="row mx-0 rounded py-2 s26-shadow-md border">
+          <h2 class="h5 fw-bold s26-text-blue">Seriado</h2>
+          <div class="col-12">
+            <s26-form-input
+              id="form-serie"
+              v-model="serial"
+              maxlength="50"
+              placeholder="Escriba o Escanee el número de serie del producto correspondiente"
+              @enter="addSeries"
+            >
+            </s26-form-input>
+          </div>
+          <div class="series col-12">
+            <transition-group name="list" tag="div">
+              <div
+                class="col-3 px-0"
+                v-for="(serie, index) in form.series"
+                :key="serie"
+              >
+                <div
+                  class="s26-align-center btn btn-primary btn-sm m-2 text-break"
+                  @click="addSeries(index)"
+                >
+                  {{ serie }}
+                  <span class="ms-2">
+                    <s26-icon icon="times"></s26-icon>
+                  </span>
+                </div>
+              </div>
+            </transition-group>
+          </div>
+        </div>
+      </div>
     </template>
   </s26-modal-multiple>
 </template>
@@ -231,12 +266,16 @@ export default {
         pvp_2: "",
         pvp_3: "",
         pvp_distributor: "",
+        serial: false,
+        // EN PRODUCTOS SERIES
+        series: [],
       },
       buy: {
         document: "",
         business_name: "",
       },
       levels: ["Información"],
+      serial: "",
     };
   },
   created() {
@@ -274,6 +313,7 @@ export default {
           this.form.pvp_1 = this.data.pvp_1;
           this.form.pvp_2 = this.data.pvp_2;
           this.form.pvp_3 = this.data.pvp_3;
+          this.form.serial = this.data.serial;
           this.form.pvp_distributor = this.data.pvp_distributor;
         })
         .catch((err) => console.log(err));
@@ -347,6 +387,18 @@ export default {
     apply_iva() {
       if (this.form.cost != "") {
         this.form.cost = (this.form.cost * _iva__).toFixed(2);
+      }
+    },
+    addSeries(serie = "") {
+      if (this.serial != "" && serie == "") {
+        if (this.form.series.indexOf(this.serial) == -1) {
+          this.form.series.push(this.serial);
+        }
+        this.serial = "";
+      } else if (serie !== "") {
+        this.form.series.splice(serie, 1);
+      } else {
+        this.$alertify.error("Ingrese un Número de Serie");
       }
     },
   },

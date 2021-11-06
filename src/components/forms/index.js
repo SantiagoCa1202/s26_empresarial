@@ -65,4 +65,6 @@ Vue.component("s26-delete", formDelete);
 import formSecurityCode from "./formSecurityCode.vue";
 Vue.component("s26-security-code", formSecurityCode);
 
+import formDisableProduct from "./formDisableProduct.vue";
+Vue.component("s26-disable-product", formDisableProduct);
 export default s26Forms;

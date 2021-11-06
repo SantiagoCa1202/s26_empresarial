@@ -97,20 +97,7 @@
       <div class="col-12 mb-3">
         <div class="row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Aprobaciones</h2>
-          <div class="col-4 col-sm-2">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="form.status"
-                id="form-status"
-              />
-              <label class="form-check-label" for="form-status">
-                {{ form.status ? "activo" : "inactivo" }}.
-              </label>
-            </div>
-          </div>
-          <div class="col-4 col-sm-2">
+          <div class="col">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -123,7 +110,7 @@
               </label>
             </div>
           </div>
-          <div class="col-4 col-sm-2">
+          <div class="col">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -136,7 +123,7 @@
               </label>
             </div>
           </div>
-          <div class="col-6 col-sm-2">
+          <div class="col">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -149,7 +136,7 @@
               </label>
             </div>
           </div>
-          <div class="col-6 col-sm-2">
+          <div class="col">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -162,13 +149,22 @@
               </label>
             </div>
           </div>
+          <div class="col">
+            <label class="form-label w-100 text-end"> Iva: </label>
+          </div>
+          <div class="col mb-3">
+            <select class="form-select form-select-sm" v-model="form.iva">
+              <option value="0">0%</option>
+              <option value="12">12%</option>
+            </select>
+          </div>
         </div>
       </div>
       <!-- INFO. DOC. DE COMPRA -->
-      <div class="col-12 mb-3">
+      <div class="col-12 mb-3" v-if="id == 0">
         <div class="row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Info. Documento de Compra</h2>
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <s26-select-buys
               label="N° de Doc."
               id="form-document_id"
@@ -179,20 +175,13 @@
               s26_required
             ></s26-select-buys>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
             <s26-input-read label="Ruc" :content="buy.document">
             </s26-input-read>
           </div>
           <div class="col-sm-5">
             <s26-input-read label="Razón Social" :content="buy.business_name">
             </s26-input-read>
-          </div>
-          <div class="col-2 mb-3">
-            <label class="form-label"> Iva </label>
-            <select class="form-select form-select-sm" v-model="form.iva">
-              <option value="0">0%</option>
-              <option value="12">12%</option>
-            </select>
           </div>
         </div>
       </div>
@@ -211,10 +200,10 @@
         </div>
       </div>
       <transition name="fade">
-        <div class="col-12 mb-5" v-if="form.serial">
-          <div class="row mx-0 rounded py-2 shadow border">
+        <div class="col-12 mb-5" v-if="form.serial && id == 0">
+          <div class="row mx-0 rounded py-2 s26-shadow-md border">
             <h2 class="h5 fw-bold s26-text-blue">Seriado</h2>
-            <div class="col-12">
+            <div class="col-12" v-if="id == 0">
               <s26-form-input
                 id="form-serie"
                 v-model="serial"
@@ -252,7 +241,7 @@
         </div>
       </transition>
     </template>
-    <template v-slot:level-2>
+    <template v-slot:level-2 v-if="id == 0">
       <!-- VARIANTES -->
       <transition-group name="list" tag="div">
         <div
@@ -273,15 +262,6 @@
               v-model="variant.sku"
             >
             </s26-form-input>
-          </div>
-          <div class="col-2">
-            <s26-select-status
-              label="Estado"
-              id="form-variant-status"
-              v-model="variant.status"
-              s26_required
-            >
-            </s26-select-status>
           </div>
           <div class="col-2">
             <s26-form-input
@@ -788,7 +768,6 @@ const def_form = () => {
     discount: 0,
     pvp_manual: 0,
     iva: 12,
-    status: 1,
     // EN PRODUCTOS SERIES
     series: [],
     // EN PRODUCTOS VARIANTES
@@ -796,7 +775,6 @@ const def_form = () => {
       {
         code: "",
         sku: "",
-        status: 1,
         amount: "",
         min_stock: "",
         max_stock: "",
@@ -807,7 +785,7 @@ const def_form = () => {
         pvp_distributor: "",
         additional_info: "",
         variants: def_variants(),
-        photos: [1],
+        photos: [],
       },
     ],
     // EN PRODUCTOS PROVEEDORES
@@ -855,7 +833,10 @@ export default {
       form: def_form(),
       buy: {},
       serial: "",
-      levels: ["Información Principal", "Información General", "Variantes"],
+      levels:
+        this.id == 0
+          ? ["Información Principal", "Información General", "Variantes"]
+          : ["Información Principal", "Información General"],
       id_variant: null,
       variants: def_variants(),
       active_variants: {
@@ -870,19 +851,30 @@ export default {
     };
   },
   created() {
-    if (this.id !== 0 && this.id !== null) this.infoData(this.id);
-    this.form.variants[0]["code"] = this.code;
+    if (this.id !== 0 && this.id !== null) {
+      this.infoData(this.id);
+    } else {
+      this.form.variants[0]["code"] = this.code;
+    }
   },
   methods: {
     infoData(id) {
-      // this.axios
-      //   .get("/bankAccounts/getBankAccount/" + id)
-      //   .then((res) => (this.form = res.data))
-      //   .catch((err) => console.log(err));
+      this.axios
+        .get("/products/getProduct/" + id)
+        .then((res) => {
+          this.form = res.data;
+          this.form.variants = [];
+          this.form.series = [];
+          let providers = res.data.providers.items;
+          this.form.providers = [];
+          for (let i = 0; i < providers.length; i++) {
+            this.form.providers.push(providers[i]["provider_id"]);
+          }
+        })
+        .catch((err) => console.log(err));
     },
     onSubmit() {
       this.form.id = this.id;
-      this.form.ean_code = this.code;
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar" : "Actualizar"} el Producto?.`,
         () => {
@@ -907,7 +899,7 @@ export default {
                   </li>`;
                 }
                 this.$alertify.alert(`<nav>${response}</nav>`, () => {
-                  this.$emit("input", null);
+                  if (res.data[0]["type"] > 0) this.$emit("input", null);
                 });
               } else {
                 this.$alertify.confirm(
@@ -983,7 +975,6 @@ export default {
         this.form.variants.push({
           code: code,
           sku: "",
-          status: 1,
           amount: "",
           min_stock: "",
           max_stock: "",

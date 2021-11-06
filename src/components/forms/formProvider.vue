@@ -502,7 +502,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.1);
   color: var(--s26-blue);
   font-weight: bold;
-  width: 100px;
   height: 30px;
   margin: 20px;
   display: flex;
@@ -511,6 +510,7 @@ export default {
   border-radius: 0.5rem;
   transition: 0.3s;
   cursor: pointer;
+  padding: .5rem 1rem
 }
 .container-categories .cat:hover {
   background-color: #16859671;

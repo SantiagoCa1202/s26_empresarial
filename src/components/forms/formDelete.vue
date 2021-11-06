@@ -1,10 +1,10 @@
 <template>
   <s26-modal>
     <template v-slot:header
-      ><h5 class="modal-title">¿Realmente desea eliminar este registro?</h5>
+      ><h5 class="modal-title">{{ title }} </h5>
     </template>
     <template v-slot:body>
-      <p>Una vez eliminado el registro no podra ser recuperado.</p>
+      <p> {{ msg }} </p>
     </template>
     <template v-slot:footer>
       <button class="btn btn-outline-danger" @click="$emit('input', null)">
@@ -22,6 +22,14 @@ export default {
       required: true,
     },
     post_delete: String,
+    title: {
+      type: String,
+      default: "¿Realmente desea eliminar este registro?"
+    },
+    msg: {
+      type: String,
+      default: "Una vez eliminado el registro no podra ser recuperado."
+    }
   },
   methods: {
     deleteRow() {

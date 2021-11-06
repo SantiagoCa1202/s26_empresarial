@@ -7,6 +7,8 @@
     size="lg"
     @hideModal="hideModal"
     readOnly
+    update
+    @update="infoData(id)"
   >
     <template v-slot:level-0>
       <div class="col-sm-3">
@@ -113,6 +115,33 @@
         </div>
       </div>
     </template>
+    <template v-slot:level-2>
+      <s26-table
+        :rows="s26_data.info.count"
+        @get="allRows"
+        :sidebar="false"
+        :loading_data="loading_data"
+        :fields="fields"
+        relative
+        height="auto"
+      >
+        <template v-slot:body v-if="!loading_data">
+          <tr v-for="entry in s26_data.items" :key="entry.id">
+            <td class="length-int">{{ entry.ean_code }}</td>
+            <td class="length-description">{{ entry.name }}</td>
+            <td class="length-int text-center">{{ entry.amount }}</td>
+            <td class="length-int text-center">
+              <span><s26-icon icon="dollar-sign"></s26-icon></span>
+              {{ $s26.currency(entry.cost) }}
+            </td>
+            <td class="length-int text-center">
+              <span><s26-icon icon="dollar-sign"></s26-icon></span>
+              {{ $s26.currency(entry.amount * entry.cost) }}
+            </td>
+          </tr>
+        </template>
+      </s26-table>
+    </template>
   </s26-modal-multiple>
 </template>
 <script>
@@ -137,7 +166,31 @@ export default {
         file: {},
         n_document: "",
       },
-      levels: ["Información de Compra", "Totales"],
+      fields: [
+        {
+          name: "Código",
+          class: "length-int",
+        },
+        {
+          name: "Producto",
+          class: "length-description",
+        },
+        {
+          name: "Cant.",
+          class: "length-int text-center",
+        },
+        {
+          name: "Costo",
+          class: "length-int text-center",
+        },
+        {
+          name: "Total",
+          class: "length-int text-center",
+        },
+      ],
+      levels: ["Información de Compra", "Totales", "Productos"],
+      s26_data: { info: {} },
+      loading_data: false,
     };
   },
   created() {
@@ -147,12 +200,30 @@ export default {
     infoData(id) {
       this.axios
         .get("/buys/getBuy/" + id)
-        .then((res) => (this.form = res.data))
+        .then((res) => {
+          this.form = res.data;
+          this.allRows(id);
+        })
         .catch((err) => console.log(err));
     },
     hideModal() {
       this.$emit("input", null);
       $s26.delete_cookie("id", "buys");
+    },
+    allRows() {
+      this.loading_data = true;
+      const params = {
+        document_id: this.id,
+      };
+      this.axios
+        .get("/productsEntries/getEntries/", {
+          params,
+        })
+        .then((res) => {
+          this.s26_data = res.data;
+          this.loading_data = false;
+        })
+        .catch((err) => console.log(err));
     },
   },
 };

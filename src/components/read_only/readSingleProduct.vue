@@ -48,7 +48,7 @@
                 <span
                   :class="[
                     'float-end pointer',
-                    variant.status ? 'text-success' : 'text-danger',
+                    variant.status == 1 ? 'text-success' : 'text-danger',
                   ]"
                 >
                   {{ variant.status == 1 ? "Activo" : "Inactivo" }}
@@ -186,7 +186,7 @@
                 <span
                   :class="[
                     'float-end pointer',
-                    variant.status ? 'text-success' : 'text-danger',
+                    variant.status == 1 ? 'text-success' : 'text-danger',
                   ]"
                 >
                   {{ variant.status == 1 ? "Activo" : "Inactivo" }}
@@ -204,15 +204,22 @@
                   >
                   </s26-input-read>
                 </div>
-                <div class="col-6">
+                <div class="col-5">
                   <s26-input-read
                     label="Nombre Comercial"
                     :content="estab.tradename"
                   >
                   </s26-input-read>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                   <s26-input-read label="Stock" :content="estab.stock">
+                  </s26-input-read>
+                </div>
+                <div class="col-2">
+                  <s26-input-read
+                    label="Estado"
+                    :content="estab.status == 1 ? 'Activo' : 'Inactivo'"
+                  >
                   </s26-input-read>
                 </div>
                 <div class="col-12">
@@ -283,6 +290,7 @@ export default {
         this.axios
           .get("/products/getVariants/" + id)
           .then((res) => {
+            console.log(res);
             this.form.variants = res.data;
           })
           .catch((err) => console.log(err));

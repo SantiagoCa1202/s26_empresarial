@@ -66,7 +66,6 @@ class ProductsModel extends Mysql
     $this->provider = $filter['provider'];
     $this->category = $filter['category'];
     $this->pvp = $filter['pvp'];
-    $this->status = $filter['status'];
     $this->perPage = $perPage;
 
     // BUSCAR EN CATEGORIAS / SUBCATEGORIAS
@@ -123,14 +122,13 @@ class ProductsModel extends Mysql
       p.model LIKE '%$this->model%' AND
       p.trademark LIKE '%$this->trademark%' AND
       $search_cat
-      p.status LIKE '%$this->status%' AND
       pv.ean_code LIKE '%$this->variants%' AND
       pv.sku LIKE '%$this->sku%' AND
       pprov.provider_id LIKE '%$this->provider%'
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "SELECT DISTINCT p.id, p.name, p.model, p.trademark, sc.name as category, pv.stock, p.status, pv.min_stock
+    $rows = "SELECT DISTINCT p.id, p.name, p.model, p.trademark, sc.name as category, pv.stock, pv.min_stock
       FROM products p
       LEFT JOIN (SELECT product_id, ean_code, sku, SUM(stock) as stock, SUM(min_stock) as min_stock
         FROM products_variant
@@ -161,7 +159,6 @@ class ProductsModel extends Mysql
       p.model LIKE '%$this->model%' AND
       p.trademark LIKE '%$this->trademark%' AND
       $search_cat
-      p.status LIKE '%$this->status%' AND
       pv.ean_code LIKE '%$this->variants%' AND
       pv.sku LIKE '%$this->sku%' AND
       pprov.provider_id LIKE '%$this->provider%'
@@ -187,6 +184,8 @@ class ProductsModel extends Mysql
     $request['category'] = $this->Category->selectSubCategory($request['category_id']);
     $request['providers'] = $this->selectProviders($request['id']);
     $request['variants'] = $this->selectVariants($request['id']);
+    $request['series'] = $this->selectVariants($request['id']);
+
     $request['access_cost'] = $_SESSION['userData']['cost_products'];
     $request['access_providers'] = $_SESSION['permits'][36]['r'];
 
@@ -214,6 +213,7 @@ class ProductsModel extends Mysql
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
+    $establishment_id = $_SESSION['userData']['establishment_id'];
     $this->product_id = $product_id;
 
     $info = "SELECT COUNT(pv.id) as count, SUM(pv.stock) as total_stock, SUM(pv.min_stock) as total_min_stock
@@ -224,10 +224,15 @@ class ProductsModel extends Mysql
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "SELECT *, pv.id as id
+    $rows = "SELECT *, pv.id as id, pe.status as status
       FROM products_variant pv
       JOIN products_variant_dimensions pvd
       ON pv.id = pvd.product_variant_id 
+      LEFT JOIN ( SELECT pe.product_variant_id, pe.status
+        FROM products_establishments pe
+        WHERE establishment_id = $establishment_id
+      ) pe
+      ON pv.id = pe.product_variant_id
       WHERE pv.product_id = $this->product_id
 
       ORDER BY pv.id DESC
@@ -372,7 +377,7 @@ class ProductsModel extends Mysql
     $info_table = $this->info_table_company($info, $this->db_company);
 
     $rows = "
-      SELECT pe.id, pe.stock, pe.establishment_id, es.tradename, c.name as city, es.address, pe.product_variant_id, es.n_establishment
+      SELECT pe.id, pe.stock, pe.establishment_id, es.tradename, c.name as city, es.address, pe.product_variant_id, es.n_establishment, pe.status
       FROM products_establishments pe
       JOIN s26_empresarial.establishments es
       ON pe.establishment_id = es.id
@@ -429,7 +434,6 @@ class ProductsModel extends Mysql
     int $discount,
     int $pvp_manual,
     float $iva,
-    int $status,
   ) {
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -447,10 +451,9 @@ class ProductsModel extends Mysql
     $this->discount = $discount;
     $this->pvp_manual = $pvp_manual;
     $this->iva = $iva;
-    $this->status = $status;
 
     $query_insert = "INSERT INTO products (
-        name, description, trademark, model, type_product, type, remanufactured, category_id, discontinued, serial, discount, pvp_manual, iva, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        name, description, trademark, model, type_product, type, remanufactured, category_id, discontinued, serial, discount, pvp_manual, iva) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $arrData = array(
       $this->name,
       $this->description,
@@ -465,9 +468,64 @@ class ProductsModel extends Mysql
       $this->discount,
       $this->pvp_manual,
       $this->iva,
-      $this->status,
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
+
+    return $request;
+  }
+
+  public function updateProduct(
+    int $id,
+    string $name,
+    string $description,
+    string $trademark,
+    string $model,
+    string $type_product,
+    string $type,
+    int $remanufactured,
+    int $category_id,
+    int $discontinued,
+    int $serial,
+    int $discount,
+    int $pvp_manual,
+    float $iva,
+  ) {
+
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+    $this->name = $name;
+    $this->description = $description;
+    $this->trademark = $trademark;
+    $this->model = $model;
+    $this->type_product = $type_product;
+    $this->type = $type;
+    $this->remanufactured = $remanufactured;
+    $this->category_id = $category_id;
+    $this->discontinued = $discontinued;
+    $this->serial = $serial;
+    $this->discount = $discount;
+    $this->pvp_manual = $pvp_manual;
+    $this->iva = $iva;
+
+    $sql = "UPDATE products SET
+        name = ?, description = ?, trademark = ?, model = ?, type_product = ?, type = ?, remanufactured = ?, category_id = ?, discontinued = ?, serial = ?, discount = ?, pvp_manual = ?, iva = ? WHERE id = $this->id";
+    $arrData = array(
+      $this->name,
+      $this->description,
+      $this->trademark,
+      $this->model,
+      $this->type_product,
+      $this->type,
+      $this->remanufactured,
+      $this->category_id,
+      $this->discontinued,
+      $this->serial,
+      $this->discount,
+      $this->pvp_manual,
+      $this->iva,
+    );
+    $request = $this->update_company($sql, $arrData, $this->db_company);
 
     return $request;
   }
@@ -565,7 +623,6 @@ class ProductsModel extends Mysql
     string $shape,
     string $package,
     string $additional_info,
-    int $status,
 
   ) {
 
@@ -589,7 +646,6 @@ class ProductsModel extends Mysql
     $this->shape = $shape;
     $this->package = $package;
     $this->additional_info = $additional_info;
-    $this->status = $status;
 
     $query_insert = "INSERT INTO products_variant (
       product_id,
@@ -609,9 +665,8 @@ class ProductsModel extends Mysql
       net_content,
       shape,
       package,
-      additional_info,
-      status
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      additional_info
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $arrData = array(
       $this->product_id,
       $this->code,
@@ -631,7 +686,6 @@ class ProductsModel extends Mysql
       $this->shape,
       $this->package,
       $this->additional_info,
-      $this->status,
     );
 
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
@@ -818,6 +872,24 @@ class ProductsModel extends Mysql
       $this->variant_id,
     );
     $request = $this->update_company($query_insert, $arrData, $this->db_company);
+    return $request;
+  }
+
+  public function updateStatus(
+    int $id,
+    int $status
+  ) {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->id = $id;
+    $this->status = $status;
+
+    $sql = "UPDATE products_establishments SET status = ? WHERE id = $this->id";
+    $arrData = array(
+      $this->status
+    );
+
+    $request = $this->update_company($sql, $arrData, $this->db_company);
     return $request;
   }
 }

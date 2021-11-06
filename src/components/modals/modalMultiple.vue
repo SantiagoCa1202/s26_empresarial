@@ -155,8 +155,8 @@
               </button>
             </div>
           </div>
-          <slot name="footer"> </slot>
         </div>
+        <slot name="footer"> </slot>
         <slot name="subModal"></slot>
       </div>
     </div>
