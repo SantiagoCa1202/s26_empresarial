@@ -65,6 +65,9 @@ Vue.component("s26-delete", formDelete);
 import formProductEntry from "./formProductEntry.vue";
 Vue.component("s26-form-product-entry", formProductEntry);
 
+import formProductSerie from "./formProductSerie.vue";
+Vue.component("s26-form-product-serie", formProductSerie);
+
 import formSecurityCode from "./formSecurityCode.vue";
 Vue.component("s26-security-code", formSecurityCode);
 

@@ -102,22 +102,6 @@ class Products extends Controllers
     die();
   }
 
-  // OBTENER SERIES 
-  public function getProductSeries()
-  {
-    if ($_SESSION['permitsModule']['r']) {
-      $filter = [
-        'product_id' => !empty($_GET['product_id']) ? intval($_GET['product_id']) : '',
-        'search_serie' => !empty($_GET['search_serie']) ? strClean($_GET['search_serie']) : '',
-      ];
-
-      $arrData = $this->model->selectProductSeries($filter);
-
-      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
-    }
-    die();
-  }
-
   ////////////////////////////////////////////////////////////////////////////
 
   /////////////// Reporte de Producto

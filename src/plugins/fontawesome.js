@@ -81,6 +81,7 @@ import {
   faBarcode,
   faCopy,
   faAmbulance,
+  faServer,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -166,7 +167,8 @@ library.add(
   faLongArrowAltUp,
   faBarcode,
   faCopy,
-  faAmbulance
+  faAmbulance,
+  faServer
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

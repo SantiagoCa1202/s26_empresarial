@@ -127,6 +127,13 @@
                 </a>
               </li>
             <?php } ?>
+            <?php if (!empty($_SESSION['permits'][14]['r'])) { ?>
+              <li>
+                <a href="<?= BASE_URL ?>/productsSeries" :class="focusSubMenu('productsSeries')">
+                  Series
+                </a>
+              </li>
+            <?php } ?>
             <?php if (!empty($_SESSION['permits'][18]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/stocktaking" :class="focusSubMenu('stocktaking')">

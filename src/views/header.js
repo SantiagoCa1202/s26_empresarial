@@ -27,6 +27,7 @@ if (element) {
         "products_outlet",
         "products_returned",
         "products_damaged",
+        "productsSeries",
         "stocktaking",
         "stock_information",
         "suppliers_orders",

@@ -117,16 +117,16 @@
     </template>
     <template v-slot:level-2>
       <s26-table
-        :rows="s26_data.info.count"
-        @get="allRows"
+        :rows="products.info.count"
+        @get="getProducts"
         :sidebar="false"
         :loading_data="loading_data"
-        :fields="fields"
+        :fields="fields_products"
         relative
         height="auto"
       >
         <template v-slot:body v-if="!loading_data">
-          <tr v-for="entry in s26_data.items" :key="entry.id">
+          <tr v-for="entry in products.items" :key="entry.id">
             <td class="length-int">{{ entry.ean_code }}</td>
             <td class="length-description">{{ entry.name }}</td>
             <td class="length-int text-center">{{ entry.amount }}</td>
@@ -137,6 +137,36 @@
             <td class="length-int text-center">
               <span><s26-icon icon="dollar-sign"></s26-icon></span>
               {{ $s26.currency(entry.amount * entry.cost) }}
+            </td>
+          </tr>
+        </template>
+      </s26-table>
+    </template>
+    <template v-slot:level-3>
+      <s26-table
+        :rows="series.info.count"
+        @get="getSeries"
+        :sidebar="false"
+        :loading_data="loading_data"
+        :fields="fields_series"
+        relative
+        height="auto"
+        id
+      >
+        <template v-slot:body v-if="!loading_data">
+          <tr v-for="serie in series.items" :key="serie.id">
+            <td class="length-int">{{ serie.id }}</td>
+            <td class="length-description">
+              {{ serie.name }} - {{ serie.model }} - {{ serie.trademark }}
+            </td>
+            <td class="length-description">{{ serie.serie }}</td>
+            <td
+              :class="[
+                'length-status',
+                serie.status == 1 ? 'text-success' : 'text-danger',
+              ]"
+            >
+              {{ serie.status == 1 ? "Activo" : "Inactivo" }}
             </td>
           </tr>
         </template>
@@ -166,7 +196,7 @@ export default {
         file: {},
         n_document: "",
       },
-      fields: [
+      fields_products: [
         {
           name: "Código",
           class: "length-int",
@@ -188,8 +218,23 @@ export default {
           class: "length-int text-center",
         },
       ],
-      levels: ["Información de Compra", "Totales", "Productos"],
-      s26_data: { info: {} },
+      fields_series: [
+        {
+          name: "Nombre",
+          class: "length-description",
+        },
+        {
+          name: "Serie",
+          class: "length-description",
+        },
+        {
+          name: "Estado",
+          class: "length-action",
+        },
+      ],
+      levels: ["Información de Compra", "Totales", "Productos", "Series"],
+      products: { info: {} },
+      series: { info: {} },
       loading_data: false,
     };
   },
@@ -202,7 +247,8 @@ export default {
         .get("/buys/getBuy/" + id)
         .then((res) => {
           this.form = res.data;
-          this.allRows(id);
+          this.getProducts();
+          this.getSeries();
         })
         .catch((err) => console.log(err));
     },
@@ -210,7 +256,7 @@ export default {
       this.$emit("input", null);
       $s26.delete_cookie("id", "buys");
     },
-    allRows() {
+    getProducts() {
       this.loading_data = true;
       const params = {
         document_id: this.id,
@@ -220,7 +266,22 @@ export default {
           params,
         })
         .then((res) => {
-          this.s26_data = res.data;
+          this.products = res.data;
+          this.loading_data = false;
+        })
+        .catch((err) => console.log(err));
+    },
+    getSeries() {
+      this.loading_data = true;
+      const params = {
+        document_id: this.id,
+      };
+      this.axios
+        .get("/productsSeries/getSeries/", {
+          params,
+        })
+        .then((res) => {
+          this.series = res.data;
           this.loading_data = false;
         })
         .catch((err) => console.log(err));

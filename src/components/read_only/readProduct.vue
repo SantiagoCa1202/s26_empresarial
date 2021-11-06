@@ -147,10 +147,7 @@
           </div>
           <div class="col-4"></div>
           <div class="col-4">
-            <s26-input-search
-              v-model="filter.search_serie"
-              @search="infoSeries"
-            />
+            <s26-input-search v-model="filter.serie" @search="infoSeries" />
           </div>
           <div class="series col-12 row">
             <div class="col-3" v-for="serie in series.items" :key="serie.id">
@@ -411,7 +408,7 @@ export default {
       ],
       filter: {
         product_id: "",
-        search_serie: "",
+        serie: "",
       },
     };
   },
@@ -433,9 +430,8 @@ export default {
     infoSeries() {
       const params = {};
       for (let fil in this.filter) params[fil] = this.filter[fil];
-
       this.axios
-        .get("/products/getProductSeries/", {
+        .get("/productsSeries/getSeries/", {
           params,
         })
         .then((res) => (this.series = res.data))
@@ -445,7 +441,6 @@ export default {
     hideModal() {
       this.$emit("input", null);
       $s26.delete_cookie("id", "products");
-
     },
     calc_utility(val_1, val_2) {
       return ((val_2 * 100) / val_1 - 100).toFixed(2);

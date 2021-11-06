@@ -23,5 +23,6 @@ import "./bankAccounts";
 import "./checkBooks";
 import "./withholdings";
 import "./productEntries";
+import "./productSeries";
 
 export default s26Views;

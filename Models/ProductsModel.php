@@ -300,32 +300,6 @@ class ProductsModel extends Mysql
     ];
   }
 
-  public function selectProductSeries(array $filter)
-  {
-    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
-
-    $this->product_id = $filter['product_id'];
-    $this->serie = $filter['search_serie'];
-
-    $info = "SELECT COUNT(id) as count
-      FROM products_series
-      WHERE product_id = $this->product_id AND serie LIKE '%$this->serie%'
-    ";
-    $info_table = $this->info_table_company($info, $this->db_company);
-
-    $rows = "
-      SELECT *
-      FROM products_series 
-      WHERE product_id = $this->product_id AND serie LIKE '%$this->serie%'
-    ";
-
-    $items = $this->select_all_company($rows, $this->db_company);
-    return [
-      'items' => $items,
-      'info' => $info_table,
-    ];
-  }
-
   public function selectPhotos(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
