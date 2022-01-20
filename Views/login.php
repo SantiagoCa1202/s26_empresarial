@@ -15,11 +15,11 @@
           <button type="button" class="btn btn-link" v-if="form.password != ''" @click="password = !password">Ver</button>
         </div>
         <div class="mb-3">
-          <button type="submit" class="btn btn-success form-control">
+          <button type="submit" class="btn btn-success w-100">
             Iniciar Sesión
           </button>
         </div>
-        <a class="btn btn-link form-control" @click.prevent="reset_password = true">
+        <a class="btn btn-link w-100" @click.prevent="reset_password = true">
           ¿Has olvidado tu contraseña?
         </a>
       </form>
@@ -36,12 +36,12 @@
         </div>
         <div class="row">
           <div class="col-6">
-            <button class="btn btn-outline-info form-control" @click.prevent="reset_password = false">
+            <button class="btn btn-outline-info w-100" @click.prevent="reset_password = false">
               Cancelar
             </button>
           </div>
           <div class="col-6">
-            <button type="submit" class="btn btn-s26-success form-control">
+            <button type="submit" class="btn btn-s26-success w-100">
               Restablecer
             </button>
           </div>

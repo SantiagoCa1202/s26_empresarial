@@ -55,4 +55,10 @@ Vue.component("s26-select-cities", selectCities);
 
 import selectColor from "./selectColor.vue";
 Vue.component("s26-select-color", selectColor);
+
+import selectProduct from "./selectProduct.vue";
+Vue.component("s26-select-product", selectProduct);
+
+import selectEmissionPoint from "./selectEmissionPoint.vue";
+Vue.component("s26-select-emission-point", selectEmissionPoint);
 export default s26Selects;

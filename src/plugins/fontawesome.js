@@ -82,6 +82,19 @@ import {
   faCopy,
   faAmbulance,
   faServer,
+  faSave,
+  faEyeSlash,
+  faWrench,
+  faArrowRight,
+  faBackspace,
+  faDivide,
+  faThLarge,
+  faEquals,
+  faCalculator,
+  faHistory,
+  faTag,
+  faHandHoldingUsd,
+  faCompressAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -168,7 +181,20 @@ library.add(
   faBarcode,
   faCopy,
   faAmbulance,
-  faServer
+  faServer,
+  faSave,
+  faEyeSlash,
+  faWrench,
+  faArrowRight,
+  faBackspace,
+  faDivide,
+  faThLarge,
+  faEquals,
+  faCalculator,
+  faHistory,
+  faTag,
+  faHandHoldingUsd,
+  faCompressAlt
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

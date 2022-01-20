@@ -9,35 +9,15 @@
 
 <?php
 
-$amount = [
-  [
-    "cant" => 10
-  ],
-  [
-    "cant" => 10
-  ],
-  [
-    "cant" => 10
-  ],
-  [
-    "cant" => 10
-  ],
-];
-$total = 0;
-for ($i = 0; $i < count($amount); $i++) {
-  $total += $amount[$i]['cant'];
-}
 
-echo $total;
-
-// // Get user IP address
-// if ( isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
-//   $ip = $_SERVER['HTTP_CLIENT_IP'];
-// } elseif ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && ! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-//   $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-// } else {
-//   $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
-// }
+//   //Get user IP address
+//  if ( isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
+//    $ip = $_SERVER['HTTP_CLIENT_IP'];
+//  } elseif ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && ! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+//    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+//  } else {
+//    $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
+//  }
 
 // $ip = filter_var($ip, FILTER_VALIDATE_IP);
 // $ip = ($ip === false) ? '0.0.0.0' : $ip;
@@ -83,12 +63,14 @@ DECLARE new_cost decimal(10,2);
 DECLARE current_stock int;
 DECLARE current_cost decimal(10,2);
 
-SELECT cost,stock INTO current_cost,current_stock FROM products_variant WHERE id = variant_id;
+SELECT SUM(stock) INTO current_stock FROM products_establishments WHERE product_variant_id = variant_id;
+SELECT cost INTO current_cost FROM products_variant WHERE id = variant_id;
+
 SET new_stock = current_stock + n_amount;
 SET new_total = (current_stock * current_cost) + (n_amount * n_cost);
 SET new_cost = new_total / new_stock;
 
-UPDATE producto SET existencia = new_stock, precio = new_cost WHERE codproducto = variant_id;
+UPDATE products_variant SET cost = new_cost WHERE id = variant_id;
 
 SELECT new_stock,new_cost;
 

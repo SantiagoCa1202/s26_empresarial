@@ -81,9 +81,27 @@ class CustomersModel extends Mysql
     $sql = "SELECT * FROM customers WHERE id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
     $shortName = explode(" ", $request['full_name']);
-    $request['short_name'] = $shortName[0] . ' ' . $shortName[2];
+    $last_name = array_key_exists(2, $shortName) ? $shortName[2] : $shortName[1];
+    $request['short_name'] = $shortName[0] . " " . $last_name;
 
     return $request;
+  }
+
+  public function searchCustomer($document)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->document = $document;
+
+    $rows = "
+      SELECT *
+      FROM customers
+      WHERE document = $this->document AND status = 1
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+
+    return $items;
   }
 
   public function insertCustomer(

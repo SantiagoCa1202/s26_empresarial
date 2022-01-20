@@ -1,6 +1,6 @@
 <?php
 //url del proyecto
-const BASE_URL = "http://192.168.0.104/s26_empresarial";
+const BASE_URL = "http://192.168.0.112/s26_empresarial";
 
 //Zona Horaria 
 date_default_timezone_set('America/Guayaquil');

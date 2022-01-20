@@ -9,7 +9,7 @@
   <?php } else { ?>
     <div class="row align-items">
       <s26-sidebar title="Clientes" icon="users" @update="allRows" @reset="onReset" v-model="activeSidebar" :url_export="url_export">
-        <template v-slot:header>
+        <template v-slot:header>                                                    
           <?php
           if ($_SESSION['permitsModule']['w']) {
           ?>

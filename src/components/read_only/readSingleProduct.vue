@@ -20,6 +20,7 @@
               ? 'btn-danger'
               : 'btn-primary',
           ]"
+          title="Stock Global"
         >
           {{ form.variants.info.total_stock }}
         </span>
@@ -63,6 +64,7 @@
                       ? 'is-invalid'
                       : ''
                   "
+                  title="Stock en este establecimiento"
                 >
                 </s26-input-read>
               </div>
@@ -79,7 +81,7 @@
                 </s26-input-read>
               </div>
               <div class="col-2">
-                <s26-input-read label="Pvp 3" :content="variant.pvp_2" money>
+                <s26-input-read label="Pvp 3" :content="variant.pvp_3" money>
                 </s26-input-read>
               </div>
               <div class="col-2">
@@ -179,7 +181,7 @@
                 >
                   {{ variant.sku }}
                 </span>
-                <span class="btn btn-sm btn-info fw-600">
+                <span class="btn btn-sm btn-info fw-600" title="Stock de Variante">
                   {{ variant.establishment_stock.info.stock }}
                 </span>
 

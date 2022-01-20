@@ -45,7 +45,8 @@
           @click="$emit('input', option.id)"
           @keyup.13="$emit('input', option.id)"
         >
-          {{ option.bank_entity.bank_entity }}
+          {{ option.bank_entity.bank_entity }} -
+          {{ option.n_account }}
         </div>
       </div>
       <div class="actions-select pt-1 px-2">

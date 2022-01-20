@@ -89,7 +89,7 @@
       <div class="col-8">
         <s26-input-read
           label="Creado El:"
-          :content="$s26.formatDate(form.created_at)"
+          :content="$s26.formatDate(form.created_at, 'xl')"
         ></s26-input-read>
       </div>
     </template>

@@ -54,6 +54,20 @@ class Customers extends Controllers
     die();
   }
 
+  public function searchCustomer($document)
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $document = strClean(strClean($document));
+
+      $arrData = $this->model->searchCustomer($document);
+
+      $arrRes = (empty($arrData)) ? 0 : $arrData;
+
+      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    }
+    die();
+  }
+
   public function setCustomer()
   {
     $id = intval($_POST['id']);
@@ -64,7 +78,7 @@ class Customers extends Controllers
     $mobile = !empty($_POST['mobile']) ? strClean($_POST['mobile']) : '9999999999';
     $email = !empty($_POST['email']) ? strClean($_POST['email']) : '';
     $time_limit = !empty($_POST['time_limit']) ? strClean($_POST['time_limit']) : '0 dias';
-    $status = intval($_POST['status']);
+    $status = !empty($_POST['status']) ? intval($_POST['status']) : 1;
     $request = "";
     if (
       valString($document, 10, 13) &&

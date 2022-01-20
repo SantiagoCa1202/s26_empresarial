@@ -1,5 +1,5 @@
 <template>
-  <s26-modal>
+  <s26-modal body_class="h-auto">
     <template v-slot:header>
       <h5 class="modal-title">Validar Código</h5>
     </template>

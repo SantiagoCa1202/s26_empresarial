@@ -31,10 +31,28 @@ class Login extends Controllers
           if ($arrData['status'] == 1) {
             $_SESSION['idUser'] = $arrData['id'];
             $_SESSION['login'] = true;
+            //Get user IP address
+            if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
+              $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+              $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+              $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
+            }
 
-            $arrData = $this->model->sessionLogin($_SESSION['idUser']);
+            $ip = filter_var($ip, FILTER_VALIDATE_IP);
+            $ip = ($ip === false) ? '0.0.0.0' : $ip;
+
+            $arrData = $this->model->sessionLogin($_SESSION['idUser'], $ip);
             $_SESSION['userData'] = $arrData;
             setcookie('dark-mode', $arrData['dark_mode'], time() + (86400 * 30), "/");
+            if (isset($arrData['device']['printer_name'])) {
+              setcookie('printer_name', $arrData['device']['printer_name'], time() + (86400 * 30), "/");
+            }else{
+              setcookie('printer_name', '', time() + (86400 * 30), "/");
+            }
+
+
             $arrRes = array('status' => true, 'msg' => 'Ok');
           } else {
             $arrRes = array('status' => false, 'msg' => 'Usuario Inactivo');

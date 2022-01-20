@@ -65,7 +65,7 @@
       <?php } ?>
       <?php if (!empty($_SESSION['permits'][13]['r'])) { ?>
         <li>
-          <a href="<?= BASE_URL ?>/new_sale" :class="focusSubMenu('new_sale')">
+          <a href="<?= BASE_URL ?>/newSale" :class="focusSubMenu('newSale')">
             <s26-icon icon="shopping-bag" class="menu-icon"></s26-icon>
             Facturación
           </a>
@@ -420,7 +420,7 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][40]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/info_vouchers" :class="focusSubMenu('info_vouchers')">
+                <a href="<?= BASE_URL ?>/documents" :class="focusSubMenu('documents')">
                   Info. de Comprobantes
                 </a>
               </li>

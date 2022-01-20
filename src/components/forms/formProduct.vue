@@ -1,7 +1,13 @@
 <template>
   <s26-modal-multiple
     id="formProduct"
-    :title="(id == 0 ? 'Nuevo ' : 'Editar ') + 'Producto'"
+    :title="
+      id == 0
+        ? 'Nuevo Producto '
+        : value == 'add_variant'
+        ? 'Añadir Variante / ' + form.name + ' - ' + form.model
+        : 'Editar Producto '
+    "
     size="xl"
     :levels="levels"
     body_style="min-height: 450px;"
@@ -11,7 +17,7 @@
     ref="modal_multiple"
   >
     <!-- INFORMACION PRINCIPAL -->
-    <template v-slot:level-0>
+    <template v-slot:level-0 v-if="value != 'add_variant'">
       <div class="col-2" v-if="id > 0">
         <s26-input-read label="Id" :content="form.id"> </s26-input-read>
       </div>
@@ -35,9 +41,9 @@
         ></s26-editor>
       </div>
     </template>
-    <template v-slot:level-1>
+    <template :slot="value == 'add_variant' ? 'level-0' : 'level-1'">
       <!-- DATOS GENERALES -->
-      <div class="col-12 mb-3">
+      <div class="col-12 mb-3" v-if="value != 'add_variant'">
         <div class="col-12 mb-3 row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Datos Generales</h2>
           <div class="col-4 col-sm-2">
@@ -63,6 +69,7 @@
               id="form-category"
               v-model="form.category_id"
               s26_required
+              label
             ></s26-select-category>
           </div>
           <div class="col-4 col-sm-2">
@@ -94,7 +101,7 @@
         </div>
       </div>
       <!-- APROBACIONES -->
-      <div class="col-12 mb-3">
+      <div class="col-12 mb-3" v-if="value != 'add_variant'">
         <div class="row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Aprobaciones</h2>
           <div class="col">
@@ -124,32 +131,6 @@
             </div>
           </div>
           <div class="col">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="form.pvp_manual"
-                id="form-pvp_manual"
-              />
-              <label class="form-check-label" for="form-pvp_manual">
-                PVP Manual.
-              </label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="form.discount"
-                id="form-discount"
-              />
-              <label class="form-check-label" for="form-discount">
-                Descuento.
-              </label>
-            </div>
-          </div>
-          <div class="col">
             <label class="form-label w-100 text-end"> Iva: </label>
           </div>
           <div class="col mb-3">
@@ -161,7 +142,7 @@
         </div>
       </div>
       <!-- INFO. DOC. DE COMPRA -->
-      <div class="col-12 mb-3" v-if="id == 0">
+      <div class="col-12 mb-3" v-if="id == 0 || value == 'add_variant'">
         <div class="row mx-0 rounded py-2 s26-shadow-md border">
           <h2 class="h5 fw-bold s26-text-blue">Info. Documento de Compra</h2>
           <div class="col-sm-4">
@@ -200,10 +181,13 @@
         </div>
       </div>
       <transition name="fade">
-        <div class="col-12 mb-5" v-if="form.serial && id == 0">
+        <div
+          class="col-12 mb-5"
+          v-if="form.serial && (id == 0 || value == 'add_variant')"
+        >
           <div class="row mx-0 rounded py-2 s26-shadow-md border">
             <h2 class="h5 fw-bold s26-text-blue">Seriado</h2>
-            <div class="col-12" v-if="id == 0">
+            <div class="col-12" v-if="id == 0 || value == 'add_variant'">
               <s26-form-input
                 id="form-serie"
                 v-model="serial"
@@ -241,7 +225,10 @@
         </div>
       </transition>
     </template>
-    <template v-slot:level-2 v-if="id == 0">
+    <template
+      :slot="value == 'add_variant' ? 'level-1' : 'level-2'"
+      v-if="id == 0 || value == 'add_variant'"
+    >
       <!-- VARIANTES -->
       <transition-group name="list" tag="div">
         <div
@@ -765,8 +752,6 @@ const def_form = () => {
     category_id: "",
     discontinued: 0,
     serial: 0,
-    discount: 0,
-    pvp_manual: 0,
     iva: 12,
     // EN PRODUCTOS SERIES
     series: [],
@@ -836,6 +821,8 @@ export default {
       levels:
         this.id == 0
           ? ["Información Principal", "Información General", "Variantes"]
+          : this.value == "add_variant"
+          ? ["Comprobante de Compra", "Variantes"]
           : ["Información Principal", "Información General"],
       id_variant: null,
       variants: def_variants(),
@@ -875,13 +862,23 @@ export default {
     },
     onSubmit() {
       this.form.id = this.id;
+      const url =
+        this.value == "add_variant"
+          ? "/products/addVariants"
+          : "/products/setProduct";
       this.$alertify.confirm(
-        `Desea ${this.id == 0 ? "Ingresar" : "Actualizar"} el Producto?.`,
+        `Desea ${
+          this.id == 0
+            ? "Ingresar el Producto?."
+            : this.value == "add_variant"
+            ? "Añadir Variante?."
+            : "Actualizar el Producto?."
+        } `,
         () => {
           let formData = $s26.json_to_formData(this.form);
           $s26.show_loader_points();
           this.axios
-            .post("/products/setProduct", formData)
+            .post(url, formData)
             .then((res) => {
               if (res.data.length > 0) {
                 let response = "";

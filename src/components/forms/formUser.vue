@@ -159,6 +159,33 @@
         >
         </s26-select-status>
       </div>
+      <div class="col-4">
+        <s26-select-status
+          label="Acceso a Costos"
+          id="form-cost_access"
+          v-model="form.cost_access"
+          s26_required
+        >
+        </s26-select-status>
+      </div>
+      <div class="col-4">
+        <s26-select-status
+          label="PVP. Manual"
+          id="form-pvp_manual"
+          v-model="form.pvp_manual"
+          s26_required
+        >
+        </s26-select-status>
+      </div>
+      <div class="col-4">
+        <s26-select-status
+          label="Descuento Manual"
+          id="form-discount_manual"
+          v-model="form.discount_manual"
+          s26_required
+        >
+        </s26-select-status>
+      </div>
       <div class="col-6">
         <s26-form-input
           label="Contraseña"
@@ -204,6 +231,9 @@ const def_form = () => {
     establishment_id: "",
     user_access: "",
     create_notifications_users: "",
+    cost_access: "",
+    pvp_manual: "",
+    discount_manual: "",
     status: 1,
     created_at: "",
   };

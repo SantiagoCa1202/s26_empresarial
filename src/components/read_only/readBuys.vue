@@ -146,7 +146,6 @@
       <s26-table
         :rows="series.info.count"
         @get="getSeries"
-        :sidebar="false"
         :loading_data="loading_data"
         :fields="fields_series"
         relative

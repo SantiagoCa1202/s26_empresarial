@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-3 s26-form-group">
+  <div :class="'s26-form-group mb-' + mb">
     <label :for="id" class="form-label" v-if="label">
       {{ label }}
       <span class="text-danger" v-if="s26_required">
@@ -35,6 +35,7 @@
       v-on:input="$emit('input', $event.target.value)"
       @keyup="$emit('keyup')"
       @keyup.enter="$emit('enter')"
+      @blur="$emit('blur')"
       :text="text"
       :number="number"
       :step="step"
@@ -109,6 +110,9 @@ export default {
     validate: Boolean,
     disabled: Boolean,
     title: String,
+    mb: {
+      default: "3",
+    },
   },
   created() {
     setTimeout(() => {

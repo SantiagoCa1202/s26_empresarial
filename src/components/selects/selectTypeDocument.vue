@@ -13,7 +13,7 @@
       @click="$s26.activeSelect"
       @keypress.13="$s26.activeSelect"
     >
-      <div>
+      <div :title="select">
         {{ select }}
       </div>
       <s26-icon icon="angle-down" class="icon-angle-down"></s26-icon>
@@ -132,7 +132,12 @@ export default {
         .catch((err) => console.log(err));
     },
     showRows(id) {
-      if ((this.type == "buy" && id <= 5) || this.type == "all") return true;
+      if (
+        (this.type == "buy" && id <= 5) ||
+        (this.type == "declarable" && (id >= 2 && id <= 8)) ||
+        this.type == "all"
+      )
+        return true;
 
       return false;
     },

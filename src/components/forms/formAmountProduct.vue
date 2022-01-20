@@ -307,6 +307,7 @@ export default {
       this.axios
         .get("/products/getVariant/" + id)
         .then((res) => {
+          console.log(res.data)
           this.data = res.data;
           this.form.product_id = this.data.product_id;
           this.form.cost = this.data.cost;

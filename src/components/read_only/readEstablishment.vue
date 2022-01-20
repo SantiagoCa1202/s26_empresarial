@@ -49,16 +49,22 @@
           :link="'users,' + form.executive_id"
         ></s26-input-read>
       </div>
-      <div class="col-8">
+      <div class="col-6">
         <s26-input-read
           label="Creado El:"
           :content="$s26.formatDate(form.created_at, 'xl')"
         ></s26-input-read>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <s26-input-read
           label="Estado"
           :content="form.status == 1 ? 'Activo' : 'Inactivo'"
+        ></s26-input-read>
+      </div>
+      <div class="col-3">
+        <s26-input-read
+          label="Dirección IP"
+          :content="form.ip_adress"
         ></s26-input-read>
       </div>
     </template>

@@ -2,6 +2,7 @@
 require_once('CompaniesModel.php');
 require_once('UsersModel.php');
 require_once('SystemModel.php');
+require_once('DevicesModel.php');
 
 class EstablishmentsModel extends Mysql
 {
@@ -21,6 +22,7 @@ class EstablishmentsModel extends Mysql
     parent::__construct();
     $this->Company = new CompaniesModel;
     $this->System = new SystemModel;
+    $this->Devices = new DevicesModel;
   }
 
 
@@ -57,7 +59,6 @@ class EstablishmentsModel extends Mysql
 
     for ($i = 0; $i < count($items); $i++) {
       $items[$i]['company'] = $this->Company->selectCompany($items[$i]['company_id']);
-
       $items[$i]['city'] = $this->System->selectCity($items[$i]['city_id']);
     }
     return [
@@ -70,12 +71,21 @@ class EstablishmentsModel extends Mysql
   {
 
     $this->id = $id;
+
+
     $sql = "SELECT *,  e.id as id, e.phone as phone, u.name, u.last_name FROM establishments e
     JOIN users u
     ON e.executive_id = u.id
     WHERE e.id = $this->id";
     $request = $this->select($sql);
+    $fil = [
+      'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
+      'ip_adress' => !empty($_GET['ip_adress']) ? strClean($_GET['ip_adress']) : '',
+      'establishment_id' => $request['id'],
+      'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
+    ];
     $request['company'] = $this->Company->selectCompany($request['company_id']);
+    $request['devices'] = $this->Devices->selectDevices(1000, $fil);
     $request['city'] = $this->System->selectCity($request['city_id']);
 
     return $request;

@@ -11,6 +11,8 @@
       </a>
     </label>
     <div
+      :id="id != '' ? id : ''"
+      @dblclick="getRow"
       :class="[
         'form-control form-control-sm',
         money ? 'form-control-dollars' : '',
@@ -37,6 +39,9 @@
 <script>
 export default {
   props: {
+    id: {
+      default: "",
+    },
     label: String,
     content: {},
     variant: String,
@@ -52,8 +57,10 @@ export default {
   methods: {
     getRow() {
       let strLink = this.link.split(",");
-      $s26.create_cookie("id", strLink[1], strLink[0]);
-      window.open(BASE_URL + "/" + strLink[0], "_blank");
+      if (strLink[1] > 0) {
+        $s26.create_cookie("id", strLink[1], strLink[0]);
+        window.open(BASE_URL + "/" + strLink[0], "_blank");
+      }
     },
   },
 };

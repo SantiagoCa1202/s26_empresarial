@@ -34,7 +34,7 @@
             <?php
             }
             ?>
-            <s26-select-category id="category" v-model="filter.category" @change="allRows" all></s26-select-category>
+            <s26-select-category id="category" v-model="filter.category" @change="allRows" all label></s26-select-category>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows"></s26-select-status>
 
           </div>
@@ -66,7 +66,7 @@
                   {{ s26_data.info.total_outputs }}
                 </s26-tarjet-info>
                 <?php
-                if ($_SESSION['userData']['cost_products']) {
+                if ($_SESSION['userData']['cost_access'] == 1) {
                 ?>
                   <s26-tarjet-info title="Costo" variant="danger" icon="money-bill-wave">
                     <s26-icon icon="dollar-sign" class="text-danger"></s26-icon>
@@ -147,6 +147,13 @@
                   </li>
                 <?php
                 }
+                if ($_SESSION['permitsModule']['w']) {
+                ?>
+                  <li class="list-group-item border-0" @click="setIdRow(item.id, 'add_variant')">
+                    Añadir Var.
+                  </li>
+                <?php
+                }
                 if ($_SESSION['permitsModule']['u']) {
                 ?>
                   <li class="list-group-item border-0" @click="setIdRow(item.id, 'disable')">
@@ -184,7 +191,7 @@
         </transition>
         <!-- Modal Nuevo-->
         <transition name="slide-fade">
-          <s26-form-product v-model="action" :id="idRow" v-if="action == 'new_product' || action == 'update'" @update="allRows" :code="code"></s26-form-product>
+          <s26-form-product v-model="action" :id="idRow" v-if="action == 'new_product' || action == 'update' || action == 'add_variant' " @update="allRows" :code="code"></s26-form-product>
         </transition>
         <!-- Modal Cantidad-->
         <transition name="slide-fade">

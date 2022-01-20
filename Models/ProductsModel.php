@@ -19,9 +19,7 @@ class ProductsModel extends Mysql
   public $category_id;
   public $discontinued;
   public $serial;
-  public $discount;
   public $offer;
-  public $pvp_manual;
   public $iva;
   public $amount;
   public $cost;
@@ -85,11 +83,17 @@ class ProductsModel extends Mysql
       SUM(pv.total_entries) as total_entries
       FROM products p
       LEFT JOIN (SELECT pv.id, pv.product_id, pv.ean_code, pv.sku, 
-        SUM(pv.stock) as stock, 
-        SUM(pv.cost * pv.stock) as cost, 
-        SUM(pv.pvp_1 * pv.stock) as pvp, 
+        SUM(pe.stock) as stock, 
+        SUM(pv.cost * pe.stock) as cost, 
+        SUM(pv.pvp_1 * pe.stock) as pvp, 
         SUM(pev.amount_entries) as total_entries
         FROM products_variant pv
+        LEFT JOIN (SELECT product_variant_id, 
+          SUM(stock) as stock
+          FROM products_establishments
+          GROUP BY product_variant_id
+        ) pe
+        ON pv.id = pe.product_variant_id
         LEFT JOIN (SELECT product_variant_id, 
           SUM(amount) as amount_entries
           FROM products_entries_variants
@@ -130,17 +134,19 @@ class ProductsModel extends Mysql
 
     $rows = "SELECT DISTINCT p.id, p.name, p.model, p.trademark, sc.name as category, pv.stock, pv.min_stock
       FROM products p
-      LEFT JOIN (SELECT product_id, ean_code, sku, SUM(stock) as stock, SUM(min_stock) as min_stock
-        FROM products_variant
-        WHERE ean_code LIKE '%$this->variants%' AND
-        sku LIKE '%$this->sku%' AND
+      LEFT JOIN (SELECT pv.product_id, pv.ean_code, pv.sku, SUM(pe.stock) as stock, SUM(pv.min_stock) as min_stock
+        FROM products_variant pv
+        JOIN products_establishments pe
+        ON pv.id = pe.product_variant_id
+        WHERE pv.ean_code LIKE '%$this->variants%' AND
+        pv.sku LIKE '%$this->sku%' AND
         (
-          pvp_1 LIKE '%$this->pvp%' OR
-          pvp_2 LIKE '%$this->pvp%' OR
-          pvp_3 LIKE '%$this->pvp%' OR
-          pvp_distributor LIKE '%$this->pvp%'
+          pv.pvp_1 LIKE '%$this->pvp%' OR
+          pv.pvp_2 LIKE '%$this->pvp%' OR
+          pv.pvp_3 LIKE '%$this->pvp%' OR
+          pv.pvp_distributor LIKE '%$this->pvp%'
         )
-        GROUP BY product_id
+        GROUP BY pv.product_id
       ) pv
       ON p.id = pv.product_id
       LEFT JOIN (SELECT product_id, provider_id
@@ -186,7 +192,7 @@ class ProductsModel extends Mysql
     $request['variants'] = $this->selectVariants($request['id']);
     $request['series'] = $this->selectVariants($request['id']);
 
-    $request['access_cost'] = $_SESSION['userData']['cost_products'];
+    $request['access_cost'] = $_SESSION['userData']['cost_access'];
     $request['access_providers'] = $_SESSION['permits'][36]['r'];
 
     return $request;
@@ -209,6 +215,41 @@ class ProductsModel extends Mysql
     return $items;
   }
 
+  public function searchSaleProduct($code)
+  {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $establishment_id = $_SESSION['userData']['establishment_id'];
+
+
+    $this->code = $code;
+
+    $rows = "SELECT
+      pv.id,pv.product_id,pv.ean_code,pv.sku,pv.min_stock,pv.max_stock,pv.cost,pv.pvp_1,pv.pvp_2,pv.pvp_3,pv.pvp_distributor,pv.color_id,pv.size,pv.fragance,pv.net_content,pv.shape,pv.package,pv.additional_info,pv.created_at,
+      p.name, p.trademark, p.model, p.iva, p.serial,
+      pe.stock
+      FROM products_variant pv
+      JOIN products p
+      ON pv.product_id = p.id
+      LEFT JOIN(
+        SELECT stock, product_variant_id, status
+        FROM products_establishments 
+        WHERE establishment_id = $establishment_id AND status = 1
+        GROUP BY product_variant_id
+      )pe
+      ON pv.id = pe.product_variant_id
+      WHERE (pv.ean_code LIKE '$this->code' OR pv.sku LIKE '$this->code' OR p.model LIKE '$this->code') AND 
+        pe.status = 1
+    ";
+
+    $items = $this->select_all_company($rows, $this->db_company);
+
+    if (count($items) > 0) {
+      $items[0]['cost'] = $_SESSION['userData']['cost_access'] == 1 ? $items[0]['cost'] : 0;
+    }
+    return $items;
+  }
+
   public function selectVariants(int $product_id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -216,21 +257,23 @@ class ProductsModel extends Mysql
     $establishment_id = $_SESSION['userData']['establishment_id'];
     $this->product_id = $product_id;
 
-    $info = "SELECT COUNT(pv.id) as count, SUM(pv.stock) as total_stock, SUM(pv.min_stock) as total_min_stock
+    $info = "SELECT COUNT(pv.id) as count, SUM(pe.stock) as total_stock, SUM(pv.min_stock) as total_min_stock
       FROM products_variant pv
-      JOIN products_variant_dimensions pvd
-      ON pv.id = pvd.product_variant_id 
-      WHERE pv.product_id = $this->product_id
+      JOIN products_establishments pe
+      ON pv.id = pe.product_variant_id
+      WHERE pv.product_id = $this->product_id 
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "SELECT *, pv.id as id, pe.status as status
+    $rows = "SELECT *, pv.id as id, pe.status as status, pe.stock
       FROM products_variant pv
-      JOIN products_variant_dimensions pvd
+      LEFT JOIN ( SELECT *
+        FROM products_variant_dimensions pvd
+      ) pvd
       ON pv.id = pvd.product_variant_id 
-      LEFT JOIN ( SELECT pe.product_variant_id, pe.status
+      LEFT JOIN ( SELECT pe.product_variant_id, pe.status, pe.stock
         FROM products_establishments pe
-        WHERE establishment_id = $establishment_id
+        WHERE pe.establishment_id = $establishment_id
       ) pe
       ON pv.id = pe.product_variant_id
       WHERE pv.product_id = $this->product_id
@@ -241,28 +284,30 @@ class ProductsModel extends Mysql
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['cost'] = $_SESSION['userData']['cost_products'] ?  $items[$i]['cost'] : 0;
+      $items[$i]['cost'] = $_SESSION['userData']['cost_access'] == 1 ?  $items[$i]['cost'] : 0;
       $items[$i]['color'] = $this->System->selectColor($items[$i]['color_id']);
       $items[$i]['establishment_stock'] = $this->selectStockEstablishments($items[$i]['id']);
       $items[$i]['photos'] = $this->selectPhotos($items[$i]['id']);
     }
 
     return [
-      'access_cost' => $_SESSION['userData']['cost_products'],
+      'access_cost' => $_SESSION['userData']['cost_access'],
       'items' => $items,
       'info' => $info_table,
     ];
   }
 
-  public function selectVariant(int $id)
+  public function selectVariant(int $id, int $establishment_id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->id = $id;
-    $sql = "SELECT *, pv.id as id, p.id as product_id 
+    $sql = "SELECT *, pv.id as id, p.id as product_id, SUM(pe.stock) as stock
     FROM products_variant pv
     JOIN products p
     ON pv.product_id = p.id
+    JOIN products_establishments pe
+    ON pv.id = pe.product_variant_id
      WHERE pv.id = $this->id";
     $request = $this->select_company($sql, $this->db_company);
 
@@ -405,8 +450,6 @@ class ProductsModel extends Mysql
     int $category_id,
     int $discontinued,
     int $serial,
-    int $discount,
-    int $pvp_manual,
     float $iva,
   ) {
 
@@ -422,12 +465,10 @@ class ProductsModel extends Mysql
     $this->category_id = $category_id;
     $this->discontinued = $discontinued;
     $this->serial = $serial;
-    $this->discount = $discount;
-    $this->pvp_manual = $pvp_manual;
     $this->iva = $iva;
 
     $query_insert = "INSERT INTO products (
-        name, description, trademark, model, type_product, type, remanufactured, category_id, discontinued, serial, discount, pvp_manual, iva) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        name, description, trademark, model, type_product, type, remanufactured, category_id, discontinued, serial, iva) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
     $arrData = array(
       $this->name,
       $this->description,
@@ -439,8 +480,6 @@ class ProductsModel extends Mysql
       $this->category_id,
       $this->discontinued,
       $this->serial,
-      $this->discount,
-      $this->pvp_manual,
       $this->iva,
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
@@ -460,8 +499,6 @@ class ProductsModel extends Mysql
     int $category_id,
     int $discontinued,
     int $serial,
-    int $discount,
-    int $pvp_manual,
     float $iva,
   ) {
 
@@ -478,12 +515,10 @@ class ProductsModel extends Mysql
     $this->category_id = $category_id;
     $this->discontinued = $discontinued;
     $this->serial = $serial;
-    $this->discount = $discount;
-    $this->pvp_manual = $pvp_manual;
     $this->iva = $iva;
 
     $sql = "UPDATE products SET
-        name = ?, description = ?, trademark = ?, model = ?, type_product = ?, type = ?, remanufactured = ?, category_id = ?, discontinued = ?, serial = ?, discount = ?, pvp_manual = ?, iva = ? WHERE id = $this->id";
+        name = ?, description = ?, trademark = ?, model = ?, type_product = ?, type = ?, remanufactured = ?, category_id = ?, discontinued = ?, serial = ?, iva = ? WHERE id = $this->id";
     $arrData = array(
       $this->name,
       $this->description,
@@ -495,8 +530,6 @@ class ProductsModel extends Mysql
       $this->category_id,
       $this->discontinued,
       $this->serial,
-      $this->discount,
-      $this->pvp_manual,
       $this->iva,
     );
     $request = $this->update_company($sql, $arrData, $this->db_company);
@@ -625,7 +658,6 @@ class ProductsModel extends Mysql
       product_id,
       ean_code,
       sku,
-      stock,
       min_stock,
       max_stock,
       cost,
@@ -640,12 +672,11 @@ class ProductsModel extends Mysql
       shape,
       package,
       additional_info
-          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+          ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $arrData = array(
       $this->product_id,
       $this->code,
       $this->sku,
-      $this->amount,
       $this->min_stock,
       $this->max_stock,
       $this->cost,
@@ -669,7 +700,7 @@ class ProductsModel extends Mysql
   public function insertEntryVariant(
     int $product_variant_id,
     int $amount,
-    int $cost,
+    float $cost,
     int $document_id
   ) {
 
@@ -848,6 +879,55 @@ class ProductsModel extends Mysql
     $request = $this->update_company($query_insert, $arrData, $this->db_company);
     return $request;
   }
+
+  public function updateStock(
+    int $variant_id,
+    int $amount,
+    int $establishment_id
+  ) {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->variant_id = $variant_id;
+    $this->amount = $amount;
+    $this->establishment_id = $establishment_id;
+
+    //OBTENER STOCK ACTUAL EN MATRIZ
+    $sql = "SELECT stock FROM products_establishments WHERE product_variant_id = $this->variant_id";
+    $request = $this->select_company($sql, $this->db_company);
+    $stock = $request['stock'];
+    $this->newStock = $this->amount + $stock;
+
+    //ACTUALIZAR STOCK
+    $sql = "UPDATE products_establishments SET stock = ? 
+    WHERE product_variant_id = $this->variant_id AND establishment_id = $this->establishment_id";
+    $arrData = array(
+      $this->newStock,
+    );
+    $request = $this->update_company($sql, $arrData, $this->db_company);
+    return $request;
+  }
+
+  public function insertStockAdjustment(
+    int $variant_id,
+    int $amount,
+    int $establishment_id
+  ) {
+    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
+
+    $this->variant_id = $variant_id;
+    $this->amount = $amount;
+    $this->establishment_id = $establishment_id;
+
+    $sql = "INSERT INTO stock_adjustment (product_variant_id, amount, establishment_id) VALUES (?,?,?)";
+    $arrData = array(
+      $this->variant_id,
+      $this->amount,
+      $this->establishment_id,
+    );
+    $request = $this->insert_company($sql, $arrData, $this->db_company);
+    return $request;
+  }
+
 
   public function updateStatus(
     int $id,

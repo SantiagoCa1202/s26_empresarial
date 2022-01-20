@@ -55,7 +55,7 @@ if (element) {
         "debts",
         "photos",
         "files",
-        "info_vouchers",
+        "documents",
         "establishments",
         "general_config",
         "catalogue",

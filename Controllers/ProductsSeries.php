@@ -21,7 +21,7 @@ class ProductsSeries extends Controllers
   public function getSeries()
   {
     if ($_SESSION['permitsModule']['r']) {
-      $perPage = !empty($_GET['perPage']) ? intval($_GET['perPage']) : 1000000;
+      $perPage = !empty($_GET['perPage']) ? intval($_GET['perPage']) : '';
       $filter = [
         'serie' => !empty($_GET['serie']) ? strClean($_GET['serie']) : '',
         'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',

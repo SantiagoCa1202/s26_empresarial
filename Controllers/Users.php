@@ -92,6 +92,9 @@ class Users extends Controllers
     $create_notifications_users = intval($_POST['create_notifications_users']);
     $user_access = intval($_POST['user_access']);
     $status = intval($_POST['status']);
+    $cost_access = intval($_POST['cost_access']);
+    $pvp_manual = intval($_POST['pvp_manual']);
+    $discount_manual = intval($_POST['discount_manual']);
     $request = "";
     if (
       valString($name) &&
@@ -104,6 +107,9 @@ class Users extends Controllers
       ($establishment_id > 0) &&
       ($insurance == 1 || $insurance == 2) &&
       ($status == 1 || $status == 2) &&
+      ($cost_access == 1 || $cost_access == 2) &&
+      ($pvp_manual == 1 || $pvp_manual == 2) &&
+      ($discount_manual == 1 || $discount_manual == 2) &&
       ($user_access == 1 || $user_access == 2) &&
       ($create_notifications_users == 1 || $create_notifications_users == 2)
     ) {
@@ -133,6 +139,9 @@ class Users extends Controllers
             $establishment_id,
             $user_access,
             $create_notifications_users,
+            $cost_access,
+            $pvp_manual,
+            $discount_manual,
             $status
           );
           $type = 1;
@@ -166,6 +175,9 @@ class Users extends Controllers
             $establishment_id,
             $user_access,
             $create_notifications_users,
+            $cost_access,
+            $pvp_manual,
+            $discount_manual,
             $status
           );
           $type = 2;

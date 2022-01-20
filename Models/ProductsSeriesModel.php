@@ -14,7 +14,7 @@ class ProductsSeriesModel extends Mysql
     $this->Document = new SystemModel;
   }
 
-  public function selectSeries(int $perPage, array $filter)
+  public function selectSeries($perPage, array $filter)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
@@ -29,6 +29,7 @@ class ProductsSeriesModel extends Mysql
 
     $product_id = $this->product_id > 0 ? "ps.product_id = '$this->product_id' AND" : "";
 
+    $pagination =  $this->perPage != '' ? "LIMIT 0, $this->perPage" : "";
     $where = "
       $document_id
       $product_id
@@ -61,7 +62,7 @@ class ProductsSeriesModel extends Mysql
       ) b
       ON ps.document_id = b.id
       WHERE $where  
-      ORDER BY ps.id DESC LIMIT 0, $this->perPage
+      ORDER BY ps.id DESC $pagination
     ";
 
     $items = $this->select_all_company($rows, $this->db_company);

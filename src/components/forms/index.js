@@ -73,4 +73,17 @@ Vue.component("s26-security-code", formSecurityCode);
 
 import formDisableProduct from "./formDisableProduct.vue";
 Vue.component("s26-disable-product", formDisableProduct);
+
+import calculator from "./calculator.vue";
+Vue.component("s26-calculator", calculator);
+
+import processSale from "./processSale.vue";
+Vue.component("s26-process-sale", processSale);
+
+import formDocument from "./formDocument.vue";
+Vue.component("s26-form-document", formDocument);
+
+import formAuthorization from "./formAuthorization.vue";
+Vue.component("s26-form-authorization", formAuthorization);
+
 export default s26Forms;

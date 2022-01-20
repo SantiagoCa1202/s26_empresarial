@@ -1,6 +1,6 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
-    <label :for="id" class="form-label w-100">
+    <label :for="id" class="form-label w-100" v-if="!label">
       {{
         arr[0] == "subcat" && all && value != 0 ? "SubCategoria" : "Categoria"
       }}
@@ -135,6 +135,9 @@ export default {
     value: {},
     all: Boolean,
     s26_required: Boolean,
+    label: {
+      default: true,
+    },
   },
   data: function () {
     return {

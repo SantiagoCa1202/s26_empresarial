@@ -4,9 +4,15 @@ const val_inputs = () => {
       if (e.keyCode == 46) return false;
       if (isNaN(this.value + String.fromCharCode(e.charCode))) return false;
     });
-    $("input[money]:not(:password)").keypress(function(e) {
-      if (isNaN(this.value + String.fromCharCode(e.charCode))) return false;
-    });
+    $("input[money]:not(:password), input[percentage]:not(:password)").keypress(
+      function(e) {
+        if (
+          isNaN(this.value + String.fromCharCode(e.charCode)) &&
+          e.keyCode != 46
+        )
+          return false;
+      }
+    );
     $("input[text]").keypress(function(e) {
       if (
         (e.keyCode < 97 || e.keyCode > 122) &&
@@ -151,6 +157,7 @@ const formatDate = (date = "", size = "sm") => {
 const currency = function(number) {
   return new Intl.NumberFormat("es-Es", {
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(number);
 };
 
@@ -478,6 +485,17 @@ const activeSelect = (e) => {
     e.stopPropagation();
   });
 };
+
+const copy_content = (content) => {
+  var aux = document.createElement("input");
+  aux.setAttribute("value", content);
+  document.body.appendChild(aux);
+  aux.select();
+  document.execCommand("copy");
+  document.body.removeChild(aux);
+  console.log(content);
+};
+
 export default {
   val_inputs,
   val_form,
@@ -494,4 +512,5 @@ export default {
   formatDate,
   currency,
   activeSelect,
+  copy_content,
 };

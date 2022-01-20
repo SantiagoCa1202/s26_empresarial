@@ -54,15 +54,27 @@ class Products extends Controllers
     die();
   }
 
-  public function searchProduct($code)
+  public function searchProduct($code = '')
   {
     if ($_SESSION['permitsModule']['r']) {
-      $code = strClean(strClean($code));
 
-      $arrData = $this->model->searchProduct($code);
+      $search = $code != '' ? strClean($code) : strClean($_GET['code']);
+      if ($code !== '') {
 
-      $arrRes = (empty($arrData)) ? 0 : $arrData;
+        $arrData = $this->model->searchProduct($search);
+      } else {
+        $arrData = $this->model->searchSaleProduct($search);
+      }
 
+      $arrRes[0]['pvp_manual'] = $_SESSION['userData']['pvp_manual'];
+
+      if (empty($arrData)) {
+        $arrRes = 0;
+      } else {
+        $arrRes = $arrData;
+        $arrRes[0]['pvp_manual'] = $_SESSION['userData']['pvp_manual'];
+        $arrRes[0]['discount'] = $_SESSION['userData']['discount_manual'];
+      }
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }
     die();
@@ -82,8 +94,10 @@ class Products extends Controllers
   {
     if ($_SESSION['permitsModule']['r']) {
       $id = intval(strClean($id));
+      $establishment_id = $_SESSION['userData']['establishment_id'];
+
       if ($id > 0) {
-        $arrData = $this->model->selectVariant($id);
+        $arrData = $this->model->selectVariant($id, $establishment_id);
         $arrRes = (empty($arrData)) ? 0 : $arrData;
 
         echo json_encode($arrRes, JSON_NUMERIC_CHECK);
@@ -131,8 +145,6 @@ class Products extends Controllers
     $category_id = intval($_POST['category_id']);
     $discontinued = boolval($_POST['discontinued']);
     $serial = boolval($_POST['serial']);
-    $discount = boolval($_POST['discount']);
-    $pvp_manual = boolval($_POST['pvp_manual']);
     $iva = floatval($_POST['iva']);
 
     //EN PRODUCTOS SERIES
@@ -159,8 +171,6 @@ class Products extends Controllers
       ($type == 'original' || $type == 'réplica') &&
       ($remanufactured == 1 || $remanufactured == 0) &&
       ($serial == 1 || $serial == 0) &&
-      ($discount == 1 || $discount == 0) &&
-      ($pvp_manual == 1 || $pvp_manual == 0) &&
       ($discontinued == 1 || $discontinued == 0) &&
       ($iva == 0 || $iva == 12) &&
       (count($variants) > 0 && $id == 0 || count($variants) == 0 && $id > 0)
@@ -180,8 +190,6 @@ class Products extends Controllers
             $category_id,
             $discontinued,
             $serial,
-            $discount,
-            $pvp_manual,
             $iva,
           );
         } else {
@@ -205,8 +213,6 @@ class Products extends Controllers
             $category_id,
             $discontinued,
             $serial,
-            $discount,
-            $pvp_manual,
             $iva,
           );
         } else {
@@ -443,7 +449,7 @@ class Products extends Controllers
     $pvp_distributor = floatval($_POST['pvp_distributor']);
     $document_id = intval($_POST['document_id']);
     $serial = boolval($_POST['serial']);
-    
+
     //EN PRODUCTOS SERIES
     $series = !empty($_POST['series']) ? arrClean($_POST['series']) : [];
 
@@ -470,9 +476,8 @@ class Products extends Controllers
           intval($document_id)
         );
 
-
         if ($request_variant > 0) {
-          //actualizar costo y stock
+          //actualizar costo
           $request = $this->model->updateCost(
             $variant_id,
             $amount,
@@ -480,6 +485,15 @@ class Products extends Controllers
           );
           $arrRes = s26_res("Costo", $request, 2);
           array_push($response, $arrRes);
+          //ACTUALIZAR STOCK EN MATRIZ
+          $request_stock = $this->model->updateStock(
+            $variant_id,
+            $amount,
+            $matrix
+          );
+          $arrRes = s26_res("Stock", $request_stock, 2);
+          array_push($response, $arrRes);
+
           //actualizar precios 
           if ($update_pvp) {
             $request = $this->model->updatePrices(
@@ -546,6 +560,134 @@ class Products extends Controllers
     die();
   }
 
+  public function addVariants()
+  {
+
+    //ID PRODUCTO 
+    $id = $_POST['id'];
+    //EN PRODUCTOS VARIANTES
+    $variants = !empty($_POST['variants']) ? $_POST['variants'] : [];
+
+    //EN PRODUCTOS ENTRADAS 
+    $document_id = !empty($_POST['document_id']) ? intval($_POST['document_id']) : '';
+
+    //ESTABLECIMIENTO MATRIZ
+    $matrix = $_SESSION['userData']['establishment']['company']['matrix_establishment_id'];
+
+    // INSERTAR VARIANTES
+    $res_variant = [];
+    $res_variants = [];
+    $arrPhotos = [];
+    $request = "";
+    $response = [];
+    for ($i = 0; $i < count($variants); $i++) {
+      // INSERTAR VARIANTES
+      $request_variant = $this->model->insertVariant(
+        $id,
+        strClean($variants[$i]['code']),
+        strClean($variants[$i]['sku']),
+        intval($variants[$i]['amount']),
+        intval($variants[$i]['min_stock']),
+        intval($variants[$i]['max_stock']),
+        floatval($variants[$i]['cost']),
+        floatval($variants[$i]['pvp_1']),
+        floatval($variants[$i]['pvp_2']),
+        floatval($variants[$i]['pvp_3']),
+        floatval($variants[$i]['pvp_distributor']),
+        intval($variants[$i]['variants']['color_id']),
+        strClean($variants[$i]['variants']['size']),
+        strClean($variants[$i]['variants']['fragance']),
+        strClean($variants[$i]['variants']['net_content']),
+        strClean($variants[$i]['variants']['shape']),
+        strClean($variants[$i]['variants']['package']),
+        strClean($variants[$i]['additional_info']),
+      );
+
+      if ($request_variant > 0) {
+        array_push($res_variant, $i);
+
+        //DIMESIONES
+        $request_variants_dimensions = $this->model->insertVariantDimensions(
+          $request_variant,
+          floatval($variants[$i]['variants']['dimensions']['product_length']),
+          floatval($variants[$i]['variants']['dimensions']['product_height']),
+          floatval($variants[$i]['variants']['dimensions']['product_width']),
+          floatval($variants[$i]['variants']['dimensions']['product_weight']),
+          floatval($variants[$i]['variants']['dimensions']['box_length']),
+          floatval($variants[$i]['variants']['dimensions']['box_height']),
+          floatval($variants[$i]['variants']['dimensions']['box_width']),
+          floatval($variants[$i]['variants']['dimensions']['box_weight']),
+          floatval($variants[$i]['variants']['dimensions']['box_stacking']),
+        );
+        if ($request_variant > 0) {
+          array_push($res_variants, $request_variants_dimensions);
+        }
+
+        // INSERTAR ENTRADA VARIANTE
+        $request_entry_variant = $this->model->insertEntryVariant(
+          $request_variant,
+          intval($variants[$i]['amount']),
+          floatval($variants[$i]['cost']),
+          intval($document_id)
+        );
+        if ($request_variant > 0) {
+          array_push($res_variants, $request_entry_variant);
+        }
+        // INSERTAR VARIANTE EN ESTABLECIMIENTO
+        $request_variant_establishment = $this->model->insertVariantEstablishment($request_variant, $matrix, intval($variants[$i]['amount']));
+
+        if ($request_variant_establishment > 0) {
+          array_push($res_variants, $request_variant_establishment);
+
+          //Insertar Entrada Establecimientos
+          $request_entry_establishment = $this->model->insertEntryEstablishment(
+            $request_variant,
+            intval($variants[$i]['amount']),
+            $matrix,
+            $matrix,
+          );
+          array_push($res_variants, $request_entry_establishment);
+        }
+
+        // INSERTAR FOTOS DE VARIANTES
+        $variants_photos = !empty($variants[$i]['photos']) ? $variants[$i]['photos'] : [];
+        if (count($variants_photos) > 0) {
+          for ($p = 0; $p < count($variants[$i]['photos']); $p++) {
+            $request_photo = $this->model->insertPhotos($request_variant, intval($variants[$i]['photos'][$p]));
+
+            if ($request_photo > 0) {
+              array_push($arrPhotos, $p);
+            }
+          }
+        }
+      }
+    }
+    // RESPUESTA VARIANTE
+    if (count($res_variant) > 0) {
+      $arrRes = array(
+        'type' => 1,
+        'msg' => count($res_variant) . ' variantes guardadas correctamente.'
+      );
+      array_push($response, $arrRes);
+    } else {
+      $arrRes = array('type' => 0, 'msg' => 'Error de Sistema, notificalo al personal a cargo.');
+      array_push($response, $arrRes);
+    }
+    // RESPUESTA VARIANTES 
+    if (count($res_variants) == count($variants) * 4) {
+      $arrRes = array(
+        'type' => 1,
+        'msg' => 'Variantes de Producto guardadas correctamente.'
+      );
+      array_push($response, $arrRes);
+    } else {
+      $arrRes = array('type' => 0, 'msg' => 'Error de Sistema, notificalo al personal a cargo.');
+      array_push($response, $arrRes);
+    }
+    echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
   public function toggleProduct()
   {
     if ($_SESSION['permitsModule']['u']) {
@@ -577,6 +719,48 @@ class Products extends Controllers
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
       }
     }
+    die();
+  }
+
+  public function stockAdjustment()
+  {
+
+    $variant_id = intval($_POST['variant_id']);
+    $amount = intval($_POST['amount']);
+
+    $establishment_id = $_SESSION['userData']['establishment_id'];
+
+    if (
+      $variant_id > 0 &&
+      $amount > 0
+    ) {
+      if ($_SESSION['permitsModule']['u']) {
+
+        //ACTUALIZAR STOCK EN MATRIZ
+        $request = $this->model->updateStock(
+          $variant_id,
+          $amount,
+          $establishment_id
+        );
+
+        if ($request > 0) {
+
+          //INSERTAR CANTIDAD A AJUSTAR 
+          $this->model->insertStockAdjustment(
+            $variant_id,
+            $amount,
+            $establishment_id
+          );
+          $type = 2;
+        }
+      } else {
+        $request = -5;
+      }
+      $arrRes = s26_res("Stock", $request, $type);
+    } else {
+      $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar datos. Compruebe que los datos ingresados sean correctos');
+    }
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }
 }

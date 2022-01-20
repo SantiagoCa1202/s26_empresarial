@@ -24,5 +24,7 @@ import "./checkBooks";
 import "./withholdings";
 import "./productEntries";
 import "./productSeries";
+import "./newSale";
+import "./documents";
 
 export default s26Views;

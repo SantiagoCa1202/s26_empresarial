@@ -4,6 +4,7 @@
       'main',
       { 'mainWidth-100': !sidebar },
       relative ? 'position-relative' : '',
+      section_variants,
     ]"
   >
     <div :class="['s26-container-table', 'h-' + height]">
@@ -24,11 +25,12 @@
             <th class="length-action" v-if="action">acción</th>
             <th class="length-action" v-if="info">info</th>
           </tr>
+          <slot name="tr"></slot>
         </thead>
         <tbody>
           <slot name="body"></slot>
           <template v-if="loading">
-            <tr v-for="i in 9" :key="i" class="skeleton-table">
+            <tr v-for="i in rows_load_data" :key="i" class="skeleton-table">
               <td colspan="20"></td>
             </tr>
           </template>
@@ -66,8 +68,14 @@ export default {
     id: Boolean,
     info: Boolean,
     loading_data: Boolean,
+    rows_load_data: {
+      default: 9,
+    },
     relative: Boolean,
     height: {
+      default: "",
+    },
+    section_variants: {
       default: "",
     },
   },

@@ -116,7 +116,7 @@
           </div>
           <div class="col-4 mb-2">
             <span class="fw-600">Stock:</span>
-            {{ variant.stock }}
+            {{ variant.establishment_stock.info.stock }}
           </div>
           <div class="col-12 mb-2" v-show="variant.additional_info != ''">
             <span class="fw-600">Info. Adicional:</span>

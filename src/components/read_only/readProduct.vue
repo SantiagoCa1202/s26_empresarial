@@ -94,26 +94,6 @@
             </div>
           </div>
           <div class="col-6 col-sm-2">
-            <div
-              :class="[
-                'btn btn-sm w-100',
-                form.pvp_manual == 1 ? 'btn-primary' : 'btn-outline-secondary',
-              ]"
-            >
-              PVP. Manual.
-            </div>
-          </div>
-          <div class="col-6 col-sm-2">
-            <div
-              :class="[
-                'btn btn-sm w-100',
-                form.discount == 1 ? 'btn-primary' : 'btn-outline-secondary',
-              ]"
-            >
-              Descuento.
-            </div>
-          </div>
-          <div class="col-6 col-sm-2">
             <div class="btn btn-sm w-100 btn-primary">Iva: {{ form.iva }}</div>
           </div>
         </div>
@@ -189,7 +169,11 @@
           {{ variant.status == 1 ? "Activo" : "Inactivo" }}
         </div>
         <div class="col-2">
-          <s26-input-read label="Stock" :content="variant.stock">
+          <s26-input-read
+            label="Stock"
+            :content="variant.establishment_stock.info.stock"
+            title="Stock Global"
+          >
           </s26-input-read>
         </div>
         <div class="col-2">

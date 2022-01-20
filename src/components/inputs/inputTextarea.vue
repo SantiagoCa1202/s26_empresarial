@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-4">
+  <div :class="'mb-' + mb">
     <label class="form-label" v-if="label">
       {{ label }}
       <span class="text-danger" v-if="s26_required">
@@ -15,6 +15,8 @@
       @keyup="$emit('keyup')"
       :autofocus="autofocus"
       :s26-required="s26_required"
+      :maxlength="maxlength"
+      :placeholder="placeholder"
     ></textarea>
     <p class="invalid-feedback" v-if="s26_required">{{ message }}</p>
   </div>
@@ -32,6 +34,15 @@ export default {
     },
     s26_required: Boolean,
     autofocus: Boolean,
+    maxlength: {
+      default: "",
+    },
+    mb: {
+      default: "3",
+    },
+    placeholder: {
+      default: "",
+    },
   },
 };
 </script>
