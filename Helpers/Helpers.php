@@ -260,5 +260,43 @@ function dateFormat($date, $type = 1)
   return $date;
 }
 
+function group_array_by_date(string $column, array $array)
+{
+  //EXTRAER FECHAS E INSERTARLAS EN UN NUEVO ARRAY 
+  $dates = [];
+
+  foreach ($array as $key => $value) {
+    $date = date("Y-m-d", strtotime($value[$column]));
+    array_push($dates, $date);
+  }
+
+  // SUPRIMIR DUPLICADOS
+  $dates = array_unique($dates);
+  $dates = array_values($dates);
+
+  $items = [];
+
+  for ($i = 0; $i < count($dates); $i++) {
+
+    $arr = [];
+
+    for ($e = 0; $e < count($array); $e++) {
+      $date = date("Y-m-d", strtotime($array[$e][$column]));
+
+      if ($dates[$i] == $date) {
+        array_push($arr, $array[$e]);
+      }
+    }
+
+    $item = [
+      'date' => $dates[$i],
+      'items' => $arr,
+    ];
+    array_push($items, $item);
+  }
+
+  return $items;
+}
+
 // ACTIVE POST FROM AXIOS POST CONTENTS
 // $_POST = json_decode(file_get_contents('php://input'), true);

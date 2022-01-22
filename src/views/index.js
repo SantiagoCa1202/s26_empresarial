@@ -22,6 +22,7 @@ import "./files";
 import "./bankAccounts";
 import "./checkBooks";
 import "./withholdings";
+import "./productOutlet";
 import "./productEntries";
 import "./productSeries";
 import "./newSale";

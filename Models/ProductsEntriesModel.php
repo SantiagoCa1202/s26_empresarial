@@ -21,7 +21,6 @@ class ProductsEntriesModel extends Mysql
     $this->code = $filter['code'];
     $this->name = $filter['name'];
     $this->document_id = $filter['document_id'];
-    $this->variant_id = $filter['variant_id'];
     $this->date = $filter['date'];
     $this->perPage = $perPage;
 
@@ -29,12 +28,10 @@ class ProductsEntriesModel extends Mysql
       " AND pev.created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
     $document_id = $this->document_id >= -1 ? "pev.document_id = '$this->document_id' AND" : "";
-    $variant_id = $this->variant_id > 0 ? "pev.variant_id = $this->variant_id AND" : "";
 
 
     $where = "
       $document_id
-      $variant_id
       pv.ean_code LIKE '%$this->code%' AND
       (
         p.name LIKE '%$this->name%' OR

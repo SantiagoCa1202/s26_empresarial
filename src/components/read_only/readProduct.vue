@@ -321,7 +321,7 @@
                   @click="reports('var', option.id, option.ean_code)"
                   @keyup.13="reports('var', option.id, option.ean_code)"
                 >
-                  {{ option.ean_code }}
+                  {{ option.ean_code }} - {{ option.sku }}
                 </div>
               </div>
             </div>

@@ -814,6 +814,20 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
   color: #fff !important;
 }
 
+/* ENCABEZADOS */
+.thead-sticky {
+  position: sticky;
+  background-color: var(--bs-light);
+  z-index: 10600;
+  top: 0;
+}
+
+.s26-table tbody tr.tr-danger td,
+.s26-table thead tr.tr-danger th:last-child, .s26-table tbody tr.tr-danger td:last-child, .table thead tr.tr-danger th:last-child, .table tbody tr.tr-danger td:last-child {
+  border-color: var(--bs-danger);
+  color: var(--bs-danger) !important; 
+
+}
 /* CUSTOM CHECKBOX */
 
 .length-int {

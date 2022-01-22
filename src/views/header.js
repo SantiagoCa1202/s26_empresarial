@@ -24,7 +24,7 @@ if (element) {
       subProducts: [
         "products",
         "productsEntries",
-        "products_outlet",
+        "productsOutlet",
         "products_returned",
         "products_damaged",
         "productsSeries",
