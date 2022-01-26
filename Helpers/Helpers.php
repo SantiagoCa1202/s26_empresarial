@@ -127,7 +127,7 @@ function uploadFile(string $tmp_name, string $name)
 }
 
 //RESPUESTAS DE SERVIDOR 
-function s26_res($name, $res, $type = 1)
+function s26_res($name, $res, $type = 1, $del = 'Eliminar')
 {
 
   if ($res > 0) {
@@ -136,13 +136,13 @@ function s26_res($name, $res, $type = 1)
     } else if ($type == 2) {
       $arrRes = array('type' => 2, 'msg' => $name . ' actualizado correctamente.');
     } else if ($type == 3) {
-      $arrRes = array('type' => 2, 'msg' => $name . ' eliminado correctamente.');
+      $arrRes = array('type' => 2, 'msg' => $del == 'Eliminar' ? $name . ' eliminado' : $name . ' anulado' .  ' correctamente.');
     } else if ($type == 4) {
       $arrRes = array('type' => 1, 'msg' => $name . ' asignado correctamente.');
     }
   } else if ($res == 0) {
     if ($type == 1 || $type == 2 || $type == 3) {
-      $arrRes = array('type' => 0, 'msg' => 'Error al Eliminar ' . $name);
+      $arrRes = array('type' => 0, 'msg' => 'Error al ' . $del . ' ' . $name);
     }
   } else if ($res == -1) {
     $arrRes = array('type' => 0, 'msg' => 'Error al Ingresar ' . $name . '. Compruebe que los datos ingresados sean correctos');
@@ -158,6 +158,8 @@ function s26_res($name, $res, $type = 1)
     $arrRes = array('type' => 0, 'msg' => 'El Registro ya existe, restauralo desde la papelera.');
   } else if ($res == -7) {
     $arrRes = array('type' => 3, 'msg' => 'Existe Un Registro Similar.');
+  } else if ($res == -8) {
+    $arrRes = array('type' => 0, 'msg' => 'El Registro ya se Encuentra Anulado.');
   } else {
     $arrRes = array('type' => 0, 'msg' => 'Error del Sistema, comunique a servicio al técnico.');
   }

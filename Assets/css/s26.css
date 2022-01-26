@@ -62,6 +62,10 @@ textarea.form-control.is-invalid~div.tox.tox-tinymce {
   border-color: #dc3545;
 }
 
+div.form-control.is-invalid {
+  color: #dc3545
+}
+
 /* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
 
 ::-webkit-scrollbar-thumb:hover {
@@ -818,16 +822,27 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
 .thead-sticky {
   position: sticky;
   background-color: var(--bs-light);
-  z-index: 10600;
+  z-index: 1060;
   top: 0;
 }
 
+/* ALERTAS EN TABLA */
 .s26-table tbody tr.tr-danger td,
 .s26-table thead tr.tr-danger th:last-child, .s26-table tbody tr.tr-danger td:last-child, .table thead tr.tr-danger th:last-child, .table tbody tr.tr-danger td:last-child {
   border-color: var(--bs-danger);
-  color: var(--bs-danger) !important; 
-
+  color: var(--bs-danger) !important;
 }
+
+.s26-table tbody tr.tr-warning td,
+.s26-table thead tr.tr-warning th:last-child, .s26-table tbody tr.tr-warning td:last-child, .table thead tr.tr-warning th:last-child, .table tbody tr.tr-warning td:last-child {
+  border-color: var(--bs-warning);
+  color: var(--bs-warning) !important;
+}
+
+.s26-table tbody tr.tr-disabled {
+  opacity: .6;
+}
+
 /* CUSTOM CHECKBOX */
 
 .length-int {

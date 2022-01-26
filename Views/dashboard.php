@@ -8,8 +8,9 @@
 <br>
 
 <?php
+$amount = '0.01';
 
-
+echo $amount == 0 ? 'veradero' : 'falso';
 //   //Get user IP address
 //  if ( isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
 //    $ip = $_SERVER['HTTP_CLIENT_IP'];

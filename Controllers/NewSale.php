@@ -149,9 +149,8 @@ class NewSale extends Controllers
 
   public function processSale()
   {
-  
     $sale = $_POST;
-    $document_id = $sale['emission_point'] == 0 ? 0 : $sale['emission_point']['document_id'];
+    $document_id = $sale['emission_point'] == 0 ? 1 : $sale['emission_point']['document_id'];
     $n_establishment = str_pad($_SESSION['userData']['establishment']['n_establishment'], 3, "0", STR_PAD_LEFT);
     $establishment_id = $_SESSION['userData']['establishment_id'];
     $box_id = $_SESSION['userData']['device']['box_id'];
@@ -161,8 +160,6 @@ class NewSale extends Controllers
     } else {
       $n_document = $n_establishment . '-' . str_pad($sale['emission_point']['n_point'], 3, "0", STR_PAD_LEFT) . '-' . str_pad($sale['emission_point']['sequential_numbering'], 9, "0", STR_PAD_LEFT);
     }
-
-
 
     $res = "";
     // VALIDAR SI HAY PRODUCTOS A FACTURAR 
@@ -257,8 +254,8 @@ class NewSale extends Controllers
                 $share = isset($value['share']) ? strClean($value['share']) : null;
                 $bank_entity_id = isset($value['bank_entity_id']) ? bigintval($value['bank_entity_id']) : null;
                 $n_check = isset($value['n_check']) ? strClean($value['n_check']) : null;
-                $date = isset($value['date']) ? val_date($value['date']) : null;
-                $status = $payment_method_id >= 4 && $payment_method_id <= 7 ? 0 : 1;
+                $date = isset($value['date']) ? $value['date'] : null;
+                $status = $payment_method_id >= 4 && $payment_method_id <= 7 ? 2 : 1;
                 if ($amount > 0 && $payment_method_id > 0) {
                   $this->Sale->insertSalePayment(
                     bigintVal($request),

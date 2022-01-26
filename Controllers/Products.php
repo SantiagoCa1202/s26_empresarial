@@ -66,8 +66,6 @@ class Products extends Controllers
         $arrData = $this->model->searchSaleProduct($search);
       }
 
-      $arrRes[0]['pvp_manual'] = $_SESSION['userData']['pvp_manual'];
-
       if (empty($arrData)) {
         $arrRes = 0;
       } else {

@@ -18,8 +18,8 @@
       int
     >
       <option value="">{{ all ? "Todos" : "-- Seleccionar --" }}</option>
-      <option value="1">Activo</option>
-      <option value="2">Inactivo</option>
+      <option value="1">{{ options[0] }}</option>
+      <option value="2">{{ options[1] }}</option>
     </select>
     <p class="invalid-feedback" v-if="s26_required">Seleccione un estado</p>
   </div>
@@ -35,6 +35,12 @@ export default {
     autofocus: Boolean,
     s26_required: Boolean,
     label: String,
+    options: {
+      type: Array,
+      default: () => {
+        return ["Activo", "Inactivo"];
+      },
+    },
   },
   computed: {
     inputListeners: function () {

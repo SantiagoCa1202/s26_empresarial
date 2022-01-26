@@ -27,5 +27,6 @@ import "./productEntries";
 import "./productSeries";
 import "./newSale";
 import "./documents";
+import "./sales";
 
 export default s26Views;

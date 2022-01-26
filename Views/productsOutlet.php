@@ -47,11 +47,11 @@
                   {{ $s26.currency(s26_data.info.total_pvp) }}
                 </s26-tarjet-info>
                 <s26-tarjet-info title="Descuento" variant="purple" icon="money-bill-wave">
-                  <s26-icon icon="dollar-sign" class="text-purple"></s26-icon>
+                  <s26-icon icon="dollar-sign" class="s26-text-purple"></s26-icon>
                   {{ $s26.currency(s26_data.info.total_discount) }}
                 </s26-tarjet-info>
                 <s26-tarjet-info title="Total" variant="orange" icon="money-bill-wave">
-                  <s26-icon icon="dollar-sign" class="text-orange"></s26-icon>
+                  <s26-icon icon="dollar-sign" class="s26-text-orange"></s26-icon>
                   {{ $s26.currency(s26_data.info.total) }}
                 </s26-tarjet-info>
               </div>
@@ -82,12 +82,12 @@
                 <tbody>
                   <tr v-for="(pro, index) in item.items" :key="index" :class="pro.status == 1 ? '' : 'tr-danger'">
                     <td class="length-int">
-                      <a href="#" class=" btn btn-link" @click.prevent="getSale(pro.sale_id)">
+                      <a href="#" class=" btn btn-link" @click.prevent="getInfo(pro.sale_id, 'sales')">
                         {{ pro.type }} - {{ pro.sale_id }}
                       </a>
                     </td>
                     <td class="length-int">
-                      <a href="#" class=" btn btn-link" @click.prevent="getProduct(pro.product_id)">
+                      <a href="#" class=" btn btn-link" @click.prevent="getInfo(pro.product_id, 'products')">
                         {{ pro.ean_code }}
                       </a>
                     </td>
@@ -136,16 +136,6 @@
           </div>
         </div>
       </section>
-      <?php
-      if ($_SESSION['permitsModule']['u'] || $_SESSION['permitsModule']['w']) {
-      ?>
-        <!-- Modal Nuevo-->
-        <transition name="slide-fade">
-          <s26-form-product-entry v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-product-entry>
-        </transition>
-      <?php
-      }
-      ?>
     </div>
   <?php
   }

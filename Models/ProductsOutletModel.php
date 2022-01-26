@@ -96,41 +96,4 @@ class ProductsOutletModel extends Mysql
       'info' => $info_table
     ];
   }
-
-  public function selectEntry(int $id)
-  {
-    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
-
-    $this->id = $id;
-    $sql = "SELECT pev.id, pev.document_id, pev.created_at, pv.ean_code, p.name
-      FROM products_entries_variants pev
-      JOIN products_variant pv
-      ON pev.product_variant_id = pv.id
-      JOIN products p
-      ON pv.product_id = p.id
-      WHERE pev.id = $this->id";
-    $request = $this->select_company($sql, $this->db_company);
-
-    return $request;
-  }
-
-  public function updateEntry(
-    int $id,
-    int $document_id,
-  ) {
-
-    $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
-
-    $this->id = $id;
-    $this->document_id = $document_id;
-
-    $sql = "UPDATE products_entries_variants SET document_id = ? WHERE id = $this->id";
-    $arrData = array(
-      $this->document_id,
-    );
-
-    $request = $this->update_company($sql, $arrData, $this->db_company);
-
-    return $request;
-  }
 }

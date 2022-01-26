@@ -69,7 +69,7 @@ export default {
 .s26-nav-dropdown .s26-list-dropdown {
   position: fixed;
   display: none;
-  z-index: 1050;
+  z-index: 1070;
   border: 1px solid #ccd2db;
   box-shadow: 0 2px 3px 0 #ccd2db;
   border-radius: 0.28571429rem;

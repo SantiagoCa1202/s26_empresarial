@@ -134,14 +134,13 @@
                 </s26-form-input>
               </div>
               <div class="col-sm-6">
-                <s26-select-bank
-                  label="Entidad Bancaria"
+                <s26-select-bank-account
                   size="sm"
-                  id="form-bank_account_id"
+                  id="form-bank_account_id-transfer"
                   v-model="form.payments.transfer.bank_account_id"
                   s26_required
                 >
-                </s26-select-bank>
+                </s26-select-bank-account>
               </div>
             </div>
             <div
@@ -176,14 +175,13 @@
                 </s26-form-input>
               </div>
               <div class="col-sm-6">
-                <s26-select-bank
-                  label="Entidad Bancaria"
+                <s26-select-bank-account
                   size="sm"
                   id="form-bank_account_id-deposit"
                   v-model="form.payments.deposit.bank_account_id"
                   s26_required
                 >
-                </s26-select-bank>
+                </s26-select-bank-account>
               </div>
             </div>
             <div
@@ -800,7 +798,7 @@ export default {
                     emission_point: this.form.emission_point,
                     info: this.info_sale,
                     info_estab,
-                    credit_payments: this.form.credit
+                    credit_payments: this.form.credit,
                   };
                   let formData = $s26.json_to_formData(printer);
 

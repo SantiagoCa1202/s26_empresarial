@@ -353,7 +353,7 @@
                   <td class="length-sm text-center">
                     <div
                       class="px-1"
-                      v-if="product.id == 0 || product.discount == 0"
+                      v-if="product.id == 0 || product.discount_manual != 1"
                     >
                       <span v-show="!discount_percentage">
                         <s26-icon icon="dollar-sign"></s26-icon>
@@ -365,7 +365,7 @@
                     </div>
                     <!-- DESCUENTO EN MONEDA -->
                     <s26-form-input
-                      v-if="product.discount == 1"
+                      v-if="product.discount_manual == 1"
                       v-model="product.discount_money"
                       type="number"
                       :money="!discount_percentage"

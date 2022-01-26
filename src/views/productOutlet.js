@@ -81,20 +81,9 @@ if (element) {
 
         this.allRows();
       },
-      setIdRow(id, type) {
-        this.idRow = parseInt(id);
-        this.action = type;
-        if (!$s26.readCookie("id") && type == "watch") {
-          $s26.create_cookie("id", id, "productsOutlet");
-        }
-      },
-      getSale(id) {
-        $s26.create_cookie("id", id, "sales");
-        window.open(BASE_URL + "/sales", "_blank");
-      },
-      getProduct(id) {
-        $s26.create_cookie("id", id, "products");
-        window.open(BASE_URL + "/products", "_blank");
+      getInfo(id, module) {
+        $s26.create_cookie("id", id, module);
+        window.open(BASE_URL + "/" + module, "_blank");
       },
       loadMore() {
         this.filter.perPage =

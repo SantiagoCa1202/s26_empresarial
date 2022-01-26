@@ -44,6 +44,9 @@
             </td>
           </tr>
         </tbody>
+        <tfoot>
+          <slot name="foot"></slot>
+        </tfoot>
       </table>
       <transition name="fade">
         <button

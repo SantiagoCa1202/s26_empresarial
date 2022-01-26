@@ -86,4 +86,7 @@ Vue.component("s26-form-document", formDocument);
 import formAuthorization from "./formAuthorization.vue";
 Vue.component("s26-form-authorization", formAuthorization);
 
+import formSale from "./formSale.vue";
+Vue.component("s26-form-sale", formSale);
+
 export default s26Forms;
