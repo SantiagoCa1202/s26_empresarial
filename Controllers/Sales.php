@@ -146,7 +146,6 @@ class Sales extends Controllers
           }
         }
 
-
         $type = 2;
       } else {
         $request = -5;
@@ -168,7 +167,7 @@ class Sales extends Controllers
 
       if ($request > 0) {
         //INSERTAR VENTA EN DEVOLUCIONES 
-        $request = $this->Returns->insertReturn($id);
+        $request = $this->Returns->insertReturn($id, 'contado');
       }
     } else {
       $request = -5;

@@ -71,7 +71,7 @@ class Products extends Controllers
       } else {
         $arrRes = $arrData;
         $arrRes[0]['pvp_manual'] = $_SESSION['userData']['pvp_manual'];
-        $arrRes[0]['discount'] = $_SESSION['userData']['discount_manual'];
+        $arrRes[0]['discount_manual'] = $_SESSION['userData']['discount_manual'];
       }
       echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     }

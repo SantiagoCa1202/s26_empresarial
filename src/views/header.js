@@ -20,7 +20,7 @@ if (element) {
       },
       activeSubMenu: 0,
       route: "dashboard",
-      subHome: ["sales", "credits", "returns", "calculator", "close_box"],
+      subHome: ["sales", "salesCredits", "salesReturns", "calculator", "close_box"],
       subProducts: [
         "products",
         "productsEntries",

@@ -56,4 +56,7 @@ Vue.component("s26-read-document", readDocument);
 import readSale from "./readSale.vue";
 Vue.component("s26-read-sale", readSale);
 
+import readSaleCredit from "./readSaleCredit.vue";
+Vue.component("s26-read-sale-credit", readSaleCredit);
+
 export default s26ReadOnly;

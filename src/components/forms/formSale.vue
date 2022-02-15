@@ -766,36 +766,36 @@ export default {
         0
       );
 
-      // if (products_totals == payments_totals) {
-      this.$alertify.confirm(
-        `Desea Actualizar Venta?.`,
-        () => {
-          let formData = $s26.json_to_formData(this.form);
-          $s26.show_loader_points();
-          this.axios
-            .post("/sales/setSale", formData)
-            .then((res) => {
-              if (res.data.type == 1) {
-                this.onReset();
-                this.$alertify.success(res.data.msg);
-              } else if (res.data.type == 2) {
-                this.$alertify.success(res.data.msg);
-              } else {
-                this.$alertify.error(res.data.msg);
-              }
-              $s26.hide_loader_points();
-              this.$emit("update");
-            })
-            .catch((e) => console.log(e));
-        },
-        () => this.$alertify.error("Acción Cancelada")
-      );
-      // } else {
-      //   this.$alertify.error(
-      //     "Verifique que el total de la venta sea igual al importe de pago total."
-      //   );
-      //   return;
-      // }
+      if (this.form.products_totals == this.form.payments_totals) {
+        this.$alertify.confirm(
+          `Desea Actualizar Venta?.`,
+          () => {
+            let formData = $s26.json_to_formData(this.form);
+            $s26.show_loader_points();
+            this.axios
+              .post("/sales/setSale", formData)
+              .then((res) => {
+                if (res.data.type == 1) {
+                  this.onReset();
+                  this.$alertify.success(res.data.msg);
+                } else if (res.data.type == 2) {
+                  this.$alertify.success(res.data.msg);
+                } else {
+                  this.$alertify.error(res.data.msg);
+                }
+                $s26.hide_loader_points();
+                this.$emit("update");
+              })
+              .catch((e) => console.log(e));
+          },
+          () => this.$alertify.error("Acción Cancelada")
+        );
+      } else {
+        this.$alertify.error(
+          "Verifique que el total de la venta sea igual al importe de pago total."
+        );
+        return;
+      }
     },
     onReset() {
       this.infoData(this.id);

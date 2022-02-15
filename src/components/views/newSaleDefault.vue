@@ -207,7 +207,7 @@
                 <th class="length-status text-center">Pvp</th>
                 <th
                   class="length-sm text-center pointer select-none"
-                  @click="discount_money_percentage"
+                  @click="calc_discount_percentage"
                   title="Descuento en % (alt + g)"
                 >
                   <span> Desc. </span>
@@ -220,13 +220,13 @@
                   :key="index"
                 >
                   <td class="length-action" :colspan="product.id == 0 ? 2 : 1">
-                    {{ product.id > 0 ? product.code : "" }}
+                    {{ product.id > 0 ? product.ean_code : "" }}
                     <s26-input-search
                       v-if="product.id == 0"
                       :id="'search-product-' + index"
-                      v-model="product.code"
-                      @search="searchProduct(product.code, index)"
-                      @blur="product.code = product.id == 0 ? '' : product.code"
+                      v-model="product.ean_code"
+                      @search="searchProduct(product.ean_code, index)"
+                      @blur="product.ean_code = product.id == 0 ? '' : product.ean_code"
                       rounded
                       placeholder="Buscar... (alt + v)"
                       mb="0"
@@ -353,12 +353,12 @@
                   <td class="length-sm text-center">
                     <div
                       class="px-1"
-                      v-if="product.id == 0 || product.discount_manual != 1"
+                      v-if="product.id == 0 || product.discount_manual == 2"
                     >
                       <span v-show="!discount_percentage">
                         <s26-icon icon="dollar-sign"></s26-icon>
                       </span>
-                      {{ $s26.currency(product.discount_money) }}
+                      {{ $s26.currency(product.discount) }}
                       <span v-show="discount_percentage">
                         <s26-icon icon="percentage"></s26-icon>
                       </span>
@@ -366,24 +366,22 @@
                     <!-- DESCUENTO EN MONEDA -->
                     <s26-form-input
                       v-if="product.discount_manual == 1"
-                      v-model="product.discount_money"
+                      v-model="product.discount"
                       type="number"
                       :money="!discount_percentage"
                       :percentage="discount_percentage"
                       mb="0"
-                      :disabled="product.id == 0 || product.discount == 0"
+                      :disabled="
+                        product.id == 0 || product.discount_manual == 2
+                      "
                       @keyup="
-                        product.discount_money =
-                          product.discount_money < 0
-                            ? 0
-                            : product.discount_money;
+                        product.discount =
+                          product.discount < 0 ? 0 : product.discount;
                         calc_total_product(index);
                       "
                       @blur="
-                        product.discount_money = (
-                          product.discount_money == ''
-                            ? 0
-                            : product.discount_money
+                        product.discount = (
+                          product.discount == '' ? 0 : product.discount
                         ).toFixed(2)
                       "
                     >
@@ -596,7 +594,7 @@
               {{ current_sale.products[product_id]["product"] }}
               <br />
               <span class="fs-6">
-                {{ current_sale.products[product_id]["code"] }}
+                {{ current_sale.products[product_id]["ean_code"] }}
               </span>
             </h2>
           </div>
@@ -693,7 +691,7 @@
               {{ current_sale.products[product_id]["product"] }}
               <br />
               <span class="fs-6">
-                {{ current_sale.products[product_id]["code"] }}
+                {{ current_sale.products[product_id]["ean_code"] }}
               </span>
             </h2>
           </div>
@@ -744,13 +742,13 @@ const def_customer = () => {
 const def_products = () => {
   return {
     id: 0,
-    code: "",
+    ean_code: "",
     product: "",
     amount: 1,
     stock: 0,
     cost: 0,
     pvp: 0,
-    discount_money: 0,
+    discount: 0,
     net_total: 0,
     iva: 0,
     load: false,
@@ -809,7 +807,7 @@ export default {
       }
 
       if (e.altKey && String.fromCharCode(e.keyCode) == "G") {
-        self.discount_money_percentage();
+        self.calc_discount_percentage();
       }
 
       if (e.altKey && String.fromCharCode(e.keyCode) == "S") {
@@ -872,7 +870,7 @@ export default {
             subtotal_0 += product.net_total;
           }
           articles += parseInt(product.amount);
-          discount += product.discount_money;
+          discount += product.discount;
         }
       }
       iva_ = total - subtotal_;
@@ -984,11 +982,11 @@ export default {
               } else {
                 product.id = prod["id"];
                 product.product_id = prod["product_id"];
-                product.code = prod["ean_code"];
+                product.ean_code = prod["ean_code"];
                 product.product = `${prod["name"]} / ${prod["model"]} / ${prod["trademark"]} / ${prod["sku"]} `;
                 product.stock = prod["stock"];
                 product.cost = prod["cost"];
-                product.discount = prod["discount"];
+                product.discount_manual = prod["discount_manual"];
                 product.iva = prod["iva"];
                 product.pvp =
                   prod["pvp_3"] > 0
@@ -1091,9 +1089,9 @@ export default {
                 this.$alertify.success(res.data.msg);
 
                 const i = this.product_id;
-                const code = this.current_sale.products[i]["code"];
+                const ean_code = this.current_sale.products[i]["ean_code"];
 
-                this.searchProduct(code, i, true);
+                this.searchProduct(ean_code, i, true);
                 this.modal_options = null;
                 $s26.hide_loader_points();
               })
@@ -1112,30 +1110,26 @@ export default {
       let current_pvp = product.amount * product.pvp;
       let new_pvp = product.amount * pvp;
       let discount = current_pvp - new_pvp;
-      product.discount_money = (
+      product.discount = (
         !this.discount_percentage ? discount : (discount / new_pvp) * 100
       ).toFixed(2);
       this.calc_total_product(i);
     },
-    discount_money_percentage() {
+    calc_discount_percentage() {
       this.discount_percentage = !this.discount_percentage;
 
       for (const i in this.current_sale.products) {
         let product = this.current_sale.products[i];
         if (product.id > 0) {
           let gross_total = product.amount * product.pvp;
-          if (product.discount_money != "" && this.discount_percentage) {
-            let net_total = gross_total - product.discount_money;
-            product.discount_money = (
-              (product.discount_money / net_total) *
-              100
-            ).toFixed(2);
-          } else if (
-            product.discount_money != "" &&
-            !this.discount_percentage
-          ) {
-            let net_total = gross_total / (product.discount_money / 100 + 1);
-            product.discount_money = (gross_total - net_total).toFixed(2);
+          if (product.discount != "" && this.discount_percentage) {
+            let net_total = gross_total - product.discount;
+            product.discount = ((product.discount / net_total) * 100).toFixed(
+              2
+            );
+          } else if (product.discount != "" && !this.discount_percentage) {
+            let net_total = gross_total / (product.discount / 100 + 1);
+            product.discount = (gross_total - net_total).toFixed(2);
           }
         }
         this.calc_total_product(i);
@@ -1144,8 +1138,8 @@ export default {
     calc_total_product(i) {
       let product = this.current_sale.products[i];
       product.net_total = !this.discount_percentage
-        ? product.amount * product.pvp - product.discount_money
-        : (product.amount * product.pvp) / (product.discount_money / 100 + 1);
+        ? product.amount * product.pvp - product.discount
+        : (product.amount * product.pvp) / (product.discount / 100 + 1);
     },
     newSale() {
       this.$alertify.confirm(

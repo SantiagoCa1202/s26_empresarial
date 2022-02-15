@@ -111,7 +111,7 @@ class NewSale extends Controllers
             floatval($products[$i]['amount']),
             floatval($products[$i]['cost']),
             floatval($products[$i]['pvp']),
-            floatval($products[$i]['discount_money']),
+            floatval($products[$i]['discount']),
             floatval($products[$i]['iva']),
           );
           if ($request_product > 0 && count($series) > 0) {
@@ -163,7 +163,7 @@ class NewSale extends Controllers
 
     $res = "";
     // VALIDAR SI HAY PRODUCTOS A FACTURAR 
-    if (count($sale['products']) > 1) {
+    if (count($sale['products']) > 0) {
       //VALIDAR SI HAY CLIENTE 
       if ($sale['customer']['id'] > 0) {
 
@@ -212,7 +212,7 @@ class NewSale extends Controllers
                     intval($product['amount']),
                     floatval($product['cost']),
                     floatval($product['pvp']),
-                    floatval($product['discount_money']),
+                    floatval($product['discount']),
                     floatval($product['iva']),
                     $bi_0,
                     $bi_,
@@ -287,7 +287,7 @@ class NewSale extends Controllers
             }
             if (
               $request > 0 &&
-              count($sale['products']) - 1  == count($arr_res_prod)
+              count($sale['products']) == count($arr_res_prod)
             ) {
               $res =  array('type' => 1, 'msg' => 'Venta Procesada Correctamente.');
             } else {
@@ -330,7 +330,7 @@ class NewSale extends Controllers
                   intval($product['amount']),
                   floatval($product['cost']),
                   floatval($product['pvp']),
-                  floatval($product['discount_money']),
+                  floatval($product['discount']),
                   floatval($product['iva']),
                   $bi_0,
                   $bi_,
@@ -374,7 +374,7 @@ class NewSale extends Controllers
             $bank_entity_id = isset($payment['bank_entity_id']) ? bigintval($payment['bank_entity_id']) : null;
             $n_check = isset($payment['n_check']) ? strClean($payment['n_check']) : null;
             $date_check = isset($payment['date_check']) ? val_date($payment['date_check']) : null;
-            $status = $payment_method_id >= 4 && $payment_method_id <= 7 ? 0 : 1;
+            $status = $payment_method_id >= 4 && $payment_method_id <= 7 ? 2 : 1;
             if ($amount > 0 && $payment_method_id > 0) {
               $this->SaleCredit->insertSaleCreditPayment(
                 bigintVal($request),

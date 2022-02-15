@@ -55,7 +55,7 @@ class NewSaleModel extends Mysql
 
     $this->id = $id;
     $establishment_id = $_SESSION['userData']['establishment_id'];
-    $rows = "SELECT ssp.product_variant_id as id, ssp.amount, ssp.cost, ssp.pvp, ssp.discount_money, ssp.iva, 
+    $rows = "SELECT ssp.product_variant_id as id, ssp.amount, ssp.cost, ssp.pvp, ssp.discount, ssp.iva, 
       pv.ean_code as code, pv.pvp_1, pv.pvp_2, pv.pvp_3, pv.pvp_distributor, pv.product_id,
       pe.stock, CONCAT(p.name, ' / ', p.model, ' / ', p.trademark) product, p.serial
       FROM sales_saved_products ssp
@@ -73,7 +73,7 @@ class NewSaleModel extends Mysql
 
     for ($i = 0; $i < count($items); $i++) {
       $items[$i]['series'] = $this->selectSavedSalesProductsSeries($items[$i]['product_id']);
-      $items[$i]['net_total'] = $items[$i]['amount'] * $items[$i]['pvp'] - $items[$i]['discount_money'];
+      $items[$i]['net_total'] = $items[$i]['amount'] * $items[$i]['pvp'] - $items[$i]['discount'];
     }
     return $items;
   }
@@ -147,7 +147,7 @@ class NewSaleModel extends Mysql
     int $amount,
     float $cost,
     float $pvp,
-    float $discount_money,
+    float $discount,
     float $iva
   ) {
 
@@ -158,19 +158,19 @@ class NewSaleModel extends Mysql
     $this->amount = $amount;
     $this->cost = $cost;
     $this->pvp = $pvp;
-    $this->discount_money = $discount_money;
+    $this->discount = $discount;
     $this->iva = $iva;
 
 
     $query_insert = "INSERT INTO sales_saved_products (sale_saved_id,
-    product_variant_id, amount, cost, pvp, discount_money, iva) VALUES (?,?,?,?,?,?,?)";
+    product_variant_id, amount, cost, pvp, discount, iva) VALUES (?,?,?,?,?,?,?)";
     $arrData = array(
       $this->sale_saved_id,
       $this->product_variant_id,
       $this->amount,
       $this->cost,
       $this->pvp,
-      $this->discount_money,
+      $this->discount,
       $this->iva,
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);

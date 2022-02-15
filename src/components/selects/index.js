@@ -61,4 +61,7 @@ Vue.component("s26-select-product", selectProduct);
 
 import selectEmissionPoint from "./selectEmissionPoint.vue";
 Vue.component("s26-select-emission-point", selectEmissionPoint);
+
+import selectCustomer from "./selectCustomer.vue";
+Vue.component("s26-select-customer", selectCustomer);
 export default s26Selects;

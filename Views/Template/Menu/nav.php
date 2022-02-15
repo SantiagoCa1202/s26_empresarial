@@ -34,14 +34,14 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][8]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/credits" :class="focusSubMenu('credits')">
+                <a href="<?= BASE_URL ?>/salesCredits" :class="focusSubMenu('salesCredits')">
                   Créditos
                 </a>
               </li>
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][9]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/returns" :class="focusSubMenu('returns')">
+                <a href="<?= BASE_URL ?>/salesReturns" :class="focusSubMenu('salesReturns')">
                   Devoluciones
                 </a>
               </li>

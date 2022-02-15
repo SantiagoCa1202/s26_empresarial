@@ -102,7 +102,7 @@
           ]"
         >
           <div class="row w-100">
-            <div class="col px-0">
+            <div class="col-2 px-0">
               <transition name="fade">
                 <button
                   type="button"
@@ -114,7 +114,7 @@
                 </button>
               </transition>
             </div>
-            <div class="col px-0">
+            <div class="col-10 px-0">
               <transition name="fade" mode="out-in">
                 <button
                   type="button"
@@ -126,13 +126,13 @@
                   "
                   :key="
                     this.level_select + 1 === this.levels.length && !readOnly
-                      ? 'Guardar'
+                      ? content_btn_submit
                       : 'Siguiente'
                   "
                 >
                   {{
                     this.level_select + 1 === this.levels.length && !readOnly
-                      ? "Guardar"
+                      ? content_btn_submit
                       : "Siguiente"
                   }}
                 </button>
@@ -153,6 +153,7 @@
               >
                 <s26-icon icon="sync-alt"></s26-icon>
               </button>
+              <slot name="aditional-btns"> </slot>
             </div>
           </div>
         </div>
@@ -181,6 +182,10 @@ export default {
     form: String,
     expand: Boolean,
     update: Boolean,
+    content_btn_submit: {
+      type: String,
+      default: "Guardar",
+    },
   },
   data() {
     return {

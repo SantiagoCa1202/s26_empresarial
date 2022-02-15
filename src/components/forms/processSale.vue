@@ -737,6 +737,9 @@ export default {
     processSale() {
       const self = this;
       this.form = Object.assign(this.form, this.info_sale);
+      const i_remove = this.form.products.length - 1;
+      this.form.products.splice(i_remove, 1);
+
       let i = 3;
       let doc = "";
       setTimeout(() => {
@@ -798,7 +801,7 @@ export default {
                     emission_point: this.form.emission_point,
                     info: this.info_sale,
                     info_estab,
-                    credit_payments: this.form.credit,
+                    credit: this.form.credit,
                   };
                   let formData = $s26.json_to_formData(printer);
 
