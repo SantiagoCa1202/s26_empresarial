@@ -92,4 +92,7 @@ Vue.component("s26-form-sale", formSale);
 import formSaleCredit from "./formSaleCredit.vue";
 Vue.component("s26-form-sale-credit", formSaleCredit);
 
+import formProductDamaged from "./formProductDamaged.vue";
+Vue.component("s26-form-product-damaged", formProductDamaged);
+
 export default s26Forms;

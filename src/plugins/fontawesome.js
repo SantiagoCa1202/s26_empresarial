@@ -96,6 +96,7 @@ import {
   faHandHoldingUsd,
   faCompressAlt,
   faExchangeAlt,
+  faBug,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -196,7 +197,8 @@ library.add(
   faTag,
   faHandHoldingUsd,
   faCompressAlt,
-  faExchangeAlt
+  faExchangeAlt,
+  faBug
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

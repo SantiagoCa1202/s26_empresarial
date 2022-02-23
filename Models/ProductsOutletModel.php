@@ -93,7 +93,8 @@ class ProductsOutletModel extends Mysql
     return [
       'items' => $items,
       'dates' => $this->select_dates_company('date', 'sales', $this->db_company),
-      'info' => $info_table
+      'info' => $info_table,
+      'access_cost' => $_SESSION['userData']['cost_access'],
     ];
   }
 }

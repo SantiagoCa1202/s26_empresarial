@@ -73,6 +73,13 @@ if (element) {
           })
           .then((res) => {
             this.s26_data = res.data;
+
+            if (this.s26_data.access_cost == 2) {
+              let index = this.fields.findIndex(
+                (field) => field.name == "costo"
+              );
+              this.fields.splice(index, 1);
+            }
           })
           .catch((err) => console.log(err));
       },
@@ -87,7 +94,9 @@ if (element) {
       },
       loadMore() {
         this.filter.perPage =
-        this.s26_data.info.count > 25 ? this.filter.perPage + 25 : this.filter.perPage;
+          this.s26_data.info.count > 25
+            ? this.filter.perPage + 25
+            : this.filter.perPage;
         this.allRows();
       },
     },

@@ -25,6 +25,7 @@ import "./withholdings";
 import "./productOutlet";
 import "./productEntries";
 import "./productSeries";
+import "./productDamageds";
 import "./newSale";
 import "./documents";
 import "./sales";

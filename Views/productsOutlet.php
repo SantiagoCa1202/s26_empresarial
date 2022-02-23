@@ -97,7 +97,7 @@
                     <td class="length-status text-center">
                       {{ pro.amount }}
                     </td>
-                    <td class="length-status text-center">
+                    <td class="length-status text-center" v-if="s26_data.access_cost == 1">
                       <span>
                         <s26-icon icon="dollar-sign"></s26-icon>
                       </span>

@@ -39,13 +39,6 @@
                 </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][9]['r'])) { ?>
-              <li>
-                <a href="<?= BASE_URL ?>/salesReturns" :class="focusSubMenu('salesReturns')">
-                  Devoluciones
-                </a>
-              </li>
-            <?php } ?>
             <?php if (!empty($_SESSION['permits'][11]['r'])) { ?>
               <li>
                 <a href="<?= BASE_URL ?>/calculator" :class="focusSubMenu('calculator')">
@@ -113,16 +106,9 @@
                 </a>
               </li>
             <?php } ?>
-            <?php if (!empty($_SESSION['permits'][16]['r'])) { ?>
-              <li>
-                <a href="<?= BASE_URL ?>/products_returned" :class="focusSubMenu('products_returned')">
-                  Devoluciones
-                </a>
-              </li>
-            <?php } ?>
             <?php if (!empty($_SESSION['permits'][17]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/products_damaged" :class="focusSubMenu('products_damaged')">
+                <a href="<?= BASE_URL ?>/productsDamageds" :class="focusSubMenu('productsDamageds')">
                   Averiado
                 </a>
               </li>
