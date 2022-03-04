@@ -28,7 +28,7 @@ if (element) {
         "productsDamageds",
         "productsSeries",
         "stocktaking",
-        "stock_information",
+        "stockAdjustment",
         "suppliers_orders",
         "customer_orders",
         "categories",

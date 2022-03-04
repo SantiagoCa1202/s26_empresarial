@@ -46,7 +46,13 @@ class Products extends Controllers
       $id = intval(strClean($id));
       if ($id > 0) {
         $arrData = $this->model->selectProduct($id);
-        $arrRes = (empty($arrData)) ? 0 : $arrData;
+
+        if (empty($arrData)) {
+          $arrRes = 0;
+        } else {
+          $arrRes = $arrData;
+          $arrRes['establishments'] = $_SESSION['permits'][41]['r'];
+        }
 
         echo json_encode($arrRes, JSON_NUMERIC_CHECK);
       }
@@ -123,7 +129,15 @@ class Products extends Controllers
 
       $id = intval($_GET['id']);
       $type = strClean($_GET['type']);
-      $arrData = $this->model->selectReportProduct($id, $type);
+      $year = !empty($_GET['year']) ? intval($_GET['year']) : '';
+
+      if ($_SESSION['permits'][41]['r']) {
+        $establishment_id = !empty($_GET['establishment_id']) ? intval($_GET['establishment_id']) : "";
+      } else {
+        $establishment_id = $_SESSION['userData']['establishment_id'];
+      }
+
+      $arrData = $this->model->selectReportProduct($id, $type, $establishment_id, $year);
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
     }
     die();

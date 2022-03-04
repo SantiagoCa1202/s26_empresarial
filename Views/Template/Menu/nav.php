@@ -129,8 +129,8 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][19]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/stock_information" :class="focusSubMenu('stock_information')">
-                  Información de Stock
+                <a href="<?= BASE_URL ?>/stockAdjustment" :class="focusSubMenu('stockAdjustment')">
+                  Info. Ajuste de Stock
                 </a>
               </li>
             <?php } ?>

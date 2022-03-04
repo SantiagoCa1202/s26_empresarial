@@ -17,6 +17,7 @@ import "./dropdowns";
 import "./tarjets";
 import "./uploads";
 import "./views";
+import "./charts";
 
 import tests from "./tests.vue";
 Vue.component("s26-test", tests);

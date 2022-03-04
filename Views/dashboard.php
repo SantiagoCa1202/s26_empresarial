@@ -8,9 +8,9 @@
 <br>
 
 <?php
-$amount = '0.01';
+$amount = -5;
 
-echo $amount == 0 ? 'veradero' : 'falso';
+echo intval($amount);
 //   //Get user IP address
 //  if ( isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
 //    $ip = $_SERVER['HTTP_CLIENT_IP'];

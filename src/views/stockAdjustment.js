@@ -1,18 +1,19 @@
 import Vue from "vue";
 
-let element = !!document.getElementById("s26-productsEntries-view");
+let element = !!document.getElementById("s26-stock-adjustment-view");
 if (element) {
   const def_filter = () => {
     return {
-      code: "",
-      name: "",
-      document_id: "",
-      date: [],
+      ean_code: "",
+      sku: "",
+      product: "",
+      model: "",
+      trademark: "",
       perPage: 25,
     };
   };
   new Vue({
-    el: "#s26-productsEntries-view",
+    el: "#s26-stock-adjustment-view",
     data: function() {
       return {
         fields: [
@@ -21,28 +22,16 @@ if (element) {
             class: "length-int",
           },
           {
-            name: "Nombre",
+            name: "Producto",
             class: "length-description",
           },
           {
-            name: "Cant.",
+            name: "Precio",
             class: "length-action text-center",
           },
           {
-            name: "Costo",
+            name: "Ajuste",
             class: "length-action text-center",
-          },
-          {
-            name: "Total",
-            class: "length-action text-center",
-          },
-          {
-            name: "Documento",
-            class: "length-description",
-          },
-          {
-            name: "Fecha",
-            class: "length-action",
           },
         ],
         filter: def_filter(),
@@ -50,7 +39,6 @@ if (element) {
         idRow: null,
         activeSidebar: true,
         action: "",
-        url_export: "",
       };
     },
     created() {
@@ -64,27 +52,16 @@ if (element) {
         for (let fil in this.filter) params[fil] = this.filter[fil];
 
         this.axios
-          .get("/productsEntries/getEntries/", {
+          .get("/stockAdjustment/getAdjustments/", {
             params,
           })
           .then((res) => (this.s26_data = res.data))
           .catch((err) => console.log(err));
-        this.url_export = $s26.url_get(
-          "/productsEntries/exportEntries/",
-          params
-        );
       },
       onReset() {
         this.filter = def_filter();
 
         this.allRows();
-      },
-      setIdRow(id, type) {
-        this.idRow = parseInt(id);
-        this.action = type;
-        if (!$s26.readCookie("id") && type == "watch") {
-          $s26.create_cookie("id", id, "productsEntries");
-        }
       },
       getInfo(id, module) {
         $s26.create_cookie("id", id, module);

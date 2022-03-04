@@ -1,8 +1,12 @@
 <template>
   <div
-    class="s26-tarjet"
-    :class="'s26-tarjet-' + variant"
-    @click="$emit('click')"
+    :class="[
+      's26-tarjet',
+      `s26-tarjet-${variant}`,
+      disabled ? 'disabled' : '',
+      'pointer',
+    ]"
+    @click="emit"
   >
     <div class="s26-tarjet-icon">
       <div class="circle-icon">
@@ -25,11 +29,23 @@ export default {
     content: {},
     variant: String,
     icon: String,
+    disabled: {
+      type: Boolean,
+    },
   },
   data: function () {
     return {};
   },
   created() {},
-  methods: {},
+  methods: {
+    emit() {
+      this.$emit("click"), this.$emit("change");
+    },
+  },
 };
 </script>
+<style scoped>
+.s26-tarjet.disabled {
+  opacity: 0.6;
+}
+</style>

@@ -827,6 +827,12 @@ button.btn:hover:not(.btn-link), button.btn:focus:not(.btn-link) {
 }
 
 /* ALERTAS EN TABLA */
+.s26-table tbody tr.tr-success td,
+.s26-table thead tr.tr-success th:last-child, .s26-table tbody tr.tr-success td:last-child, .table thead tr.tr-success th:last-child, .table tbody tr.tr-success td:last-child {
+  border-color: var(--bs-success);
+  color: var(--bs-success) !important;
+}
+
 .s26-table tbody tr.tr-danger td,
 .s26-table thead tr.tr-danger th:last-child, .s26-table tbody tr.tr-danger td:last-child, .table thead tr.tr-danger th:last-child, .table tbody tr.tr-danger td:last-child {
   border-color: var(--bs-danger);

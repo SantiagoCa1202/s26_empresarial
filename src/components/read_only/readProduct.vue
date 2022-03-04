@@ -4,7 +4,7 @@
     title="Información de Producto"
     size="xl"
     :levels="levels"
-    body_style="min-height: 450px;"
+    body_style="min-height: 455px;"
     @hideModal="hideModal"
     readOnly
     update
@@ -287,9 +287,10 @@
       </div>
     </template>
     <template v-slot:level-3>
-      <div class="col-12 mb-3">
-        <div class="col-4 mx-auto">
+      <div class="col-6 mb-3 mx-auto row">
+        <div class="col-sm-5">
           <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
+            <label for="" class="form-label w-100">Variante</label>
             <div
               :id="id"
               class="form-control form-control-sm s26-select-value"
@@ -328,34 +329,92 @@
             <input type="hidden" int="true" v-model="value" />
           </div>
         </div>
+        <div class="col-sm-4" v-if="form.establishments == 1">
+          <s26-select-establishment
+            id="establishment_id"
+            all
+            v-model="filter.establishment_id"
+            @change="reports"
+          ></s26-select-establishment>
+        </div>
+        <div class="col-sm-3">
+          <s26-select-year
+            id="year"
+            all
+            v-model="filter.year"
+            @change="reports"
+          ></s26-select-year>
+        </div>
       </div>
-      <div class="col-12 mb-3">
-        <h2 class="text-center fw-600 h5 s26-text-blue">Estado Global</h2>
+      <div class="col-12"></div>
+      <div class="col-sm-3">
+        <div class="col">
+          <s26-tarjet-info
+            title="Entradas"
+            variant="purple"
+            icon="sign-in-alt"
+            @click="hidden.entries = !hidden.entries"
+            @change="updateDataCollection"
+            :disabled="hidden.entries"
+          >
+            {{ report.info.total_entries }}
+          </s26-tarjet-info>
+        </div>
+        <div class="col">
+          <s26-tarjet-info
+            title="Salidas"
+            variant="orange"
+            icon="sign-out-alt"
+            @click="hidden.sales = !hidden.sales"
+            @change="updateDataCollection"
+            :disabled="hidden.sales"
+          >
+            {{ report.info.total_sales }}
+          </s26-tarjet-info>
+        </div>
+        <div class="col">
+          <s26-tarjet-info
+            title="Devoluciones"
+            variant="danger"
+            icon="sync"
+            @click="hidden.returns = !hidden.returns"
+            @change="updateDataCollection"
+            :disabled="hidden.returns"
+          >
+            {{ report.info.total_returns }}
+          </s26-tarjet-info>
+        </div>
+        <div class="col">
+          <s26-tarjet-info
+            title="Averias"
+            variant="secondary"
+            icon="ambulance"
+            @click="hidden.damageds = !hidden.damageds"
+            @change="updateDataCollection"
+            :disabled="hidden.damageds"
+          >
+            {{ report.info.total_damaged }}
+          </s26-tarjet-info>
+        </div>
+        <div class="col">
+          <s26-tarjet-info
+            title="Ajustes"
+            variant="primary"
+            icon="cog"
+            @click="hidden.settings = !hidden.settings"
+            @change="updateDataCollection"
+            :disabled="hidden.settings"
+          >
+            {{ report.info.total_settings }}
+          </s26-tarjet-info>
+        </div>
       </div>
-      <div class="col">
-        <s26-tarjet-info title="Entradas" variant="purple" icon="sign-in-alt">
-          {{ report.info.total_entries }}
-        </s26-tarjet-info>
-      </div>
-      <div class="col">
-        <s26-tarjet-info title="Salidas" variant="orange" icon="sign-out-alt">
-          {{ report.info.total_sales }}
-        </s26-tarjet-info>
-      </div>
-      <div class="col">
-        <s26-tarjet-info title="Devoluciones" variant="danger" icon="sync">
-          {{ report.info.total_returns }}
-        </s26-tarjet-info>
-      </div>
-      <div class="col">
-        <s26-tarjet-info title="Averias" variant="secondary" icon="ambulance">
-          {{ report.info.total_damaged }}
-        </s26-tarjet-info>
-      </div>
-      <div class="col">
-        <s26-tarjet-info title="Ajuste" variant="primary" icon="cog">
-          {{ report.info.total_settings }}
-        </s26-tarjet-info>
+      <div class="col-sm-9">
+        <s26-chart
+          :height="335"
+          :options="options"
+          :chart-data="dataCollection"
+        />
       </div>
     </template>
   </s26-modal-multiple>
@@ -393,13 +452,95 @@ export default {
       filter: {
         product_id: "",
         serie: "",
+        establishment_id: "",
+        year: "",
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: false,
+        },
+      },
+      dataCollection: {},
+      hidden: {
+        entries: false,
+        sales: false,
+        returns: false,
+        damageds: false,
+        settings: false,
+      },
+      infoPerMonth: {
+        entries: 0,
+        sales: 0,
+        returns: 0,
+        damageds: 0,
+        settings: 0,
       },
     };
   },
   created() {
     if (this.id !== 0 && this.id !== null) this.infoData(this.id);
   },
+  mounted() {
+    this.updateDataCollection();
+  },
   methods: {
+    updateDataCollection() {
+      this.dataCollection = {
+        labels: [
+          "Ene.",
+          "Feb.",
+          "Mar.",
+          "Abr.",
+          "May.",
+          "Jun.",
+          "Jul.",
+          "Ago.",
+          "Sep.",
+          "Oct.",
+          "Nov.",
+          "Dic.",
+        ],
+        datasets: [
+          {
+            label: "Entradas",
+            data: this.infoPerMonth.entries,
+            borderColor: "#6f42c1",
+            backgroundColor: "#6f42c129",
+            hidden: this.hidden.entries,
+          },
+          {
+            label: "Salidas",
+            data: this.infoPerMonth.sales,
+            borderColor: "#fd7e14",
+            backgroundColor: "#fd7e144a",
+            hidden: this.hidden.sales,
+          },
+          {
+            label: "Devoluciones",
+            data: this.infoPerMonth.returns,
+            borderColor: "#dc3545",
+            backgroundColor: "#dc354547",
+            hidden: this.hidden.returns,
+          },
+          {
+            label: "Averias",
+            data: this.infoPerMonth.damageds,
+            borderColor: "#6c757d",
+            backgroundColor: "#6c757d4d",
+            hidden: this.hidden.damageds,
+          },
+          {
+            label: "Ajustes",
+            data: this.infoPerMonth.settings,
+            borderColor: "#0d6efd",
+            backgroundColor: "#0d6efd4a",
+            hidden: this.hidden.settings,
+          },
+        ],
+      };
+    },
     infoData(id) {
       this.axios
         .get("/products/getProduct/" + id)
@@ -435,12 +576,18 @@ export default {
       const params = {
         type,
         id,
+        establishment_id: this.filter.establishment_id,
+        year: this.filter.year,
       };
       this.axios
         .get("/products/reportProduct/", {
           params,
         })
-        .then((res) => (this.report = res.data))
+        .then((res) => {
+          this.report = res.data;
+          this.infoPerMonth = res.data.infoPerMonth;
+          this.updateDataCollection();
+        })
         .catch((err) => console.log(err));
     },
   },

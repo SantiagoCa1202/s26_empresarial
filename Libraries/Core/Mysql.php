@@ -127,7 +127,7 @@ class Mysql extends Connection
     return $data;
   }
 
-  public function select_all_company(string $query, string $db_company)
+  public function select_all_company(string $query, string $db_company, $type = 1)
   {
     $this->connection_company = $this->connection->connect_company($db_company);
 
@@ -135,7 +135,7 @@ class Mysql extends Connection
 
     $result = $this->connection_company->prepare($this->strQuery);
     $result->execute();
-    $data = $result->fetchall(PDO::FETCH_ASSOC);
+    $data = $type == 1 ? $result->fetchall(PDO::FETCH_ASSOC) : $result->fetchall(PDO::FETCH_COLUMN);
     return $data;
   }
 

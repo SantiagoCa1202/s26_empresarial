@@ -89,7 +89,7 @@
 }
 
 .activeSubMenu, .activeAccordion {
-  max-height: 500px !important;
+  max-height: 520px !important;
   transition: .7s !important;
   transition-timing-function: ease-out;
 }

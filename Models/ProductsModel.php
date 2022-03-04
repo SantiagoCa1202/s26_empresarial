@@ -227,7 +227,8 @@ class ProductsModel extends Mysql
     $rows = "SELECT
       pv.id,pv.product_id,pv.ean_code,pv.sku,pv.min_stock,pv.max_stock,pv.cost,pv.pvp_1,pv.pvp_2,pv.pvp_3,pv.pvp_distributor,pv.color_id,pv.size,pv.fragance,pv.net_content,pv.shape,pv.package,pv.additional_info,pv.created_at,
       p.name, p.trademark, p.model, p.iva, p.serial,
-      pe.stock
+      pe.stock,
+      if(pv.pvp_3 > 0, pv.pvp_3, if(pv.pvp_2 > 0, pv.pvp_2, pv.pvp_1)) as pvp
       FROM products_variant pv
       JOIN products p
       ON pv.product_id = p.id
@@ -412,30 +413,230 @@ class ProductsModel extends Mysql
     ];
   }
 
-  public function selectReportProduct(int $id, string $type)
+  public function selectReportProduct(int $id, string $type, $establishment_id, $year)
   {
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->id = $id;
     $this->type = $type;
+    $this->establishment_id = $establishment_id;
+    $this->year = $year;
 
     $query = ($this->type == 'prod') ? 'pv.product_id' : 'pv.id';
 
-    $info = "SELECT SUM(pe.amount) as total_entries
+    $info = "SELECT IFNULL(SUM(pee.amount),0) as total_entries, 
+      SUM(IFNULL(sp.amount, 0)+IFNULL(scp.amount, 0)) as total_sales,
+      SUM(IFNULL(spr.amount, 0)+IFNULL(scpr.amount, 0)) as total_returns,
+      SUM(IFNULL(pd.amount, 0)) as total_damaged,
+      SUM(IFNULL(sa.amount, 0)) as total_settings
       FROM products_variant pv
-      JOIN products_entries_variants pe
-      ON pv.id = pe.product_variant_id
+      LEFT JOIN (
+        SELECT SUM(pee.amount) as amount, pee.product_variant_id 
+        FROM products_entries_establishments pee
+        JOIN products_variant pv
+        ON pee.product_variant_id = pv.id
+        WHERE pee.to_establishment_id LIKE '%$this->establishment_id%' AND 
+        $query = $this->id AND YEAR(pee.created_at) LIKE '%$this->year%'
+      )pee
+      ON pv.id = pee.product_variant_id
+      LEFT JOIN (
+        SELECT SUM(sp.amount) as amount, sp.variant_id 
+        FROM sales_products sp
+        JOIN sales s
+        ON sp.sale_id = s.id
+        JOIN products_variant pv
+        ON sp.variant_id = pv.id
+        WHERE s.establishment_id LIKE '%$this->establishment_id%' AND
+        $query = $this->id AND YEAR(s.created_at) LIKE '%$this->year%'
+      )sp
+      ON pv.id = sp.variant_id
+      LEFT JOIN (
+        SELECT SUM(scp.amount) as amount, scp.variant_id 
+        FROM sales_credits_products scp
+        JOIN sales_credits sc
+        ON scp.sale_id = sc.id
+        JOIN products_variant pv
+        ON scp.variant_id = pv.id
+        WHERE sc.establishment_id LIKE '%$this->establishment_id%' AND
+        $query = $this->id AND YEAR(sc.created_at) LIKE '%$this->year%'
+      )scp
+      ON pv.id = scp.variant_id
+      LEFT JOIN (
+        SELECT SUM(sp.amount) as amount, sp.variant_id 
+        FROM sales_products sp
+        JOIN sales s
+        ON sp.sale_id = s.id
+        JOIN products_variant pv
+        ON sp.variant_id = pv.id
+        WHERE s.establishment_id LIKE '%$this->establishment_id%' AND s.status != 1 AND $query = $this->id AND YEAR(s.created_at) LIKE '%$this->year%'
+      )spr
+      ON pv.id = spr.variant_id
+      LEFT JOIN (
+        SELECT SUM(scp.amount) as amount, scp.variant_id 
+        FROM sales_credits_products scp
+        JOIN sales_credits sc
+        ON scp.sale_id = sc.id
+        JOIN products_variant pv
+        ON scp.variant_id = pv.id
+        WHERE sc.establishment_id LIKE '%$this->establishment_id%' AND sc.status != 1 AND $query = $this->id AND YEAR(sc.created_at) LIKE '%$this->year%'
+      )scpr
+      ON pv.id = scpr.variant_id
+      LEFT JOIN (
+        SELECT SUM(pd.amount) as amount, pd.product_variant_id 
+        FROM products_damageds pd
+        JOIN products_variant pv
+        ON pd.product_variant_id = pv.id
+        WHERE pd.establishment_id LIKE '%$this->establishment_id%' AND pd.status = 1 AND $query = $this->id AND YEAR(pd.created_at) LIKE '%$this->year%'
+      )pd
+      ON pv.id = pd.product_variant_id
+      LEFT JOIN (
+        SELECT SUM(sa.amount) as amount, sa.product_variant_id 
+        FROM stock_adjustment sa
+        JOIN products_variant pv
+        ON sa.product_variant_id = pv.id
+        WHERE sa.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id AND YEAR(sa.created_at) LIKE '%$this->year%'
+      )sa
+      ON pv.id = sa.product_variant_id
       WHERE $query = $this->id
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $info_table['total_sales'] = 1;
-    $info_table['total_returns'] = 2;
-    $info_table['total_damaged'] = 3;
-    $info_table['total_settings'] = 4;
+    /// REPORTE POR AÑO 
+    // TABLA FICTICIA DE MESES
+    $t_months = "SELECT 1 as id_month UNION
+      SELECT 2 as id_month UNION
+      SELECT 3 as id_month UNION
+      SELECT 4 as id_month UNION
+      SELECT 5 as id_month UNION
+      SELECT 6 as id_month UNION
+      SELECT 7 as id_month UNION
+      SELECT 8 as id_month UNION
+      SELECT 9 as id_month UNION
+      SELECT 10 as id_month UNION
+      SELECT 11 as id_month UNION
+      SELECT 12 as id_month
+    ";
+
+    // ENTRADAS 
+    $entries = "SELECT IFNULL(pee.amount, 0) 
+      FROM ( $t_months ) t_months
+      LEFT JOIN(SELECT month(pee.created_at) as id_month, sum(pee.amount) as amount 
+        FROM products_entries_establishments AS pee
+          JOIN products_variant pv
+          ON pee.product_variant_id = pv.id
+          WHERE year(pee.created_at) LIKE '%$this->year%' AND 
+            pee.to_establishment_id LIKE '%$this->establishment_id%' AND 
+            $query = $this->id
+          GROUP BY month(pee.created_at)
+      )pee
+      ON pee.id_month = t_months.id_month
+    ";
+
+    $info_table_per_month['entries'] = $this->select_all_company($entries, $this->db_company, 2);
+
+
+    // SALIDAS 
+    $sales = "SELECT IFNULL(s.amount, 0) 
+      FROM ( $t_months ) t_months
+      LEFT JOIN (SELECT SUM(amount) as amount, month(created_at) as id_month
+        FROM (
+          SELECT SUM(sp.amount) as amount, s.created_at, s.establishment_id
+            FROM sales_products sp
+            JOIN sales s
+            ON sp.sale_id = s.id
+            JOIN products_variant pv
+            ON sp.variant_id = pv.id
+            WHERE year(s.created_at) LIKE '%$this->year%' AND s.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id
+            GROUP BY month(s.created_at)
+          UNION ALL
+          SELECT SUM(sp.amount) as amount, s.created_at, s.establishment_id
+            FROM sales_credits_products sp
+            JOIN sales_credits s
+            ON sp.sale_id = s.id
+            JOIN products_variant pv
+            ON sp.variant_id = pv.id
+            WHERE year(s.created_at) LIKE '%$this->year%' AND s.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id
+            GROUP BY month(s.created_at)
+        )x
+        WHERE year(created_at) LIKE '%$this->year%' AND 
+          establishment_id LIKE '%$this->establishment_id%'
+        GROUP BY month(created_at)
+      )s
+      ON s.id_month = t_months.id_month
+    ";
+
+    $info_table_per_month['sales'] = $this->select_all_company($sales, $this->db_company, 2);
+
+    // DEVOLUCIONES 
+    $returns = "SELECT IFNULL(s.amount, 0) 
+      FROM ( $t_months ) t_months
+      LEFT JOIN (SELECT SUM(amount) as amount, month(created_at) as id_month
+        FROM (
+          SELECT SUM(sp.amount) as amount, s.created_at, s.establishment_id
+            FROM sales_products sp
+            JOIN sales s
+            ON sp.sale_id = s.id
+            JOIN products_variant pv
+            ON sp.variant_id = pv.id
+            WHERE year(s.created_at) LIKE '%$this->year%' AND s.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id AND s.status != 1
+            GROUP BY month(s.created_at)
+          UNION ALL
+          SELECT SUM(sp.amount) as amount, s.created_at, s.establishment_id
+            FROM sales_credits_products sp
+            JOIN sales_credits s
+            ON sp.sale_id = s.id
+            JOIN products_variant pv
+            ON sp.variant_id = pv.id
+            WHERE year(s.created_at) LIKE '%$this->year%' AND s.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id AND s.status != 1
+            GROUP BY month(s.created_at)
+        )x
+        WHERE year(created_at) LIKE '%$this->year%' AND 
+          establishment_id LIKE '%$this->establishment_id%'
+        GROUP BY month(created_at)
+      )s
+      ON s.id_month = t_months.id_month
+    ";
+
+    $info_table_per_month['returns'] = $this->select_all_company($returns, $this->db_company, 2);
+
+    // AVERIAS 
+    $damageds = "SELECT IFNULL(pd.amount, 0) 
+      FROM ( $t_months ) t_months
+      LEFT JOIN(SELECT month(pd.created_at) as id_month, sum(pd.amount) as amount 
+        FROM products_damageds AS pd
+          JOIN products_variant pv
+          ON pd.product_variant_id = pv.id
+          WHERE year(pd.created_at) LIKE '%$this->year%' AND 
+            pd.establishment_id LIKE '%$this->establishment_id%' AND 
+            $query = $this->id
+          GROUP BY month(pd.created_at)
+      )pd
+      ON pd.id_month = t_months.id_month
+    ";
+
+    $info_table_per_month['damageds'] = $this->select_all_company($damageds, $this->db_company, 2);
+
+    // AJUSTE DE STOCK 
+    $settings = "SELECT IFNULL(sa.amount, 0) 
+      FROM ( $t_months ) t_months
+      LEFT JOIN(SELECT month(sa.created_at) as id_month, sum(sa.amount) as amount 
+        FROM stock_adjustment AS sa
+          JOIN products_variant pv
+          ON sa.product_variant_id = pv.id
+          WHERE year(sa.created_at) LIKE '%$this->year%' AND 
+            sa.establishment_id LIKE '%$this->establishment_id%' AND 
+            $query = $this->id
+          GROUP BY month(sa.created_at)
+      )sa
+      ON sa.id_month = t_months.id_month
+    ";
+
+    $info_table_per_month['settings'] = $this->select_all_company($settings, $this->db_company, 2);
+
     return [
       'info' => $info_table,
+      'infoPerMonth' => $info_table_per_month,
     ];
   }
 

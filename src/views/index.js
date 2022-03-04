@@ -30,5 +30,7 @@ import "./newSale";
 import "./documents";
 import "./sales";
 import "./salesCredits";
+import "./stocktaking";
+import "./stockAdjustment";
 
 export default s26Views;
