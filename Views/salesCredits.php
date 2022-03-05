@@ -115,7 +115,7 @@
                       {{ sale.n_document }}
                     </td>
                     <td class="length-int text-center">
-                      <a href="#" class=" btn btn-link p-0" @click.prevent="getInfo(sale.customer_id, 'customers')">
+                      <a href="#" class=" btn btn-link p-0" @click.prevent="$s26.getInfoRow(sale.customer_id, 'customers')">
                         {{ sale.customer }}
                       </a>
                     </td>

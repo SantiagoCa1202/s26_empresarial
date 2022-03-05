@@ -88,10 +88,6 @@ if (element) {
 
         this.allRows();
       },
-      getInfo(id, module) {
-        $s26.create_cookie("id", id, module);
-        window.open(BASE_URL + "/" + module, "_blank");
-      },
       loadMore() {
         this.filter.perPage =
           this.s26_data.info.count > 25

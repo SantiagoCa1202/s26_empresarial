@@ -51,7 +51,7 @@
         <template v-slot:body>
           <tr v-for="item in s26_data.items" :key="item.id">
             <td class="length-int">
-              <a href="#" class=" btn btn-link p-0" @click.prevent="getInfo(item.product_id, 'products')">
+              <a href="#" class=" btn btn-link p-0" @click.prevent="$s26.getInfoRow(item.product_id, 'products')">
                 {{ item.ean_code }}
               </a>
             </td>
@@ -69,7 +69,7 @@
               <span v-if="item.document_id == -1 || item.document_id == 0 ">
                 {{ item.document_id == -1 ? 'Por Asignar' : item.document_id == 0 ? 'Sin Documento' : '' }}
               </span>
-              <div class="text-primary" v-if="item.document_id > 0" @click="getInfo(item.document_id,'buys')">
+              <div class="text-primary" v-if="item.document_id > 0" @click="$s26.getInfoRow(item.document_id,'buys')">
                 <span class="fw-bold">
                   {{ item.document.alias }}:
                 </span>

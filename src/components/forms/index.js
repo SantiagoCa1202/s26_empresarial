@@ -104,4 +104,7 @@ Vue.component("s26-form-expense", formExpense);
 import formTransfer from "./formTransfer.vue";
 Vue.component("s26-form-transfer", formTransfer);
 
+import formDeposit from "./formDeposit.vue";
+Vue.component("s26-form-deposit", formDeposit);
+
 export default s26Forms;

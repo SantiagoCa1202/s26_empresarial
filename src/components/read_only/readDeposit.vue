@@ -1,7 +1,7 @@
 <template>
   <s26-modal-multiple
-    id="readTransfer"
-    title="Información de Transferencia"
+    id="readDeposit"
+    title="Información de Deposito"
     :levels="levels"
     body_style="height: 450px"
     @hideModal="hideModal"
@@ -10,37 +10,25 @@
     @update="infoData(id)"
   >
     <template v-slot:level-0>
-      <div class="col-sm-12">
+      <div class="col-sm-5">
         <s26-input-read
           label="Importe"
           :content="form.amount"
           money
         ></s26-input-read>
       </div>
-      <div class="col-sm-5">
+      <div class="col-sm-7">
         <s26-input-read
           label="Cuenta Origen"
-          :content="form.source_account"
-          variant_input="text-break overflow-hidden"
-          :link="'bankAccounts,' + form.source_account_id"
-        ></s26-input-read>
-      </div>
-      <div class="col-sm-2 s26-align-center fs-5 text-primary">
-        <s26-icon icon="exchange-alt"></s26-icon>
-      </div>
-      <div class="col-sm-5">
-        <s26-input-read
-          label="Cuenta Destino"
-          :content="form.destination_account"
-          variant_input="text-break overflow-hidden"
-          :link="'bankAccounts,' + form.destination_account_id"
+          :content="form.bank_account"
+          :link="'bankAccounts,' + form.bank_account_id"
         ></s26-input-read>
       </div>
       <div class="col-sm-12">
         <s26-textarea-read
           label="Descripción"
           :content="form.description"
-          rows="4"
+          rows="6"
         >
         </s26-textarea-read>
       </div>
@@ -51,7 +39,7 @@
       <div class="col-6">
         <s26-input-read
           label="Estado"
-          :content="form.status == 1 ? 'Activo' : 'Inactivos'"
+          :content="form.status == 1 ? 'Activo' : 'Inactivo'"
         >
         </s26-input-read>
       </div>
@@ -77,7 +65,7 @@ export default {
   data: function () {
     return {
       form: {},
-      levels: ["Información de Transferencia"],
+      levels: ["Información de Deposito"],
     };
   },
   created() {
@@ -86,13 +74,13 @@ export default {
   methods: {
     infoData(id) {
       this.axios
-        .get("/transfers/getTransfer/" + id)
+        .get("/deposits/getDeposit/" + id)
         .then((res) => (this.form = res.data))
         .catch((err) => console.log(err));
     },
     hideModal() {
       this.$emit("input", null);
-      $s26.delete_cookie("id", "transfers");
+      $s26.delete_cookie("id", "deposits");
     },
   },
 };

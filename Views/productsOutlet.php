@@ -82,12 +82,12 @@
                 <tbody>
                   <tr v-for="(pro, index) in item.items" :key="index" :class="pro.status == 1 ? '' : 'tr-danger'">
                     <td class="length-int">
-                      <a href="#" class=" btn btn-link" @click.prevent="getInfo(pro.sale_id, 'sales')">
+                      <a href="#" class=" btn btn-link" @click.prevent="$s26.getInfoRow(pro.sale_id, 'sales')">
                         {{ pro.type }} - {{ pro.sale_id }}
                       </a>
                     </td>
                     <td class="length-int">
-                      <a href="#" class=" btn btn-link" @click.prevent="getInfo(pro.product_id, 'products')">
+                      <a href="#" class=" btn btn-link" @click.prevent="$s26.getInfoRow(pro.product_id, 'products')">
                         {{ pro.ean_code }}
                       </a>
                     </td>

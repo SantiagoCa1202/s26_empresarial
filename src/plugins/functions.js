@@ -496,6 +496,11 @@ const copy_content = (content) => {
   console.log(content);
 };
 
+const getInfoRow = (id, module) => {
+  create_cookie("id", id, module);
+  window.open(BASE_URL + "/" + module, "_blank");
+};
+
 export default {
   val_inputs,
   val_form,
@@ -513,4 +518,5 @@ export default {
   currency,
   activeSelect,
   copy_content,
+  getInfoRow,
 };

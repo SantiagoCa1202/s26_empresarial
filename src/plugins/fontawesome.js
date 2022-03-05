@@ -98,6 +98,7 @@ import {
   faExchangeAlt,
   faBug,
   faSlidersH,
+  faPiggyBank,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -200,7 +201,8 @@ library.add(
   faCompressAlt,
   faExchangeAlt,
   faBug,
-  faSlidersH
+  faSlidersH,
+  faPiggyBank
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

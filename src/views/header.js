@@ -38,7 +38,7 @@ if (element) {
         "temporary_expenses",
         "transfers",
         "deposits",
-        "external_income",
+        "externalIncome",
       ],
       subDocuments: ["buys", "creditNotes", "withholdings"],
       subWallet: ["wallet", "estadisticas", "bankAccounts"],

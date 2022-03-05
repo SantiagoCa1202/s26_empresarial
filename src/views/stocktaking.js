@@ -157,10 +157,6 @@ if (element) {
           () => this.$alertify.error("Recalculo de Stock Cancelado.")
         );
       },
-      getInfo(id, module) {
-        $s26.create_cookie("id", id, module);
-        window.open(BASE_URL + "/" + module, "_blank");
-      },
     },
   });
 }

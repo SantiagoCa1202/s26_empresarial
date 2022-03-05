@@ -136,7 +136,7 @@
               <a
                 href="#"
                 class="btn btn-link px-0"
-                @click.prevent="getInfo(pro.product_id, 'products')"
+                @click.prevent="$s26.getInfoRow(pro.product_id, 'products')"
               >
                 ( {{ pro.id }} ) {{ pro.name }} - {{ pro.model }} -
                 {{ pro.trademark }} -

@@ -68,4 +68,7 @@ Vue.component("s26-read-expense", readExpense);
 import readTransfer from "./readTransfer.vue";
 Vue.component("s26-read-transfer", readTransfer);
 
+import readDeposit from "./readDeposit.vue";
+Vue.component("s26-read-deposit", readDeposit);
+
 export default s26ReadOnly;

@@ -88,10 +88,6 @@ if (element) {
 
         this.allRows();
       },
-      getInfo(id, module) {
-        $s26.create_cookie("id", id, module);
-        window.open(BASE_URL + "/" + module, "_blank");
-      },
       setIdRow(id, type) {
         this.idRow = parseInt(id);
         this.action = type;

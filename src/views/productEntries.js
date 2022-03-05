@@ -86,10 +86,6 @@ if (element) {
           $s26.create_cookie("id", id, "productsEntries");
         }
       },
-      getInfo(id, module) {
-        $s26.create_cookie("id", id, module);
-        window.open(BASE_URL + "/" + module, "_blank");
-      },
     },
   });
 }

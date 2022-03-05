@@ -1,39 +1,22 @@
 import Vue from "vue";
 
-let element = !!document.getElementById("s26-stock-adjustment-view");
+let element = !!document.getElementById("s26-deposits-view");
 if (element) {
   const def_filter = () => {
     return {
-      ean_code: "",
-      sku: "",
-      product: "",
-      model: "",
-      trademark: "",
+      bank_account_id: "",
+      description: "",
+      amount: "",
+      establishment_id: "",
+      date: [],
+      status: "",
       perPage: 25,
     };
   };
   new Vue({
-    el: "#s26-stock-adjustment-view",
+    el: "#s26-deposits-view",
     data: function() {
       return {
-        fields: [
-          {
-            name: "Código",
-            class: "length-int",
-          },
-          {
-            name: "Producto",
-            class: "length-description",
-          },
-          {
-            name: "Precio",
-            class: "length-action text-center",
-          },
-          {
-            name: "Ajuste",
-            class: "length-action text-center",
-          },
-        ],
         filter: def_filter(),
         s26_data: { info: {} },
         idRow: null,
@@ -52,7 +35,7 @@ if (element) {
         for (let fil in this.filter) params[fil] = this.filter[fil];
 
         this.axios
-          .get("/stockAdjustment/getAdjustments/", {
+          .get("/deposits/getDeposits/", {
             params,
           })
           .then((res) => (this.s26_data = res.data))
@@ -61,6 +44,20 @@ if (element) {
       onReset() {
         this.filter = def_filter();
 
+        this.allRows();
+      },
+      setIdRow(id, type) {
+        this.idRow = parseInt(id);
+        this.action = type;
+        if (!$s26.readCookie("id") && type == "watch") {
+          $s26.create_cookie("id", id, "deposits");
+        }
+      },
+      loadMore() {
+        this.filter.perPage =
+          this.s26_data.info.count > 25
+            ? this.filter.perPage + 25
+            : this.filter.perPage;
         this.allRows();
       },
     },

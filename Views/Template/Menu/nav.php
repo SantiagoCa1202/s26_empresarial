@@ -204,7 +204,7 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][10]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/external_income" :class="focusSubMenu('external_income')">
+                <a href="<?= BASE_URL ?>/externalIncome" :class="focusSubMenu('externalIncome')">
                   Ingresos Externos
                 </a>
               </li>

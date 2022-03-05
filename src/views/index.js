@@ -34,5 +34,6 @@ import "./stocktaking";
 import "./stockAdjustment";
 import "./expenses";
 import "./transfers";
+import "./deposits";
 
 export default s26Views;

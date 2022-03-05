@@ -1,14 +1,14 @@
 <?= head_(); ?>
 <?= header_(); ?>
 
-<div id="s26-transfers-view" class="container-fluid s26-container" tabindex="0">
+<div id="s26-deposits-view" class="container-fluid s26-container" tabindex="0">
   <?php
   if (empty($_SESSION['permitsModule']['r'])) {
   ?>
     <p>Acceso Restringido</p>
   <?php } else { ?>
     <div class="row align-items">
-      <s26-sidebar title="Transferencias" icon="exchange-alt" @update="allRows" @reset="onReset" v-model="activeSidebar">
+      <s26-sidebar title="Depositos" icon="piggy-bank" @update="allRows" @reset="onReset" v-model="activeSidebar">
         <template v-slot:header>
           <?php
           if ($_SESSION['permitsModule']['w']) {
@@ -22,9 +22,7 @@
         </template>
         <template v-slot:search>
           <div class="container">
-            <s26-select-bank-account label="Cuenta Origen" id="form-source_account" v-model="filter.source_account_id" all @change="allRows">
-            </s26-select-bank-account>
-            <s26-select-bank-account label="Cuenta Destino" id="form-destination_account" v-model="filter.destination_account_id" all @change="allRows">
+            <s26-select-bank-account label="Cuenta Bancaria" id="form-account" v-model="filter.bank_account_id" all @change="allRows">
             </s26-select-bank-account>
             <s26-form-input label="Descripción" id="description" type="text" v-model="filter.description" maxlength="100" @keyup="allRows" text></s26-form-input>
             <s26-form-input label="Importe" id="amount" type="tel" v-model="filter.amount" @keyup="allRows" number money></s26-form-input>
@@ -54,7 +52,7 @@
                 </s26-tarjet-info>
                 <s26-tarjet-info title="Total" variant="warning" icon="money-bill-wave">
                   <s26-icon icon="dollar-sign"></s26-icon>
-                  {{ s26_data.info.total_transfer }}
+                  {{ s26_data.info.total_deposit }}
                 </s26-tarjet-info>
               </div>
             </div>
@@ -71,32 +69,25 @@
                 {{ item.items.length }}
               </span>
             </div>
-            <div class="col-sm-12 mb-3" v-for="transfer in item.items" :key="item.id">
+            <div class="col-sm-12 mb-3" v-for="deposit in item.items" :key="item.id">
 
-              <div class="tarjet-transfers">
-                <div class="transfer-body row mx-0">
-                  <div class="col-4 fs-6">
-                    <a href="#" class=" btn btn-link p-0 text-decoration-none" @click.prevent="$s26.getInfoRow(transfer.source_account_id, 'bankAccounts')">
-                      {{ transfer.source_account }}
-                    </a>
-                  </div>
-                  <div class="col-1 fs-6 text-primary">
-                    <s26-icon icon="exchange-alt"></s26-icon>
-                  </div>
-                  <div class="col-4 fs-6">
-                    <a href="#" class=" btn btn-link p-0 text-decoration-none" @click.prevent="$s26.getInfoRow(transfer.destination_account_id, 'bankAccounts')">
-                      {{ transfer.destination_account }}
+              <div class="tarjet-deposits">
+                <div class="deposit-body row mx-0">
+
+                  <div class="col-9 fs-6">
+                    <a href="#" class=" btn btn-link p-0 text-decoration-none" @click.prevent="$s26.getInfoRow(deposit.bank_account_id, 'bankAccounts')">
+                      {{ deposit.bank_account }}
                     </a>
                   </div>
                   <div class="col-3 text-end">
                     <s26-icon icon="dollar-sign" class="fs-5"></s26-icon>
-                    <span class="fs-5"> {{ $s26.currency(transfer.amount) }} </span>
+                    <span class="fs-5"> {{ $s26.currency(deposit.amount) }} </span>
                   </div>
                 </div>
-                <div class="transfer-footer row mx-0">
+                <div class="deposit-footer row mx-0">
                   <div class="col-10">
-                    <span :class="['mx-2 fw-600', transfer.status == 1 ? 'text-success' : 'text-warning']">
-                      {{ transfer.status == 1 ? 'Activo' : 'Inactivo' }}
+                    <span :class="['mx-2 fw-600', deposit.status == 1 ? 'text-success' : 'text-warning']">
+                      {{ deposit.status == 1 ? 'Activo' : 'Inactivo' }}
                     </span>
                   </div>
                   <div class="col-2 row mx-0 px-0">
@@ -104,7 +95,7 @@
                     if ($_SESSION['permitsModule']['r']) {
                     ?>
                       <div class="col-4 s26-align-center">
-                        <button type="button" class="btn btn-link" style="color: #fcbf12" @click="setIdRow(transfer.id, 'watch')">
+                        <button type="button" class="btn btn-link" style="color: #fcbf12" @click="setIdRow(deposit.id, 'watch')">
                           <s26-icon icon='eye'></s26-icon>
                         </button>
                       </div>
@@ -113,7 +104,7 @@
                     if ($_SESSION['permitsModule']['u']) {
                     ?>
                       <div class="col-4 s26-align-center">
-                        <button type="button" class="btn btn-link" @click="setIdRow(transfer.id, 'update')">
+                        <button type="button" class="btn btn-link" @click="setIdRow(deposit.id, 'update')">
                           <s26-icon icon='edit'></s26-icon>
                         </button>
                       </div>
@@ -122,7 +113,7 @@
                     if ($_SESSION['permitsModule']['d']) {
                     ?>
                       <div class="col-4 s26-align-center">
-                        <button type="button" class="btn btn-link text-danger" @click="setIdRow(transfer.id, 'delete')">
+                        <button type="button" class="btn btn-link text-danger" @click="setIdRow(deposit.id, 'delete')">
                           <s26-icon icon='trash-alt'></s26-icon>
                         </button>
                       </div>
@@ -150,8 +141,8 @@
       ?>
         <!-- Modal Ver-->
         <transition name="slide-fade">
-          <s26-read-transfer v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-read-transfer>
+          <s26-read-deposit v-model="action" :id="idRow" v-if="action == 'watch'">
+          </s26-read-deposit>
         </transition>
       <?php
       }
@@ -159,7 +150,7 @@
       ?>
         <!-- Modal Nuevo-->
         <transition name="slide-fade">
-          <s26-form-transfer v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-transfer>
+          <s26-form-deposit v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-deposit>
         </transition>
       <?php
 
@@ -170,7 +161,7 @@
       ?>
         <!-- Modal Eliminar -->
         <transition name="slide-fade">
-          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'transfers/delTransfer/' + idRow"></s26-delete>
+          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'deposits/delDeposit/' + idRow"></s26-delete>
         </transition>
       <?php
       }
@@ -182,7 +173,7 @@
 </div>
 <?= footer_(); ?>
 <style>
-  .tarjet-transfers {
+  .tarjet-deposits {
     background: #fff;
     height: 80px;
     padding: .5rem;
@@ -191,15 +182,15 @@
     color: var(--s26-blue);
   }
 
-  .transfer-header,
-  .transfer-footer {
+  .deposit-header,
+  .deposit-footer {
     height: 25%;
     align-items: center;
     padding-left: .5rem;
     padding-right: .5rem;
   }
 
-  .transfer-body {
+  .deposit-body {
     height: 50%;
     padding-left: .5rem;
     padding-right: .5rem;

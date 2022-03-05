@@ -132,7 +132,7 @@
               <a
                 href="#"
                 class="btn btn-link p-0"
-                @click.prevent="getInfo(pro.product_id, 'products')"
+                @click.prevent="$s26.getInfoRow(pro.product_id, 'products')"
               >
                 ( {{ pro.id }} ) {{ pro.name }} - {{ pro.model }} -
                 {{ pro.trademark }} -
@@ -252,7 +252,7 @@
               <a
                 href="#"
                 class="btn btn-link p-0"
-                @click.prevent="getInfo(pay.bank_account_id, 'bankAccounts')"
+                @click.prevent="$s26.getInfoRow(pay.bank_account_id, 'bankAccounts')"
               >
                 {{ pay.bank_account }}
               </a>
@@ -454,10 +454,6 @@ export default {
           );
         })
         .catch((err) => console.log(err));
-    },
-    getInfo(id, module) {
-      $s26.create_cookie("id", id, module);
-      window.open(BASE_URL + "/" + module, "_blank");
     },
     hideModal() {
       this.$emit("input", null);

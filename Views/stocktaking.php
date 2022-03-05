@@ -70,7 +70,7 @@
         <template v-slot:body>
           <tr v-for="item in s26_data.items" :key="item.id" :class="item.accountant == item.stock ? 'tr-success' : 'tr-danger'">
             <td class="length-int">
-              <a href="#" class=" btn btn-link p-0" @click.prevent="getInfo(item.product_id, 'products')">
+              <a href="#" class=" btn btn-link p-0" @click.prevent="$s26.getInfoRow(item.product_id, 'products')">
                 {{ item.ean_code }}
               </a>
             </td>
