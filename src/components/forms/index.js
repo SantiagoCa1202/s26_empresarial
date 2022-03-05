@@ -101,4 +101,7 @@ Vue.component("s26-form-stocktaking", formStocktaking);
 import formExpense from "./formExpense.vue";
 Vue.component("s26-form-expense", formExpense);
 
+import formTransfer from "./formTransfer.vue";
+Vue.component("s26-form-transfer", formTransfer);
+
 export default s26Forms;

@@ -5,8 +5,7 @@
   const _iva_ = "<?= _iva_ ?>";
   const _iva__ = "<?= _iva__ ?>";
   const info_estab = <?= !empty($_SESSION['userData']['establishment']) ? json_encode($_SESSION['userData']['establishment']) : json_encode([]); ?>;
-  const $permit_establishment = <?= $_SESSION['permits'][41]['r'] ?>;
-
+  const $permit_establishment = <?= !empty($_SESSION['userData']) ? $_SESSION['permits'][41]['r'] : 0 ?>;
 </script>
 <script src="<?= BASE_URL ?>/dist/bundle.js"></script>
 

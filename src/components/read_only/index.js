@@ -65,4 +65,7 @@ Vue.component("s26-read-product-damaged", readProductDamaged);
 import readExpense from "./readExpense.vue";
 Vue.component("s26-read-expense", readExpense);
 
+import readTransfer from "./readTransfer.vue";
+Vue.component("s26-read-transfer", readTransfer);
+
 export default s26ReadOnly;

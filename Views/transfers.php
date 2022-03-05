@@ -1,14 +1,14 @@
 <?= head_(); ?>
 <?= header_(); ?>
 
-<div id="s26-expenses-view" class="container-fluid s26-container" tabindex="0">
+<div id="s26-transfers-view" class="container-fluid s26-container" tabindex="0">
   <?php
   if (empty($_SESSION['permitsModule']['r'])) {
   ?>
     <p>Acceso Restringido</p>
   <?php } else { ?>
     <div class="row align-items">
-      <s26-sidebar title="Egresos" icon="chart-bar" @update="allRows" @reset="onReset" v-model="activeSidebar">
+      <s26-sidebar title="Transferencias" icon="exchange-alt" @update="allRows" @reset="onReset" v-model="activeSidebar">
         <template v-slot:header>
           <?php
           if ($_SESSION['permitsModule']['w']) {
@@ -22,15 +22,12 @@
         </template>
         <template v-slot:search>
           <div class="container">
-            <s26-form-input label="Id" id="Id" type="tel" v-model="filter.id" maxlength="11" @keyup="allRows" number autofocus></s26-form-input>
-            <s26-form-input label="N° de Documento" id="n_document" type="tel" v-model="filter.n_document" maxlength="11" @keyup="allRows" number autofocus></s26-form-input>
-            <s26-form-input label="Razón Social" id="tradename" type="text" v-model="filter.tradename" maxlength="50" @keyup="allRows" text></s26-form-input>
+            <s26-select-bank-account label="Cuenta Origen" id="form-source_account" v-model="filter.source_account_id" all @change="allRows">
+            </s26-select-bank-account>
+            <s26-select-bank-account label="Cuenta Destino" id="form-destination_account" v-model="filter.destination_account_id" all @change="allRows">
+            </s26-select-bank-account>
             <s26-form-input label="Descripción" id="description" type="text" v-model="filter.description" maxlength="100" @keyup="allRows" text></s26-form-input>
             <s26-form-input label="Importe" id="amount" type="tel" v-model="filter.amount" @keyup="allRows" number money></s26-form-input>
-            <s26-select-status all label="Cuenta" v-model="filter.account" @change="allRows" :options="['Costo', 'Ganancia']"></s26-select-status>
-            <s26-select-bank-account id="form-bank_account" v-model="filter.bank_account_id" all @change="allRows">
-            </s26-select-bank-account>
-            <s26-select-payment-method id="filter-payment_method_id" v-model="filter.payment_method_id" all @change="allRows"></s26-select-payment-method>
             <?php if ($_SESSION['permits'][41]['r']) {  ?>
               <s26-select-establishment id="filter-establishment" all v-model="filter.establishment_id" @change="allRows"></s26-select-establishment>
             <?php } ?>
@@ -55,13 +52,9 @@
                     {{ s26_data.info.count }}
                   </span>
                 </s26-tarjet-info>
-                <s26-tarjet-info title="Costo" variant="warning" icon="money-bill-wave">
+                <s26-tarjet-info title="Total" variant="warning" icon="money-bill-wave">
                   <s26-icon icon="dollar-sign"></s26-icon>
-                  {{ s26_data.info.total_cost }}
-                </s26-tarjet-info>
-                <s26-tarjet-info title="Ganancia" variant="purple" icon="money-bill-wave">
-                  <s26-icon icon="dollar-sign"></s26-icon>
-                  {{ s26_data.info.total_gain }}
+                  {{ s26_data.info.total_transfer }}
                 </s26-tarjet-info>
               </div>
             </div>
@@ -78,38 +71,26 @@
                 {{ item.items.length }}
               </span>
             </div>
-            <div class="col-sm-12 mb-3" v-for="expense in item.items" :key="item.id">
+            <div class="col-sm-12 mb-3" v-for="transfer in item.items" :key="item.id">
 
-              <div class="tarjet-expenses">
-                <div class="expense-header row mx-0">
-                  <div class="col-10">
-                    <h1 class="m-0 h5 fw-600">
-                      {{ expense.tradename }}
-                      <span class="fw-normal h6">{{ expense.n_document }} </span>
-                    </h1>
+              <div class="tarjet-transfers">
+                <div class="transfer-body row mx-0">
+                  <div class="col-4 fs-6"> {{ transfer.source_account }} </div>
+                  <div class="col-1 fs-6 text-primary">
+                    <s26-icon icon="exchange-alt"></s26-icon>
                   </div>
-                  <div :class="['col-2 text-end', expense.status == 1 ? 'text-success' : 'text-danger']">
-                    {{ expense.status == 1 ? 'Activo' : 'Inactivo' }}
+                  <div class="col-4 fs-6">
+                    {{ transfer.destination_account }}
                   </div>
-                </div>
-                <div class="expense-body row mx-0">
-                  <div class="col-8 fs-6 overflow-auto h-100" v-html="expense.description">
-                  </div>
-                  <div class="col-4 text-end">
-                    <s26-icon icon="dollar-sign" class="fs-4"></s26-icon>
-                    <span class="fs-4"> {{ $s26.currency(expense.amount) }} </span>
+                  <div class="col-3 text-end">
+                    <s26-icon icon="dollar-sign" class="fs-5"></s26-icon>
+                    <span class="fs-5"> {{ $s26.currency(transfer.amount) }} </span>
                   </div>
                 </div>
-                <div class="expense-footer row mx-0">
+                <div class="transfer-footer row mx-0">
                   <div class="col-10">
-                    <span :class="['mx-2 fw-600', expense.account == 1 ? 'text-success' : 'text-warning']">
-                      {{ expense.account == 1 ? 'Costo' : 'Ganancia' }}
-                    </span>
-                    <span class="mx-2 text-primary fw-600">
-                      {{ expense.payment_method }}
-                    </span>
-                    <span class="mx-2 text-primary fw-600">
-                      {{ expense.bank_entity }}
+                    <span :class="['mx-2 fw-600', transfer.status == 1 ? 'text-success' : 'text-warning']">
+                      {{ transfer.status == 1 ? 'Activo' : 'Inactivo' }}
                     </span>
                   </div>
                   <div class="col-2 row mx-0 px-0">
@@ -117,7 +98,7 @@
                     if ($_SESSION['permitsModule']['r']) {
                     ?>
                       <div class="col-4 s26-align-center">
-                        <button type="button" class="btn btn-link" style="color: #fcbf12" @click="setIdRow(expense.id, 'watch')">
+                        <button type="button" class="btn btn-link" style="color: #fcbf12" @click="setIdRow(transfer.id, 'watch')">
                           <s26-icon icon='eye'></s26-icon>
                         </button>
                       </div>
@@ -126,7 +107,7 @@
                     if ($_SESSION['permitsModule']['u']) {
                     ?>
                       <div class="col-4 s26-align-center">
-                        <button type="button" class="btn btn-link" @click="setIdRow(expense.id, 'update')">
+                        <button type="button" class="btn btn-link" @click="setIdRow(transfer.id, 'update')">
                           <s26-icon icon='edit'></s26-icon>
                         </button>
                       </div>
@@ -135,7 +116,7 @@
                     if ($_SESSION['permitsModule']['d']) {
                     ?>
                       <div class="col-4 s26-align-center">
-                        <button type="button" class="btn btn-link text-danger" @click="setIdRow(expense.id, 'delete')">
+                        <button type="button" class="btn btn-link text-danger" @click="setIdRow(transfer.id, 'delete')">
                           <s26-icon icon='trash-alt'></s26-icon>
                         </button>
                       </div>
@@ -154,7 +135,7 @@
           </transition>
           <div class="col-12 rounded shadow-sm bg-white py-2 text-center s26-text-blue fw-bold" v-if="s26_data.info.count == 0">
             Sin Registros
-          </div>s
+          </div>
         </div>
       </section>
 
@@ -163,8 +144,8 @@
       ?>
         <!-- Modal Ver-->
         <transition name="slide-fade">
-          <s26-read-expense v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-read-expense>
+          <s26-read-transfer v-model="action" :id="idRow" v-if="action == 'watch'">
+          </s26-read-transfer>
         </transition>
       <?php
       }
@@ -172,7 +153,7 @@
       ?>
         <!-- Modal Nuevo-->
         <transition name="slide-fade">
-          <s26-form-expense v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-expense>
+          <s26-form-transfer v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-transfer>
         </transition>
       <?php
 
@@ -183,7 +164,7 @@
       ?>
         <!-- Modal Eliminar -->
         <transition name="slide-fade">
-          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'expenses/delExpense/' + idRow"></s26-delete>
+          <s26-delete v-model="action" @update="allRows" v-if="action == 'delete'" :post_delete="'transfers/delTransfer/' + idRow"></s26-delete>
         </transition>
       <?php
       }
@@ -195,24 +176,24 @@
 </div>
 <?= footer_(); ?>
 <style>
-  .tarjet-expenses {
+  .tarjet-transfers {
     background: #fff;
-    height: 125px;
+    height: 80px;
     padding: .5rem;
     box-shadow: 0 2px 8px 2px rgb(93 130 170 / 21%);
     border-radius: .4rem;
     color: var(--s26-blue);
   }
 
-  .expense-header,
-  .expense-footer {
+  .transfer-header,
+  .transfer-footer {
     height: 25%;
     align-items: center;
     padding-left: .5rem;
     padding-right: .5rem;
   }
 
-  .expense-body {
+  .transfer-body {
     height: 50%;
     padding-left: .5rem;
     padding-right: .5rem;

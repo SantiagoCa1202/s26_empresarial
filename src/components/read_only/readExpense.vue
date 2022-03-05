@@ -1,7 +1,7 @@
 <template>
   <s26-modal-multiple
-    id="readBankAccount"
-    title="Información de Cuenta Bancaria"
+    id="readExpense"
+    title="Información de Egreso"
     :levels="levels"
     body_style="min-height: 260px"
     @hideModal="hideModal"

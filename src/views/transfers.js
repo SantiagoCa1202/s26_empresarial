@@ -1,26 +1,21 @@
 import Vue from "vue";
 
-let element = !!document.getElementById("s26-expenses-view");
+let element = !!document.getElementById("s26-transfers-view");
 if (element) {
   const def_filter = () => {
     return {
-      id: "",
-      n_document: "",
-      tradename: "",
+      source_account_id: "",
+      destination_account_id: "",
       description: "",
       amount: "",
-      account: "",
-      bank_account_id: "",
-      payment_method_id: "",
       establishment_id: "",
-      box_id: "",
       date: [],
       status: "",
       perPage: 25,
     };
   };
   new Vue({
-    el: "#s26-expenses-view",
+    el: "#s26-transfers-view",
     data: function() {
       return {
         filter: def_filter(),
@@ -41,7 +36,7 @@ if (element) {
         for (let fil in this.filter) params[fil] = this.filter[fil];
 
         this.axios
-          .get("/expenses/getExpenses/", {
+          .get("/transfers/getTransfers/", {
             params,
           })
           .then((res) => (this.s26_data = res.data))
@@ -56,7 +51,7 @@ if (element) {
         this.idRow = parseInt(id);
         this.action = type;
         if (!$s26.readCookie("id") && type == "watch") {
-          $s26.create_cookie("id", id, "expenses");
+          $s26.create_cookie("id", id, "transfers");
         }
       },
       loadMore() {

@@ -1,7 +1,7 @@
 <template>
   <div :id="'s26-custom-select-' + id" class="s26-custom-select mb-3">
     <label :for="id" class="form-label w-100">
-      Cuenta Bancaria
+      {{ label }}
       <span class="text-danger" v-if="s26_required">
         <s26-icon icon="asterisk" class="icon_asterisk_required"></s26-icon>
       </span>
@@ -86,6 +86,10 @@ export default {
     all: Boolean,
     s26_required: Boolean,
     checkbook: Boolean,
+    label: {
+      type: String,
+      default: "Cuenta Bancaria",
+    },
   },
   data: function () {
     return {
@@ -120,7 +124,7 @@ export default {
       const params = {
         name: this.search,
         perPage: this.perPage,
-        checkbook: this.checkbook ? 1 : '',
+        checkbook: this.checkbook ? 1 : "",
       };
       this.axios
         .get("/bankAccounts/getBankAccounts/", {
