@@ -16,10 +16,11 @@ class BankAccounts extends Controllers
   }
   public function getBankAccounts()
   {
+
     if ($_SESSION['permitsModule']['r']) {
       $perPage = intval($_GET['perPage']);
       $status = !empty($_GET['status']) ? intval($_GET['status']) : '';
-      $checkbook = !empty($_GET['checkbook']) ? boolval($_GET['checkbook']) : '';
+      $checkbook = !empty($_GET['checkbook']) ? $_GET['checkbook'] : '';
 
       $arrData = $this->model->selectBankAccounts($perPage, $status, $checkbook);
 

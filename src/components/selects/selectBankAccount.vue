@@ -120,7 +120,7 @@ export default {
       const params = {
         name: this.search,
         perPage: this.perPage,
-        checkbook: this.checkbook,
+        checkbook: this.checkbook ? 1 : '',
       };
       this.axios
         .get("/bankAccounts/getBankAccounts/", {

@@ -98,4 +98,7 @@ Vue.component("s26-form-product-damaged", formProductDamaged);
 import formStocktaking from "./formStocktaking.vue";
 Vue.component("s26-form-stocktaking", formStocktaking);
 
+import formExpense from "./formExpense.vue";
+Vue.component("s26-form-expense", formExpense);
+
 export default s26Forms;

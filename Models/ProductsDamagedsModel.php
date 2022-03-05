@@ -181,33 +181,28 @@ class ProductsDamagedsModel extends Mysql
 
     $this->id = $id;
 
-    if ($this->id !== 1) {
+    $sql = "SELECT * FROM products_damageds WHERE id = $this->id";
+    $request = $this->select_company($sql, $this->db_company);
 
+    $this->variant_id = $request['product_variant_id'];
+    $this->establishment_id = $request['establishment_id'];
+    $this->amount = $request['amount'];
 
-      $sql = "SELECT * FROM products_damageds WHERE id = $this->id";
-      $request = $this->select_company($sql, $this->db_company);
+    $sql = "SELECT * FROM products_establishments WHERE product_variant_id = $this->variant_id AND establishment_id = $this->establishment_id";
+    $request = $this->select_company($sql, $this->db_company);
+    $currentStock = $request['stock'];
+    $newStock = $currentStock + $this->amount;
 
-      $this->variant_id = $request['product_variant_id'];
-      $this->establishment_id = $request['establishment_id'];
-      $this->amount = $request['amount'];
+    $sql = "UPDATE products_establishments SET stock = ? WHERE product_variant_id = $this->variant_id AND establishment_id = $this->establishment_id";
+    $arrData = array(
+      $newStock
+    );
 
-      $sql = "SELECT * FROM products_establishments WHERE product_variant_id = $this->variant_id AND establishment_id = $this->establishment_id";
-      $request = $this->select_company($sql, $this->db_company);
-      $currentStock = $request['stock'];
-      $newStock = $currentStock + $this->amount;
+    $request = $this->update_company($sql, $arrData, $this->db_company);
 
-      $sql = "UPDATE products_establishments SET stock = ? WHERE product_variant_id = $this->variant_id AND establishment_id = $this->establishment_id";
-      $arrData = array(
-        $newStock
-      );
+    $sql = "UPDATE products_damageds SET status = 0 WHERE id = $this->id";
+    $request = $this->delete_company($sql, $this->db_company);
 
-      $request = $this->update_company($sql, $arrData, $this->db_company);
-
-      $sql = "UPDATE products_damageds SET status = 0 WHERE id = $this->id";
-      $request = $this->delete_company($sql, $this->db_company);
-    } else {
-      $request = -4;
-    }
     return $request;
   }
 }

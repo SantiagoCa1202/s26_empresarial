@@ -22,7 +22,7 @@
             <?php } ?>
             <s26-select-type-document id="filter-type_doc_id" v-model="filter.type_doc_id" all type="buy"></s26-select-type-document>
             <s26-select-status all label="Estado" v-model="filter.status" @change="allRows" :options="['procesadas', 'anuladas']"></s26-select-status>
-            <s26-select-payment-method id="filter-payment_method_id" v-model="filter.payment_method_id" all></s26-select-payment-method>
+            <s26-select-payment-method id="filter-payment_method_id" v-model="filter.payment_method_id" all @change="allRows"></s26-select-payment-method>
             <s26-date-picker id="date" enable="range" size="sm" v-model="filter.date" @change="allRows" label="fecha" :dates="s26_data.dates"></s26-date-picker>
           </div>
         </template>

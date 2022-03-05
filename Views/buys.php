@@ -165,7 +165,4 @@
   }
   ?>
 </div>
-<script>
-  const $permit_establishment = <?= $_SESSION['permits'][41]['r'] ?>;
-</script>
 <?= footer_(); ?>

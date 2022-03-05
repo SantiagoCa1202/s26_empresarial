@@ -266,12 +266,9 @@ class BuysModel extends Mysql
 
     $this->id = $id;
 
-    if ($this->id !== 1) {
-      $sql = "UPDATE buys SET status = 0 WHERE id = $this->id";
-      $request = $this->delete_company($sql, $this->db_company);
-    } else {
-      $request = -4;
-    }
+    $sql = "UPDATE buys SET status = 0 WHERE id = $this->id";
+    $request = $this->delete_company($sql, $this->db_company);
+
     return $request;
   }
 }

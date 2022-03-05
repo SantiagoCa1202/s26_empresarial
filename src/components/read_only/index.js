@@ -62,4 +62,7 @@ Vue.component("s26-read-sale-credit", readSaleCredit);
 import readProductDamaged from "./readProductDamaged.vue";
 Vue.component("s26-read-product-damaged", readProductDamaged);
 
+import readExpense from "./readExpense.vue";
+Vue.component("s26-read-expense", readExpense);
+
 export default s26ReadOnly;
