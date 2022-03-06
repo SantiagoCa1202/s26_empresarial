@@ -107,4 +107,7 @@ Vue.component("s26-form-transfer", formTransfer);
 import formDeposit from "./formDeposit.vue";
 Vue.component("s26-form-deposit", formDeposit);
 
+import formExternalIncome from "./formExternalIncome.vue";
+Vue.component("s26-form-external-income", formExternalIncome);
+
 export default s26Forms;

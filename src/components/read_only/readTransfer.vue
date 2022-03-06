@@ -51,7 +51,7 @@
       <div class="col-6">
         <s26-input-read
           label="Estado"
-          :content="form.status == 1 ? 'Activo' : 'Inactivos'"
+          :content="form.status == 1 ? 'Activo' : 'Inactivo'"
         >
         </s26-input-read>
       </div>
