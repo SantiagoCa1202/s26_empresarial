@@ -160,7 +160,7 @@ class ExternalIncomesModel extends Mysql
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "SELECT eia.*, bank_account
+    $rows = "SELECT eia.*, bank_account, IF(eia.box_id > 0, 1, 2) as `add`
       FROM external_incomes_amounts eia
       LEFT JOIN(
         SELECT ba.id, CONCAT(be.bank_entity, ' - ', ba.n_account) AS bank_account
@@ -186,6 +186,7 @@ class ExternalIncomesModel extends Mysql
     $external_income_id,
     $amount,
     $account,
+    $box_id,
     $bank_account_id,
     $status,
   ) {
@@ -195,14 +196,16 @@ class ExternalIncomesModel extends Mysql
     $this->external_income_id = $external_income_id;
     $this->amount = $amount;
     $this->account = $account;
+    $this->box_id = $box_id;
     $this->bank_account_id = $bank_account_id;
     $this->status = $status;
 
-    $query_insert = "INSERT INTO external_incomes_amounts (external_income_id, amount, account, bank_account_id, status) VALUES (?,?,?,?,?)";
+    $query_insert = "INSERT INTO external_incomes_amounts (external_income_id, amount, account, box_id, bank_account_id, status) VALUES (?,?,?,?,?,?)";
     $arrData = array(
       $this->external_income_id,
       $this->amount,
       $this->account,
+      $this->box_id,
       $this->bank_account_id,
       $this->status,
     );
@@ -214,6 +217,7 @@ class ExternalIncomesModel extends Mysql
     $id,
     $amount,
     $account,
+    $box_id,
     $bank_account_id,
     $status,
   ) {
@@ -223,13 +227,15 @@ class ExternalIncomesModel extends Mysql
     $this->id = $id;
     $this->amount = $amount;
     $this->account = $account;
+    $this->box_id = $box_id;
     $this->bank_account_id = $bank_account_id;
     $this->status = $status;
 
-    $sql = "UPDATE external_incomes_amounts SET amount = ?, account = ?, bank_account_id = ?, status = ? WHERE id = $this->id";
+    $sql = "UPDATE external_incomes_amounts SET amount = ?, account = ?, box_id = ?, bank_account_id = ?, status = ? WHERE id = $this->id";
     $arrData = array(
       $this->amount,
       $this->account,
+      $this->box_id,
       $this->bank_account_id,
       $this->status,
     );

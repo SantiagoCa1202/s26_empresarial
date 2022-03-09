@@ -141,7 +141,7 @@
         >
         </s26-select-status>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <s26-select-status
           label="Acceso a Usuarios"
           id="form-user_access"
@@ -150,11 +150,20 @@
         >
         </s26-select-status>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <s26-select-status
           label="Crear Notif."
           id="form-create_notifications_users"
           v-model="form.create_notifications_users"
+          s26_required
+        >
+        </s26-select-status>
+      </div>
+      <div class="col-4">
+        <s26-select-status
+          label="Acceso a Cajas"
+          id="form-access_boxes"
+          v-model="form.access_boxes"
           s26_required
         >
         </s26-select-status>

@@ -8,9 +8,7 @@
 <br>
 
 <?php
-$amount = -5;
 
-echo intval($amount);
 //   //Get user IP address
 //  if ( isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
 //    $ip = $_SERVER['HTTP_CLIENT_IP'];

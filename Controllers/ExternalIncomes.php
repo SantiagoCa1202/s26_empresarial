@@ -108,22 +108,29 @@ class ExternalIncomes extends Controllers
       if ($request > 0) {
         for ($i = 0; $i < count($external_incomes_amount); $i++) {
           $item = $external_incomes_amount[$i];
+          // INSERTAR
+          $box_id = $item['add'] == 1 ? bigintval($item['box_id']) : null;
+          $bank_account_id = $item['add'] == 2 ? bigintval($item['bank_account_id']) : null;
+
           if ($item['id'] > 0) {
             // EDITAR
             $this->model->updateExternalIncomeAmount(
               $item['id'],
               floatval($item['amount']),
               intval($item['account']),
-              bigintval($item['bank_account_id']),
+              $box_id,
+              $bank_account_id,
               intval($item['status']),
             );
           } else {
-            // INSERTAR
+
+
             $this->model->insertExternalIncomeAmount(
               $id > 0 ? $id : $request,
               floatval($item['amount']),
               intval($item['account']),
-              bigintval($item['bank_account_id']),
+              $box_id,
+              $bank_account_id,
               intval($item['status']),
             );
           }

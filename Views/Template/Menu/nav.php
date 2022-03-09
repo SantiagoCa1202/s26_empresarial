@@ -48,8 +48,8 @@
             <?php } ?>
             <?php if (!empty($_SESSION['permits'][12]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/close_box" :class="focusSubMenu('close_box')">
-                  Cierre de Caja
+                <a href="<?= BASE_URL ?>/boxes" :class="focusSubMenu('boxes')">
+                  Cajas
                 </a>
               </li>
             <?php } ?>

@@ -285,7 +285,7 @@ class SalesCredits extends Controllers
     } else {
       $request = -5;
     }
-    $arrRes = s26_res("Venta", $request, 3, 'Anular');
+    $arrRes = s26_res("Crédito", $request, 3, 'Anular');
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }

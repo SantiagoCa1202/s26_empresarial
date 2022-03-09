@@ -102,6 +102,9 @@
                 </div>
                 <div class="expense-footer row mx-0">
                   <div class="col-10">
+                    <span class="mx-2 text-secondary fw-600">
+                      {{ expense.box }}
+                    </span>
                     <span :class="['mx-2 fw-600', expense.account == 1 ? 'text-success' : 'text-warning']">
                       {{ expense.account == 1 ? 'Costo' : 'Ganancia' }}
                     </span>
@@ -154,7 +157,7 @@
           </transition>
           <div class="col-12 rounded shadow-sm bg-white py-2 text-center s26-text-blue fw-bold" v-if="s26_data.info.count == 0">
             Sin Registros
-          </div>s
+          </div>
         </div>
       </section>
 

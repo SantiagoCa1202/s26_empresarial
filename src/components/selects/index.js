@@ -67,4 +67,8 @@ Vue.component("s26-select-customer", selectCustomer);
 
 import selectYear from "./selectYear.vue";
 Vue.component("s26-select-year", selectYear);
+
+import selectBox from "./selectBox.vue";
+Vue.component("s26-select-box", selectBox);
+
 export default s26Selects;

@@ -75,8 +75,7 @@ class Expenses extends Controllers
     $date = !empty($_POST['date']) ? strClean($_POST['date']) : date("Y-m-d");
     $bank_account_id = bigintval($_POST['bank_account_id']);
     $payment_method_id = bigintval($_POST['payment_method_id']);
-    $establishment_id = $_SESSION['permits'][41]['r'] ? bigintval($_POST['establishment_id']) : $_SESSION['userData']['establishment_id'];
-    $box_id = $_SESSION['userData']['device']['box_id'] ;
+    $box_id = $_SESSION['userData']['access_boxes'] == 1 ? bigintval($_POST['box_id']) : $_SESSION['userData']['device']['box_id'];
     $status = !empty($_POST['status']) ? intval($_POST['status']) : 1;
 
     $request = "";
@@ -101,7 +100,6 @@ class Expenses extends Controllers
             $date,
             $bank_account_id,
             $payment_method_id,
-            $establishment_id,
             $box_id,
             $status
           );
@@ -123,7 +121,6 @@ class Expenses extends Controllers
             $date,
             $bank_account_id,
             $payment_method_id,
-            $establishment_id,
             $box_id,
             $status
           );

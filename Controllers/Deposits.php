@@ -60,17 +60,19 @@ class Deposits extends Controllers
 
   public function setDeposit()
   {
+
+    
     $id = bigintval($_POST['id']);
     $bank_account_id = bigintval($_POST['bank_account_id']);
-    $amount = floatval($_POST['amount']);
     $description = strClean($_POST['description']);
-    $establishment_id = $_SESSION['permits'][41]['r'] ? bigintval($_POST['establishment_id']) : $_SESSION['userData']['establishment_id'];
     $status = !empty($_POST['status']) ? intval($_POST['status']) : 1;
+
+    $arr_boxes = !empty($_POST['arr_boxes']) ? $_POST['arr_boxes'] : [];
 
     $request = "";
     if (
       $bank_account_id > 0 &&
-      $amount > 0 &&
+      COUNT($arr_boxes) > 0 &&
       ($status == 1 || $status == 2)
     ) {
       if ($id == 0) {
@@ -79,9 +81,7 @@ class Deposits extends Controllers
           //Crear
           $request = $this->model->insertDeposit(
             $bank_account_id,
-            $amount,
             $description,
-            $establishment_id,
             $status,
           );
           $type = 1;
@@ -95,14 +95,35 @@ class Deposits extends Controllers
           $request = $this->model->updateDeposit(
             $id,
             $bank_account_id,
-            $amount,
             $description,
-            $establishment_id,
             $status,
           );
           $type = 2;
         } else {
           $request = -5;
+        }
+      }
+
+      if ($request > 0) {
+        for ($i = 0; $i < count($arr_boxes); $i++) {
+          $box = $arr_boxes[$i];
+
+          if ($id > 0) {
+            // EDITAR
+            $this->model->updateDepositCash(
+              bigintval($box['id']),
+              floatval($box['deposit_amount']),
+              intval($box['status']),
+            );
+          } else {
+            //INSERTAR
+            $this->model->insertDepositCash(
+              $request,
+              bigintval($box['id']),
+              floatval($box['deposit_amount']),
+              intval($box['status']),
+            );
+          }
         }
       }
     } else {

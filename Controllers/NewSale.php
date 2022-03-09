@@ -394,7 +394,7 @@ class NewSale extends Controllers
           }
           if (
             $request > 0 &&
-            count($sale['products']) - 1  == count($arr_res_prod)
+            count($sale['products'])  == count($arr_res_prod)
           ) {
             $res =  array('type' => 1, 'msg' => 'Crédito Guardado Correctamente.');
           } else {

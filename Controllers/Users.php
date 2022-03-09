@@ -91,6 +91,7 @@ class Users extends Controllers
     $insurance = intval($_POST['insurance']);
     $create_notifications_users = intval($_POST['create_notifications_users']);
     $user_access = intval($_POST['user_access']);
+    $access_boxes = intval($_POST['access_boxes']);
     $status = intval($_POST['status']);
     $cost_access = intval($_POST['cost_access']);
     $pvp_manual = intval($_POST['pvp_manual']);
@@ -111,6 +112,7 @@ class Users extends Controllers
       ($pvp_manual == 1 || $pvp_manual == 2) &&
       ($discount_manual == 1 || $discount_manual == 2) &&
       ($user_access == 1 || $user_access == 2) &&
+      ($access_boxes == 1 || $access_boxes == 2) &&
       ($create_notifications_users == 1 || $create_notifications_users == 2)
     ) {
       if ($id == 0) {
@@ -138,6 +140,7 @@ class Users extends Controllers
             $insurance,
             $establishment_id,
             $user_access,
+            $access_boxes,
             $create_notifications_users,
             $cost_access,
             $pvp_manual,
@@ -174,6 +177,7 @@ class Users extends Controllers
             $insurance,
             $establishment_id,
             $user_access,
+            $access_boxes,
             $create_notifications_users,
             $cost_access,
             $pvp_manual,

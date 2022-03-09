@@ -36,5 +36,6 @@ import "./expenses";
 import "./transfers";
 import "./deposits";
 import "./externalIncomes";
+import "./boxes";
 
 export default s26Views;

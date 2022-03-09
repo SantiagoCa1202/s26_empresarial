@@ -80,13 +80,19 @@
       </div>
       <div class="col-4">
         <s26-input-read
+          label="Acceso a Cajas"
+          :content="form.access_boxes == 1 ? 'Activo' : 'Inactivo'"
+        ></s26-input-read>
+      </div>
+      <div class="col-6">
+        <s26-input-read
           label="Generar Notif."
           :content="
             form.create_notifications_users == 1 ? 'Activo' : 'Inactivo'
           "
         ></s26-input-read>
       </div>
-      <div class="col-8">
+      <div class="col-12">
         <s26-input-read
           label="Creado El:"
           :content="$s26.formatDate(form.created_at, 'xl')"

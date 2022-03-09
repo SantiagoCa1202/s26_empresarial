@@ -57,11 +57,11 @@
         <s26-input-read label="Cuenta Bancaria" :content="form.bank_account">
         </s26-input-read>
       </div>
-      <div class="col-6">
-        <s26-input-read label="Establecimiento" :content="form.establishment">
+      <div class="col-8">
+        <s26-input-read label="Caja" :content="form.box">
         </s26-input-read>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <s26-input-read
           label="Estado"
           :content="form.status == 1 ? 'Activo' : 'Inactivo'"

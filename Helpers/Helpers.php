@@ -58,19 +58,6 @@ function dep($data)
   return $format;
 }
 
-// // Paginador from to 
-// function pagination($total_rows, $forPage, $actual_page = 1)
-// {
-//   $page = $actual_page;
-//   $from = ($page-1) * $forPage;
-//   $pages = ceil($total_rows / $forPage);
-
-//   return [
-//     'page' => $page,
-//     'from' => $from,
-//     'pages' => $pages,
-//   ];
-// }
 //ENVIO DE EMAIL 
 function sendEmail($data, $template)
 {

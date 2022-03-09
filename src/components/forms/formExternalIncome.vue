@@ -1,12 +1,13 @@
 <template>
   <s26-modal-multiple
-    id="formExternalIncomer"
+    id="formExternalIncome"
     :title="(id == 0 ? 'Nuevo ' : 'Editar ') + 'Ingreso Externo'"
     :levels="levels"
     body_style="min-height: 400px;"
     @onReset="onReset"
     @onSubmit="onSubmit"
     @hideModal="hideModal"
+    ref="modal_multiple"
   >
     <template v-slot:level-0>
       <div class="col-12">
@@ -67,7 +68,7 @@
               <s26-icon icon="minus"></s26-icon>
             </button>
           </div>
-          <div class="col-6">
+          <div class="col-4">
             <s26-form-input
               label="Monto"
               type="tel"
@@ -78,20 +79,41 @@
             >
             </s26-form-input>
           </div>
-          <div class="col-6">
+          <div class="col-4">
             <s26-select-status
               label="Cuenta"
-              id="form-account"
+              :id="'form-account-' + index"
               v-model="item.account"
               :options="['Costo', 'Ganancia']"
               s26_required
             >
             </s26-select-status>
           </div>
-          <div class="col-6">
+          <div class="col-4">
+            <s26-select-status
+              label="Añadir a"
+              :id="'form-account-' + index"
+              v-model="item.add"
+              :options="['Cajas', 'Bancos']"
+              s26_required
+            >
+            </s26-select-status>
+          </div>
+          <div class="col-6" v-if="access_boxes == 1 && item.add == 1">
+            <s26-select-box
+              ref="form_box"
+              :id="'form-box-' + index"
+              v-model="item.box_id"
+              s26_required
+              :establishment_id="form.establishment_id"
+            >
+            </s26-select-box>
+          </div>
+          <div class="col-6" v-if="item.add == 2">
             <s26-select-bank-account
-              id="form-bank_account_id"
+              :id="'form-bank_account_id-' + index"
               v-model="item.bank_account_id"
+              s26_required
             >
             </s26-select-bank-account>
           </div>
@@ -122,10 +144,12 @@
 const def_external_amount = () => {
   return {
     id: "",
+    box_id: "",
     amount: "",
     account: "",
     bank_account_id: "",
     status: "",
+    add: "",
   };
 };
 const def_form = () => {
@@ -154,6 +178,8 @@ export default {
     return {
       form: def_form(),
       permit_establishment: $permit_establishment,
+      access_boxes: $access_boxes,
+
       levels: ["Información de Ingreso Externo", "Información de Importes"],
     };
   },
@@ -177,7 +203,7 @@ export default {
           this.axios
             .post("/externalIncomes/setExternalIncome", formData)
             .then((res) => {
-              if (res.data.type > 1) {
+              if (res.data.type > 0) {
                 this.onReset();
                 this.$alertify.success(res.data.msg);
               } else {
@@ -198,6 +224,7 @@ export default {
         this.form = def_form();
       }
       $("[s26-required]").removeClass("is-invalid");
+      this.$refs.modal_multiple.start();
     },
     hideModal() {
       this.$emit("input", null);

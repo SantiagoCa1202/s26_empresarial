@@ -31,7 +31,7 @@
       </div>
       <div class="col-12" v-if="id !== 0">
         <span class="fw-bold">Creado el:</span>
-        {{ $s26.formatDate(form.created_at, 'xl') }}
+        {{ $s26.formatDate(form.created_at, "xl") }}
       </div>
     </template>
     <template v-slot:level-1>
@@ -77,29 +77,28 @@
         >
         </s26-form-input>
       </div>
-      <div class="col-6">
+      <div class="col">
         <s26-select-payment-method
           id="form-payment_method_id"
           v-model="form.payment_method_id"
           s26_required
         ></s26-select-payment-method>
       </div>
-      <div class="col-6">
+
+      <div
+        class="col-6"
+        v-if="form.payment_method_id == 2 || form.payment_method_id > 3"
+      >
         <s26-select-bank-account
           id="form-bank_account_id"
           v-model="form.bank_account_id"
           s26_required
-          v-if="form.payment_method_id == 2 || form.payment_method_id > 3"
         >
         </s26-select-bank-account>
       </div>
-      <div class="col-6" v-if="permit_establishment">
-        <s26-select-establishment
-          id="form-establishment"
-          v-model="form.establishment_id"
-          s26_required
-        >
-        </s26-select-establishment>
+      <div class="col-6" v-if="access_boxes == 1">
+        <s26-select-box id="form-box" v-model="form.box_id" s26_required>
+        </s26-select-box>
       </div>
       <div class="col-6">
         <s26-select-status
@@ -125,7 +124,7 @@ const def_form = () => {
     date: "",
     bank_account_id: "",
     payment_method_id: "",
-    establishment_id: "",
+    box_id: "",
     status: "",
     created_at: "",
   };
@@ -144,7 +143,7 @@ export default {
   data: function () {
     return {
       form: def_form(),
-      permit_establishment: $permit_establishment,
+      access_boxes: $access_boxes,
       levels: ["Información de Egreso", "Información de Importe"],
     };
   },
