@@ -9,17 +9,6 @@
   <?php } else { ?>
     <div class="row align-items">
       <s26-sidebar title="Cajas" icon="cash-register" @update="allRows" @reset="onReset" v-model="activeSidebar">
-        <template v-slot:header>
-          <?php
-          if ($_SESSION['permitsModule']['w']) {
-          ?>
-            <button type="button" class="btn btn-info form-control mb-2" @click="setIdRow(0, 'update')">
-              Nuevo
-            </button>
-          <?php
-          }
-          ?>
-        </template>
         <template v-slot:search>
           <div class="container">
             <?php if ($_SESSION['userData']['access_boxes'] == 1) {  ?>
@@ -64,7 +53,6 @@
                 <div class="box-header row mx-0">
                   <div class="col-10">
                     <h1 class="fs-5 fw-bold m-0">
-                      {{ box.id }} -
                       {{ box.name }}
                     </h1>
                   </div>
@@ -85,7 +73,7 @@
                     </span>
                   </div>
                   <div class="col-12 text-end text-secondary fs-6 opacity-50">
-                    Por Efectivizar: 
+                    Por Efectivizar:
                     <span class="fw-bold fs-6">
                       <s26-icon icon="dollar-sign"></s26-icon>
                       {{ $s26.currency(box.amount_pending) }}
@@ -99,12 +87,13 @@
                     </span>
                   </div>
                   <div class="col-3 row mx-0 px-0">
+                    <div class="col"></div>
                     <?php
                     if ($_SESSION['permitsModule']['r']) {
                     ?>
                       <div class="col-4 s26-align-center">
-                        <button type="button" class="btn btn-link" style="color: #fcbf12" @click="setIdRow(box.id, 'watch')">
-                          <s26-icon icon='eye'></s26-icon>
+                        <button type="button" class="btn btn-link text-secondary" @click="setIdRow(box.id, 'close-box')" title="Cierre de Caja">
+                          <s26-icon icon='cash-register'></s26-icon>
                         </button>
                       </div>
                     <?php
@@ -114,15 +103,6 @@
                       <div class="col-4 s26-align-center">
                         <button type="button" class="btn btn-link" @click="setIdRow(box.id, 'update')">
                           <s26-icon icon='edit'></s26-icon>
-                        </button>
-                      </div>
-                    <?php
-                    }
-                    if ($_SESSION['permitsModule']['d']) {
-                    ?>
-                      <div class="col-4 s26-align-center">
-                        <button type="button" class="btn btn-link text-danger" @click="setIdRow(box.id, 'delete')">
-                          <s26-icon icon='trash-alt'></s26-icon>
                         </button>
                       </div>
                     <?php
@@ -143,21 +123,17 @@
           </div>
         </div>
       </section>
+      <!-- Modal Cierre de Caja-->
+      <transition name="slide-fade">
+        <s26-close-box v-model="action" :id="idRow" v-if="action == 'close-box'">
+        </s26-close-box>
+      </transition>
       <?php
-      if ($_SESSION['permitsModule']['r']) {
-      ?>
-        <!-- Modal Ver-->
-        <transition name="slide-fade">
-          <s26-read-customer v-model="action" :id="idRow" v-if="action == 'watch'">
-          </s26-read-customer>
-        </transition>
-      <?php
-      }
       if ($_SESSION['permitsModule']['u'] || $_SESSION['permitsModule']['w']) {
       ?>
         <!-- Modal Nuevo-->
         <transition name="slide-fade">
-          <s26-form-customer v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-customer>
+          <s26-form-box v-model="action" :id="idRow" v-if="action == 'update'" @update="allRows"></s26-form-box>
         </transition>
       <?php
       }

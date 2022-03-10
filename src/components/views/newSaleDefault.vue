@@ -193,6 +193,7 @@
                   class="length-sm text-center pointer select-none"
                   @click="show_cost = !show_cost"
                   @dblclick="show_utility = !show_utility"
+                  v-if="cost_access == 1"
                 >
                   <span :class="!show_cost ? 'blur' : ''">
                     {{ !show_utility ? "Costo" : "Util." }}
@@ -226,7 +227,10 @@
                       :id="'search-product-' + index"
                       v-model="product.ean_code"
                       @search="searchProduct(product.ean_code, index)"
-                      @blur="product.ean_code = product.id == 0 ? '' : product.ean_code"
+                      @blur="
+                        product.ean_code =
+                          product.id == 0 ? '' : product.ean_code
+                      "
                       rounded
                       placeholder="Buscar... (alt + v)"
                       mb="0"
@@ -267,7 +271,11 @@
                     </div>
                   </td>
                   <td class="length-sm text-center">{{ product.stock }}</td>
-                  <td class="length-sm text-center" v-show="!show_utility">
+                  <td
+                    class="length-sm text-center"
+                    v-show="!show_utility"
+                    v-if="cost_access == 1"
+                  >
                     <s26-icon icon="dollar-sign"></s26-icon>
                     <span :class="!show_cost ? 'blur' : ''">
                       {{ $s26.currency(product.cost) }}
@@ -293,14 +301,10 @@
                     <div class="s26-align-center">
                       <span
                         class="px-1"
-                        v-if="product.id == 0 || product.pvp_manual == 0"
+                        v-if="product.id == 0 || product.pvp_manual != 1"
                       >
                         <s26-icon icon="dollar-sign"></s26-icon>
-                        {{
-                          $s26.currency(
-                            product.pvp_manual == 0 ? product.pvp : 0
-                          )
-                        }}
+                        {{ $s26.currency(product.pvp) }}
                       </span>
                       <s26-form-input
                         v-if="product.pvp_manual == 1"
@@ -668,6 +672,7 @@
         :info_sale="current_sale"
         v-model="modal_options"
         @success="success_sale"
+        @pushProduct="pushProduct"
       ></s26-process-sale>
     </transition>
     <!--  AJUSTE DE STOCK  -->
@@ -784,6 +789,7 @@ export default {
         variant_id: 0,
         amount: 1,
       },
+      cost_access: $cost_access,
     };
   },
   created() {

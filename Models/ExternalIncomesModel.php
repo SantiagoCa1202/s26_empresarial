@@ -27,7 +27,10 @@ class ExternalIncomesModel extends Mysql
     $date_range = ($this->date != '' && count($this->date) == 2) ?
       " AND ei.created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
+    $establishment_id = $this->establishment_id > 0 ? "ei.establishment_id = '$this->establishment_id' AND" : "";
+
     $where = "
+      $establishment_id
       ei.tradename LIKE '%$this->tradename%' AND
       ei.description LIKE '%$this->description%' AND
       ei.establishment_id LIKE '%$this->establishment_id%' AND

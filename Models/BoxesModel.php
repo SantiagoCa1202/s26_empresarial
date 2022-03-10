@@ -24,11 +24,6 @@ class BoxesModel extends Mysql
 
     $box_id = $this->id > 0 ? "b.id LIKE '%$this->id%' AND" : "";
 
-
-    $cash_out = $this->cash == 1 ? '(payment_method_id = 1 OR payment_method_id = 3) AND' : '';
-
-    $cash_income = $this->cash == 1 ? 'payment_method_id = 1 AND' : 'payment_method_id AND';
-
     $where = "
       $box_id
       b.name LIKE '%$this->name%' AND
@@ -62,7 +57,7 @@ class BoxesModel extends Mysql
       ON b.id = d.box_id 
       LEFT JOIN( SELECT SUM(amount) as total_expenses, box_id
         FROM expenses 
-        WHERE $cash_out status = 1
+        WHERE status = 1 AND bank_account_id IS NULL
         GROUP BY box_id
       )e
       ON b.id = e.box_id
@@ -70,7 +65,7 @@ class BoxesModel extends Mysql
         FROM sales s 
         LEFT JOIN (SELECT SUM(amount) as amount, sale_id
           FROM sales_payments
-          WHERE $cash_income status = 1 
+          WHERE payment_method_id = 1 AND status = 1 
           GROUP BY sale_id
         )sp
         ON s.id = sp.sale_id
@@ -82,7 +77,7 @@ class BoxesModel extends Mysql
         FROM sales_credits_payments scp
         JOIN sales_credits sc
         ON scp.sale_id = sc.id
-        WHERE scp.$cash_income sc.status = 1 AND scp.status = 1
+        WHERE scp.payment_method_id = 1 AND sc.status = 1 AND scp.status = 1
         GROUP BY scp.box_id
       )sc
       ON b.id = sc.box_id
@@ -139,16 +134,11 @@ class BoxesModel extends Mysql
     ];
   }
 
-  public function selectBox(int $id, int $cash )
+  public function selectBox(int $id)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->id = $id;
-    $this->cash = $cash;
-
-    $cash_out = $this->cash == 1 ? '(payment_method_id = 1 OR payment_method_id = 3) AND' : '';
-
-    $cash_income = $this->cash == 1 ? 'payment_method_id = 1 AND' : 'payment_method_id AND';
 
     $sql = "SELECT DISTINCT b.*,
       SUM(b.cash + IFNULL(s.total_sales,0) + IFNULL(sc.total_sales_credits,0) - IFNULL(e.total_expenses,0) + IFNULL(ei.total_external_incomes,0) - IFNULL(de.total_deposits,0)) as amount, 
@@ -164,7 +154,7 @@ class BoxesModel extends Mysql
       ON b.id = d.box_id 
       LEFT JOIN( SELECT SUM(amount) as total_expenses, box_id
         FROM expenses 
-        WHERE $cash_out status = 1
+        WHERE status = 1 AND bank_account_id IS NULL
         GROUP BY box_id
       )e
       ON b.id = e.box_id
@@ -172,7 +162,7 @@ class BoxesModel extends Mysql
         FROM sales s 
         LEFT JOIN (SELECT SUM(amount) as amount, sale_id
           FROM sales_payments
-          WHERE $cash_income status = 1 
+          WHERE payment_method_id = 1 AND status = 1 
           GROUP BY sale_id
         )sp
         ON s.id = sp.sale_id
@@ -184,7 +174,7 @@ class BoxesModel extends Mysql
         FROM sales_credits_payments scp
         JOIN sales_credits sc
         ON scp.sale_id = sc.id
-        WHERE scp.$cash_income sc.status = 1 AND scp.status = 1
+        WHERE scp.payment_method_id = 1 AND sc.status = 1 AND scp.status = 1
         GROUP BY scp.box_id
       )sc
       ON b.id = sc.box_id
@@ -277,28 +267,21 @@ class BoxesModel extends Mysql
     $this->cash = $cash;
     $this->status = $status;
 
-    if (
-      $this->id !== 1
-    ) {
+    $sql = "SELECT * FROM boxes WHERE id != '$this->id' AND name = '$this->name'";
+    $request = $this->select_all_company($sql, $this->db_company);
 
-      $sql = "SELECT * FROM boxes WHERE id != '$this->id' AND name = '$this->name'";
-      $request = $this->select_all_company($sql, $this->db_company);
+    if (empty($request)) {
 
-      if (empty($request)) {
+      $sql = "UPDATE boxes SET name = ?, cash = ?, status = ? WHERE id = $this->id";
+      $arrData = array(
+        $this->name,
+        $this->cash,
+        $this->status
+      );
 
-        $sql = "UPDATE boxes SET name = ?, cash = ?, status = ? WHERE id = $this->id";
-        $arrData = array(
-          $this->name,
-          $this->cash,
-          $this->status
-        );
-
-        $request = $this->update_company($sql, $arrData, $this->db_company);
-      } else {
-        $request = -2;
-      }
+      $request = $this->update_company($sql, $arrData, $this->db_company);
     } else {
-      $request = -4;
+      $request = -2;
     }
     return $request;
   }

@@ -23,7 +23,6 @@ class ExpensesModel extends Mysql
     $this->amount = $filter['amount'];
     $this->account = $filter['account'];
     $this->bank_account_id = $filter['bank_account_id'];
-    $this->payment_method_id = $filter['payment_method_id'];
     $this->establishment_id = $filter['establishment_id'];
     $this->box_id = $filter['box_id'];
     $this->date = $filter['date'];
@@ -37,18 +36,19 @@ class ExpensesModel extends Mysql
     $bank_account_id = $this->bank_account_id > 0 ? "e.bank_account_id = '$this->bank_account_id' AND" : "";
 
     $n_document = $this->n_document != '' ? "e.n_document = '$this->n_document' AND" : "";
+    
+    $box_id = $this->box_id > 0 ? "e.box_id = '$this->box_id' AND" : "";
 
     $where = "
       $bank_account_id
       $n_document
+      $box_id
       e.id LIKE '%$this->id%' AND
       e.tradename LIKE '%$this->tradename%' AND
       e.description LIKE '%$this->description%' AND
       e.amount LIKE '%$this->amount%' AND
       e.account LIKE '%$this->account%' AND
-      e.payment_method_id LIKE '%$this->payment_method_id%' AND
       d.establishment_id LIKE '%$this->establishment_id%' AND
-      e.box_id LIKE '%$this->box_id%' AND
       e.status LIKE '%$this->status%' AND
       e.status > 0 
       $date_range";
@@ -61,10 +61,9 @@ class ExpensesModel extends Mysql
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "SELECT DISTINCT e.*, pm.name as payment_method, ba.bank_entity, CONCAT(b.name, ' / ', es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as box
+    $rows = "SELECT DISTINCT e.*, ba.bank_entity, b.box, d.establishment,
+      IF(bank_account_id > 0 , 'Banco', 'Caja') as `add`
       FROM expenses e
-      JOIN s26_empresarial.payment_methods pm
-      ON e.payment_method_id = pm.id
       LEFT JOIN(
         SELECT ba.id, be.bank_entity
         FROM bank_accounts ba
@@ -73,12 +72,18 @@ class ExpensesModel extends Mysql
         GROUP BY ba.id
       )ba
       ON e.bank_account_id = ba.id
-      JOIN boxes b
+      LEFT JOIN(SELECT id, name as box
+        FROM boxes
+      ) b
       ON e.box_id = b.id
-      JOIN s26_empresarial.devices d
+      LEFT JOIN(SELECT d.establishment_id, d.box_id, 
+        CONCAT(es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as establishment
+        FROM s26_empresarial.devices d
+        JOIN s26_empresarial.establishments es
+        ON d.establishment_id = es.id
+        GROUP BY d.box_id
+      )d
       ON e.box_id = d.box_id
-      JOIN s26_empresarial.establishments es
-      ON d.establishment_id = es.id
       WHERE $where
       ORDER BY e.id DESC LIMIT 0, $this->perPage
     ";
@@ -97,10 +102,9 @@ class ExpensesModel extends Mysql
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->id = $id;
-    $sql = "SELECT DISTINCT e.*, pm.name as payment_method, CONCAT(ba.bank_entity, ' - ', ba.n_account) as bank_account, CONCAT(b.name, ' / ', es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as box
+    $sql = "SELECT DISTINCT e.*, CONCAT(ba.bank_entity, ' - ', ba.n_account) as bank_account, CONCAT(b.name, ' / ', es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as box,
+    IF(bank_account_id > 0 , 2, 1) as `add`
     FROM expenses e
-    JOIN s26_empresarial.payment_methods pm
-    ON e.payment_method_id = pm.id
     JOIN boxes b
     ON e.box_id = b.id
     JOIN s26_empresarial.devices d
@@ -129,7 +133,6 @@ class ExpensesModel extends Mysql
     int $account,
     string $date,
     $bank_account_id,
-    $payment_method_id,
     $box_id,
     int $status
   ) {
@@ -143,11 +146,10 @@ class ExpensesModel extends Mysql
     $this->account = $account;
     $this->date = $date;
     $this->bank_account_id = $bank_account_id;
-    $this->payment_method_id = $payment_method_id;
     $this->box_id = $box_id;
     $this->status = $status;
 
-    $query_insert = "INSERT INTO expenses (n_document, tradename, description, amount, account, date, bank_account_id, payment_method_id, box_id, status) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    $query_insert = "INSERT INTO expenses (n_document, tradename, description, amount, account, date, bank_account_id, box_id, status) VALUES (?,?,?,?,?,?,?,?,?)";
     $arrData = array(
       $this->n_document,
       $this->tradename,
@@ -156,7 +158,6 @@ class ExpensesModel extends Mysql
       $this->account,
       $this->date,
       $this->bank_account_id,
-      $this->payment_method_id,
       $this->box_id,
       $this->status,
     );
@@ -173,7 +174,6 @@ class ExpensesModel extends Mysql
     int $account,
     string $date,
     $bank_account_id,
-    $payment_method_id,
     $box_id,
     int $status
   ) {
@@ -188,11 +188,10 @@ class ExpensesModel extends Mysql
     $this->account = $account;
     $this->date = $date;
     $this->bank_account_id = $bank_account_id;
-    $this->payment_method_id = $payment_method_id;
     $this->box_id = $box_id;
     $this->status = $status;
 
-    $sql = "UPDATE expenses SET n_document = ?, tradename = ?, description = ?, amount = ?, account = ?, date = ?, bank_account_id = ?, payment_method_id = ?,  box_id = ?, status = ? WHERE id = $this->id";
+    $sql = "UPDATE expenses SET n_document = ?, tradename = ?, description = ?, amount = ?, account = ?, date = ?, bank_account_id = ?,  box_id = ?, status = ? WHERE id = $this->id";
     $arrData = array(
       $this->n_document,
       $this->tradename,
@@ -201,7 +200,6 @@ class ExpensesModel extends Mysql
       $this->account,
       $this->date,
       $this->bank_account_id,
-      $this->payment_method_id,
       $this->box_id,
       $this->status,
     );

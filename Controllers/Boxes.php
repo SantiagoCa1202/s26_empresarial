@@ -21,11 +21,11 @@ class Boxes extends Controllers
       $perPage = intval($_GET['perPage']);
 
       if ($_SESSION['permits'][41]['r'] && $_SESSION['userData']['access_boxes'] == 1) {
-        // ACCESO A CAJAS TODOS LOS ESTALBECIMIENTOS
+        // ACCESO A TODAS LAS CAJAS DE TODOS LOS ESTALBECIMIENTOS
         $establishment_id = !empty($_GET['establishment_id']) ? intval($_GET['establishment_id']) : "";
         $box_id = !empty($_GET['id']) ? intval($_GET['id']) : '';
       } else if ($_SESSION['userData']['access_boxes'] == 1) {
-        // ACCESO A CAJA DEL ESTABLECIMIENTO LOGEADO
+        // ACCESO A TODAS LAS CAJAS DEL ESTABLECIMIENTO LOGEADO
         $establishment_id = $_SESSION['userData']['establishment_id'];
         $box_id = !empty($_GET['id']) ? intval($_GET['id']) : '';
       } else {
@@ -52,9 +52,8 @@ class Boxes extends Controllers
   {
     if ($_SESSION['permitsModule']['r']) {
       $id = $id != '' ? $id : intval($_GET['id']);
-      $cash = !empty($_GET['cash']) ? intval($_GET['cash']) : ''; 
       if ($id > 0) {
-        $arrData = $this->model->selectBox($id,$cash);
+        $arrData = $this->model->selectBox($id);
         $arrRes = (empty($arrData)) ? 0 : $arrData;
 
         echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
@@ -73,7 +72,8 @@ class Boxes extends Controllers
 
     $request = "";
     if (
-      $status == 1 || $status == 2
+      valString($name, 5, 50) &&
+      ($status == 1 || $status == 2)
     ) {
       if ($id == 0) {
 

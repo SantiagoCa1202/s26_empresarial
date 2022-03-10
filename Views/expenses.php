@@ -103,13 +103,13 @@
                 <div class="expense-footer row mx-0">
                   <div class="col-10">
                     <span class="mx-2 text-secondary fw-600">
-                      {{ expense.box }}
+                      {{ expense.box }} / {{ expense.establishment }}
                     </span>
                     <span :class="['mx-2 fw-600', expense.account == 1 ? 'text-success' : 'text-warning']">
                       {{ expense.account == 1 ? 'Costo' : 'Ganancia' }}
                     </span>
                     <span class="mx-2 text-primary fw-600">
-                      {{ expense.payment_method }}
+                      {{ expense.add }}
                     </span>
                     <span class="mx-2 text-primary fw-600">
                       {{ expense.bank_entity }}

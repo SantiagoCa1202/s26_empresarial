@@ -35,7 +35,7 @@
         >
         </s26-select-establishment>
       </div>
-      <div class="col-6">
+      <div class="col">
         <s26-select-status
           label="Estado"
           id="form-status"
@@ -53,16 +53,25 @@
       <div class="col-12" v-for="(item, index) in form.arr_boxes" :key="index">
         <div class="row variants">
           <div class="col-12 mb-2">
-            ( {{ item.id }} )
             <span class="fw-600">
               {{ item.name }} / {{ item.establishment }}
             </span>
+            <button
+              type="button"
+              :class="[
+                'btn btn-link text-decoration-none border-0 p-0 float-end',
+                item.status == 1 ? 'text-success' : 'text-danger',
+              ]"
+              @click="item.status = item.status == 1 ? 2 : 1"
+            >
+              {{ item.status == 1 ? "Activo" : "Inactivo" }}
+            </button>
           </div>
-          <div class="col-4" v-if="item.amount > 0">
+          <div class="col" v-if="item.amount > 0">
             <s26-input-read label="Efectivo" :content="item.amount" money>
             </s26-input-read>
           </div>
-          <div class="col-4" v-if="item.amount > 0">
+          <div class="col-6" v-if="item.amount > 0 && item.status == 1">
             <s26-form-input
               label="Monto"
               type="tel"
@@ -72,15 +81,6 @@
               @keyup="val_amount(index)"
             >
             </s26-form-input>
-          </div>
-          <div class="col-4" v-if="item.amount > 0">
-            <s26-select-status
-              label="Estado"
-              :id="'form-status-' + index"
-              v-model="item.status"
-              s26_required
-            >
-            </s26-select-status>
           </div>
           <div
             class="col-12 text-center fw-600 text-danger"
@@ -125,6 +125,7 @@ export default {
   },
   created() {
     if (this.id !== 0 && this.id !== null) this.infoData(this.id);
+    !this.permit_establishment && this.id == 0 ? this.getBoxes() : null;
   },
   methods: {
     infoData(id) {

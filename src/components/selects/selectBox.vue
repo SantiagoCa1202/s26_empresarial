@@ -92,6 +92,10 @@ export default {
       type: String,
       default: "",
     },
+    status: {
+      type: Number,
+      default: null
+    }
   },
   data: function () {
     return {
@@ -136,6 +140,7 @@ export default {
       const params = {
         name: this.search,
         establishment_id: this.establishment_id,
+        status: this.status,
         perPage: this.perPage,
       };
       this.axios

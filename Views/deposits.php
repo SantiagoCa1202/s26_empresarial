@@ -86,7 +86,7 @@
                 </div>
                 <div class="deposit-footer row mx-0">
                   <div class="col-10">
-                    <span :class="['mx-2 fw-600', deposit.status == 1 ? 'text-success' : 'text-warning']">
+                    <span :class="['mx-2 fw-600', deposit.status == 1 ? 'text-success' : 'text-danger']">
                       {{ deposit.status == 1 ? 'Activo' : 'Inactivo' }}
                     </span>
                   </div>

@@ -41,7 +41,7 @@ class Login extends Controllers
             }
 
             $ip = filter_var($ip, FILTER_VALIDATE_IP);
-            $ip = ($ip === false) ? '0.0.0.0' : $ip;
+            $ip = '192.168.0.3';
 
             $arrData = $this->model->sessionLogin($_SESSION['idUser'], $ip);
             $_SESSION['userData'] = $arrData;

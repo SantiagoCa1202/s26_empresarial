@@ -77,18 +77,17 @@
         >
         </s26-form-input>
       </div>
-      <div class="col">
-        <s26-select-payment-method
-          id="form-payment_method_id"
-          v-model="form.payment_method_id"
+      <div class="col-4">
+        <s26-select-status
+          label="Añadir a"
+          :id="'form-account-' + index"
+          v-model="form.add"
+          :options="['Caja', 'Banco']"
           s26_required
-        ></s26-select-payment-method>
+        >
+        </s26-select-status>
       </div>
-
-      <div
-        class="col-6"
-        v-if="form.payment_method_id == 2 || form.payment_method_id > 3"
-      >
+      <div class="col-4" v-if="form.add == 2">
         <s26-select-bank-account
           id="form-bank_account_id"
           v-model="form.bank_account_id"
@@ -96,11 +95,11 @@
         >
         </s26-select-bank-account>
       </div>
-      <div class="col-6" v-if="access_boxes == 1">
-        <s26-select-box id="form-box" v-model="form.box_id" s26_required>
+      <div class="col-4" v-if="access_boxes == 1 && form.add == 1">
+        <s26-select-box id="form-box" v-model="form.box_id" :status="1" s26_required>
         </s26-select-box>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <s26-select-status
           label="Estado"
           id="form-status"
@@ -123,7 +122,6 @@ const def_form = () => {
     account: "",
     date: "",
     bank_account_id: "",
-    payment_method_id: "",
     box_id: "",
     status: "",
     created_at: "",

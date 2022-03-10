@@ -101,15 +101,15 @@
           </div>
           <div class="col-6" v-if="access_boxes == 1 && item.add == 1">
             <s26-select-box
-              ref="form_box"
               :id="'form-box-' + index"
               v-model="item.box_id"
               s26_required
               :establishment_id="form.establishment_id"
+              :status="1"
             >
             </s26-select-box>
           </div>
-          <div class="col-6" v-if="item.add == 2">
+          <div class="col-8" v-if="item.add == 2">
             <s26-select-bank-account
               :id="'form-bank_account_id-' + index"
               v-model="item.bank_account_id"
@@ -117,7 +117,7 @@
             >
             </s26-select-bank-account>
           </div>
-          <div class="col-6">
+          <div class="col-4">
             <s26-select-status
               label="Estado"
               id="form-status"

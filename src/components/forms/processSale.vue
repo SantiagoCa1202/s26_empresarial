@@ -836,7 +836,10 @@ export default {
             })
             .catch((e) => console.log(e));
         },
-        () => this.$alertify.error("Acción Cancelada")
+        () => {
+          this.$alertify.error("Acción Cancelada");
+          this.$emit("pushProduct");
+        }
       );
     },
     onReset() {

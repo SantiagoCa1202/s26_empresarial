@@ -110,4 +110,10 @@ Vue.component("s26-form-deposit", formDeposit);
 import formExternalIncome from "./formExternalIncome.vue";
 Vue.component("s26-form-external-income", formExternalIncome);
 
+import formBox from "./formBox.vue";
+Vue.component("s26-form-box", formBox);
+
+import closeBox from "./closeBox.vue";
+Vue.component("s26-close-box", closeBox);
+
 export default s26Forms;

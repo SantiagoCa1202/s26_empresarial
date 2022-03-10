@@ -44,17 +44,17 @@ class Permits extends Controllers
     die();
   }
   public function setPermits()
-  {
+  { 
     if ($_POST) {
       $intRole_id = intval($_POST['id']);
       $modules = $_POST['modules'];
       $this->model->deletePermits($intRole_id);
       foreach ($modules as $module) {
         $module_id = intval($module['id']);
-        $r = $module['permits']['r'];
-        $w = $module['permits']['w'];
-        $u = $module['permits']['u'];
-        $d = $module['permits']['d'];
+        $r = (int)filter_var($module['permits']['r'], FILTER_VALIDATE_BOOLEAN);
+        $w = (int)filter_var($module['permits']['w'], FILTER_VALIDATE_BOOLEAN);
+        $u = (int)filter_var($module['permits']['u'], FILTER_VALIDATE_BOOLEAN);
+        $d = (int)filter_var($module['permits']['d'], FILTER_VALIDATE_BOOLEAN);
         $requestPermit = $this->model->insertPermits($intRole_id, $module_id, $r, $w, $u, $d);
       }
       if ($requestPermit > 0) {

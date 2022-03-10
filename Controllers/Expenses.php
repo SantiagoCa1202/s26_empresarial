@@ -73,20 +73,22 @@ class Expenses extends Controllers
     $amount = floatval($_POST['amount']);
     $account = intval($_POST['account']);
     $date = !empty($_POST['date']) ? strClean($_POST['date']) : date("Y-m-d");
-    $bank_account_id = bigintval($_POST['bank_account_id']);
-    $payment_method_id = bigintval($_POST['payment_method_id']);
-    $box_id = $_SESSION['userData']['access_boxes'] == 1 ? bigintval($_POST['box_id']) : $_SESSION['userData']['device']['box_id'];
+    $add = intval($_POST['add']);
     $status = !empty($_POST['status']) ? intval($_POST['status']) : 1;
 
     $request = "";
     if (
       valString($tradename) &&
       valString($description) &&
-      $amount > 0 && 
+      $amount > 0 &&
       ($account == 1 || $account == 2) &&
-      $payment_method_id > 0 &&
+      ($add == 1 || $add == 2) &&
       ($status == 1 || $status == 2)
     ) {
+      // VALIDAR SI EGRESA EN CAJA O EN BANCOS 
+      $box_id = $_SESSION['userData']['access_boxes'] == 1 ? bigintval($_POST['box_id']) : $_SESSION['userData']['device']['box_id'];
+
+      $bank_account_id = $add == 2 ? bigintval($_POST['bank_account_id']) : null;
       if ($id == 0) {
 
         if ($_SESSION['permitsModule']['w']) {
@@ -99,7 +101,6 @@ class Expenses extends Controllers
             $account,
             $date,
             $bank_account_id,
-            $payment_method_id,
             $box_id,
             $status
           );
@@ -120,7 +121,6 @@ class Expenses extends Controllers
             $account,
             $date,
             $bank_account_id,
-            $payment_method_id,
             $box_id,
             $status
           );

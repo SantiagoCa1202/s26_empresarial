@@ -245,9 +245,6 @@ class ProductsModel extends Mysql
 
     $items = $this->select_all_company($rows, $this->db_company);
 
-    if (count($items) > 0) {
-      $items[0]['cost'] = $_SESSION['userData']['cost_access'] == 1 ? $items[0]['cost'] : 0;
-    }
     return $items;
   }
 
