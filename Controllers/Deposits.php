@@ -61,7 +61,7 @@ class Deposits extends Controllers
   public function setDeposit()
   {
 
-    
+
     $id = bigintval($_POST['id']);
     $bank_account_id = bigintval($_POST['bank_account_id']);
     $description = strClean($_POST['description']);
@@ -112,7 +112,7 @@ class Deposits extends Controllers
             // EDITAR
             $this->model->updateDepositCash(
               bigintval($box['id']),
-              floatval($box['deposit_amount']),
+              isset($box['deposit_amount']) ? floatval($box['deposit_amount']) : 0,
               intval($box['status']),
             );
           } else {
@@ -120,7 +120,7 @@ class Deposits extends Controllers
             $this->model->insertDepositCash(
               $request,
               bigintval($box['id']),
-              floatval($box['deposit_amount']),
+              isset($box['deposit_amount']) ? floatval($box['deposit_amount']) : 0,
               intval($box['status']),
             );
           }

@@ -102,7 +102,9 @@ class SalesCreditsModel extends Mysql
 
       $items[$i]['balance'] = $products_totals['total'] - $payments_totals['total'];
 
-      $items[$i]['status'] = COUNT($payments_status) > 0 || $products_totals !== $payments_totals ? 3 : $items[$i]['status'];
+      
+
+      $items[$i]['status'] = $items[$i]['status'] == 2 ? $items[$i]['status'] : (COUNT($payments_status) > 0 || $products_totals !== $payments_totals ? 3 : 1);
     }
 
     return [

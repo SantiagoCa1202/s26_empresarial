@@ -74,4 +74,7 @@ Vue.component("s26-read-deposit", readDeposit);
 import readExternalIncome from "./readExternalIncome.vue";
 Vue.component("s26-read-external-income", readExternalIncome);
 
+import readRecordBox from "./readRecordBox.vue";
+Vue.component("s26-read-record-box", readRecordBox);
+
 export default s26ReadOnly;

@@ -145,6 +145,15 @@ export default {
 
     onSubmit() {
       this.form.id = this.id;
+      const val_amount = this.form.arr_boxes.reduce(
+        (a, b) => a + (parseFloat(b.deposit_amount) || 0),
+        0
+      );
+      if (val_amount <= 0) {
+        this.$alertify.error("El deposito debe ser mayor a 0");
+        return;
+      }
+
       this.$alertify.confirm(
         `Desea ${this.id == 0 ? "Ingresar " : "Actualizar"} Deposito?.`,
         () => {
@@ -205,9 +214,12 @@ export default {
       this.axios
         .get("/boxes/getBox/", { params })
         .then((res) => {
+          const deposit_amount =
+            this.form.arr_boxes[i].status == 1
+              ? parseFloat(this.form.arr_boxes[i].deposit_amount)
+              : 0;
           this.form.arr_boxes[i].amount =
-            parseFloat(res.data.amount) +
-            parseFloat(this.form.arr_boxes[i].deposit_amount);
+            parseFloat(res.data.amount) + deposit_amount;
         })
         .catch((err) => console.log(err));
     },

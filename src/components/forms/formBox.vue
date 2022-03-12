@@ -91,7 +91,7 @@ export default {
           this.axios
             .post("/boxes/setBox", formData)
             .then((res) => {
-              if (res.data.type > 1) {
+              if (res.data.type >= 1) {
                 this.onReset();
                 this.$alertify.success(res.data.msg);
               } else {

@@ -87,8 +87,16 @@
                     </span>
                   </div>
                   <div class="col-3 row mx-0 px-0">
-                    <div class="col"></div>
                     <?php
+                    if ($_SESSION['permitsModule']['r']) {
+                    ?>
+                      <div class="col-4 s26-align-center">
+                        <button type="button" class="btn btn-link text-warning" @click="setIdRow(box.id, 'record-box')" title="Historial de Cierres de Caja">
+                          <s26-icon icon='eye'></s26-icon>
+                        </button>
+                      </div>
+                    <?php
+                    }
                     if ($_SESSION['permitsModule']['r']) {
                     ?>
                       <div class="col-4 s26-align-center">
@@ -128,6 +136,16 @@
         <s26-close-box v-model="action" :id="idRow" v-if="action == 'close-box'">
         </s26-close-box>
       </transition>
+      <?php
+      if ($_SESSION['permitsModule']['r']) {
+      ?>
+        <!-- Modal Nuevo-->
+        <transition name="slide-fade">
+          <s26-read-record-box v-model="action" :id="idRow" v-if="action == 'record-box'" @update="allRows"></s26-read-record-box>
+        </transition>
+      <?php
+      }
+      ?>
       <?php
       if ($_SESSION['permitsModule']['u'] || $_SESSION['permitsModule']['w']) {
       ?>

@@ -62,9 +62,28 @@ class Boxes extends Controllers
     die();
   }
 
+  public function getReportBox()
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $id = intval($_GET['id']);
+
+      if ($_GET['today']) {
+        $date = [date('Y-m-d'), date('Y-m-d')];
+      }
+
+      if ($id > 0) {
+        $arrData = $this->model->reportBox($id, $date);
+        $arrRes = (empty($arrData)) ? 0 : $arrData;
+
+        echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+      }
+    }
+    die();
+  }
+
   public function setBox()
   {
-    
+
     $id = intval($_POST['id']);
     $name = strClean($_POST['name']);
     $cash = floatval($_POST['cash']);
@@ -122,6 +141,61 @@ class Boxes extends Controllers
     }
     $arrRes = s26_res("Caja", $request, 3);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
+  // CUADRE DE CAJA
+  public function closeBox()
+  {
+    $box_id = bigintval($_POST['box_id']);
+    $adjusted_amount = floatval($_POST['adjusted_amount']);
+    $coins = !empty($_POST['coins']) ? $_POST['coins'] : [];
+
+
+    $request = "";
+    if (
+      $box_id > 0 &&
+      COUNT($coins) > 0
+    ) {
+
+      if ($_SESSION['permitsModule']['w']) {
+        //Crear
+        $request = $this->model->insertBoxAdjustment(
+          $box_id,
+          $adjusted_amount,
+          floatval($coins[0]['amount']),
+          floatval($coins[1]['amount']),
+          floatval($coins[2]['amount']),
+          floatval($coins[3]['amount']),
+          floatval($coins[4]['amount']),
+          floatval($coins[5]['amount']),
+          floatval($coins[6]['amount']),
+          floatval($coins[7]['amount']),
+          floatval($coins[8]['amount']),
+          floatval($coins[9]['amount']),
+          floatval($coins[10]['amount']),
+        );
+        $type = 1;
+      } else {
+        $request = -5;
+      }
+    }
+    $arrRes = s26_res("Cuadre de Caja", $request, $type);
+    echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
+    die();
+  }
+
+  public function getBoxAdjustment($box_id)
+  {
+    if ($_SESSION['permitsModule']['r']) {
+      $perPage = 1000000;
+
+      $box_id = bigintval($box_id);
+
+      $arrData = $this->model->selectBoxAdjustment($perPage, $box_id);
+
+      echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+    }
     die();
   }
 }
