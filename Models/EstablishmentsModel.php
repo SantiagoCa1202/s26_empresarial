@@ -36,11 +36,14 @@ class EstablishmentsModel extends Mysql
     $this->perPage = $perPage;
     $this->company_id = $_SESSION['userData']['establishment']['company_id'];
 
+    $status = $this->status > 0 ? "status = $this->status AND" : '';
+
+
     $where = "
       n_establishment LIKE '%$this->n_establishment%' AND
       tradename LIKE '%$this->tradename%' AND 
       city_id LIKE '%$this->city_id%' AND 
-      status LIKE '%$this->status%' AND 
+      $status 
       status > 0 AND
       company_id = $this->company_id
     ";

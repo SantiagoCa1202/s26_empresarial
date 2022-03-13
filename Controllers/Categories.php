@@ -38,7 +38,8 @@ class Categories extends Controllers
   public function getSubcategories()
   {
     if ($_SESSION['permitsModule']['r']) {
-      $arrData = $this->model->selectSubcategories(intval($_GET['category_id']));
+      $status = !empty($_GET['status']) ? intval($_GET['status']) : '';
+      $arrData = $this->model->selectSubcategories(intval($_GET['category_id']), $status);
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
     }
     die();

@@ -159,7 +159,7 @@ class SalesCreditsModel extends Mysql
 
     $payments = "SELECT *, sp.id as id, pm.name as payment_method, sp.status as status, sp.bank_account_id, CONCAT(ba.bank_entity, ' - ', ba.n_account ) as bank_account, be.bank_entity, b.name as box_name
     FROM sales_credits_payments sp
-    JOIN s26_empresarial.payment_methods pm
+    JOIN payment_methods pm
     ON sp.payment_method_id = pm.id
     JOIN boxes b
     ON sp.box_id = b.id

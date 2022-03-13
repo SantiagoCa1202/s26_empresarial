@@ -101,7 +101,7 @@ export default {
       this.$emit("change");
       if (this.value != 0) {
         this.axios
-          .get("/system/getPaymentMethod/" + this.value)
+          .get("/paymentMethods/getPaymentMethod/" + this.value)
           .then((res) => (this.selected = res.data.name))
           .catch((err) => console.log(err));
         return this.selected;
@@ -115,9 +115,10 @@ export default {
       const params = {
         name: this.search,
         perPage: this.perPage,
+        status: 1
       };
       this.axios
-        .get("/system/getPaymentMethods/", {
+        .get("/paymentMethods/getPaymentMethods/", {
           params,
         })
         .then((res) => {

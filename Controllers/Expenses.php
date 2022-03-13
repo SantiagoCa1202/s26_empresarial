@@ -86,7 +86,8 @@ class Expenses extends Controllers
       ($status == 1 || $status == 2)
     ) {
       // VALIDAR SI EGRESA EN CAJA O EN BANCOS 
-      $box_id = $_SESSION['userData']['access_boxes'] == 1 ? bigintval($_POST['box_id']) : $_SESSION['userData']['device']['box_id'];
+
+      $box_id = $_SESSION['userData']['access_boxes'] == 1 && $_POST['box_id'] > 0 ? bigintval($_POST['box_id']) : $_SESSION['userData']['device']['box_id'];
 
       $bank_account_id = $add == 2 ? bigintval($_POST['bank_account_id']) : null;
       if ($id == 0) {

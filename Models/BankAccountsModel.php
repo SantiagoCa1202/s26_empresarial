@@ -27,29 +27,120 @@ class BankAccountsModel extends Mysql
     $this->checkbook = $checkbook;
     $this->perPage = $perPage;
 
-    $where = '
-      checkbook LIKE "%' . $this->checkbook . '%" AND 
-      status LIKE "%' . $this->status . '%" AND 
-      status > 0 
-    ';
+    $status = $this->status > 0 ? "ba.status = $this->status AND " : '';
+    $where = "
+      ba.checkbook LIKE '%$this->checkbook%' AND 
+      $status
+      ba.status > 0 
+    ";
 
     $info = "SELECT COUNT(*) as count 
-      FROM bank_accounts
+      FROM bank_accounts ba
       WHERE $where 
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "
-      SELECT *
-      FROM bank_accounts
+    $rows = "SELECT DISTINCT ba.*,
+      SUM( IFNULL(s.total_sales, 0) + 
+        IFNULL(sc.total_sales_credits, 0) +
+        IFNULL(td.total_destination_account, 0) -
+        IFNULL(ts.total_source_account, 0) + 
+        IFNULL(d.total_deposits, 0) -
+        IFNULL(e.total_expenses, 0) + 
+        IFNULL(ei.total_external_incomes, 0)
+      ) as amount,
+
+      SUM(IFNULL(sp.total_sales_pending,0) + 
+        IFNULL(scp.total_sales_credits_pending,0)
+      ) as amount_pending
+      FROM bank_accounts ba
+
+      /** SUMA DE VENTAS / CREDITOS EN CUENTAS BANCARIAS */
+      LEFT JOIN ( SELECT SUM(sp.amount) as total_sales, sp.bank_account_id
+        FROM sales_payments sp
+        JOIN sales s
+        ON sp.sale_id = s.id
+        WHERE sp.status = 1 AND s.status = 1
+        GROUP BY sp.bank_account_id 
+      )s
+      ON ba.id = s.bank_account_id
+      LEFT JOIN ( SELECT SUM(sp.amount) as total_sales_credits, sp.bank_account_id
+        FROM sales_credits_payments sp
+        JOIN sales_credits s
+        ON sp.sale_id = s.id
+        WHERE sp.status = 1 AND s.status = 1
+        GROUP BY sp.bank_account_id 
+      )sc
+      ON ba.id = sc.bank_account_id
+
+      /** SUMA DE TRASFERENCIAS  */
+      /** ORIGEN */
+      LEFT JOIN (SELECT SUM(amount) as total_source_account, source_account_id
+        FROM transfers 
+        WHERE status = 1
+        GROUP BY source_account_id
+      )ts
+      ON ba.id = ts.source_account_id
+      /** Destino */
+      LEFT JOIN (SELECT SUM(amount) as total_destination_account, destination_account_id
+        FROM transfers 
+        WHERE status = 1
+        GROUP BY destination_account_id
+      )td
+      ON ba.id = td.destination_account_id
+      /** SUMA DE DEPOSITOS */
+      LEFT JOIN (SELECT SUM(dc.amount) as total_deposits, d.bank_account_id
+        FROM deposits_cash dc
+        JOIN deposits d
+        ON dc.deposit_id = d.id
+        WHERE dc.status = 1 AND d.status = 1
+        GROUP BY d.bank_account_id
+      )d
+      ON ba.id = d.bank_account_id
+
+      /** SUMA DE EGRESOS */
+      LEFT JOIN (SELECT SUM(amount) as total_expenses, bank_account_id
+        FROM expenses 
+        WHERE status = 1
+        GROUP BY bank_account_id
+      )e
+      ON ba.id = e.bank_account_id
+      /** SUMA DE INGRESOS EXTERNOS */
+      LEFT JOIN ( SELECT SUM(eia.amount) as total_external_incomes, eia.bank_account_id
+        FROM external_incomes_amounts eia
+        JOIN external_incomes ei
+        ON eia.external_income_id = ei.id
+        WHERE ei.status = 1 AND eia.status = 1
+        GROUP BY eia.bank_account_id
+      )ei
+      ON ba.id = ei.bank_account_id
+
+      /** VALORES POR EFECTIVIZAR */
+      LEFT JOIN(SELECT SUM(sp.amount) as total_sales_pending, sp.bank_account_id
+        FROM sales_payments sp
+        JOIN sales s
+        ON sp.sale_id = s.id
+        WHERE s.status = 1 AND sp.status = 2
+        GROUP BY sp.bank_account_id
+      )sp
+      ON ba.id = sp.bank_account_id
+      LEFT JOIN(SELECT SUM(sp.amount) as total_sales_credits_pending, sp.bank_account_id
+        FROM sales_credits_payments sp
+        JOIN sales_credits s
+        ON sp.sale_id = s.id
+        WHERE s.status = 1 AND sp.status = 2
+        GROUP BY sp.bank_account_id 
+      )scp
+      ON ba.id = scp.bank_account_id
       WHERE $where  
-      ORDER BY id ASC LIMIT 0, $this->perPage
+      GROUP BY ba.id
+      ORDER BY ba.id ASC LIMIT 0, $this->perPage
     ";
 
     $items = $this->select_all_company($rows, $this->db_company);
 
     for ($i = 0; $i < count($items); $i++) {
-      $items[$i]['amount'] = 10500.75;
+      // $items[$i]['amount'] = 10500.75;
       $items[$i]['bank_entity'] = $this->BankEntities->selectBankEntity($items[$i]['bank_entity_id']);
     }
 

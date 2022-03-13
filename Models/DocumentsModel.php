@@ -25,10 +25,13 @@ class DocumentsModel extends Mysql
     $this->status = $filter['status'];
     $this->perPage = $perPage;
 
+    $status = $this->status > 0 ? "ep.status = $this->status AND" : '';
+
+
     $where = "
       ep.document_id LIKE '%$this->type_doc_id%' AND
       ep.n_point LIKE '%$this->n_point%' AND
-      ep.status LIKE '%$this->status%' AND
+      $status
       ep.status > 0 
     ";
 

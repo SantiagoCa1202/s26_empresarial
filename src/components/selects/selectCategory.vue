@@ -193,6 +193,7 @@ export default {
       const params = {
         name: this.search,
         perPage: this.perPage,
+        status: 1,
       };
       this.axios
         .get("/categories/getCategories/", {
@@ -209,6 +210,7 @@ export default {
         category_id: id,
         name: this.search,
         perPage: this.perPage,
+        status: 1,
       };
       this.axios
         .get("/categories/getSubcategories/", {

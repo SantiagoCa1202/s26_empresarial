@@ -134,6 +134,7 @@ export default {
       const params = {
         name: this.search,
         perPage: this.perPage,
+        status: 1
       };
       this.axios
         .get("/customers/getCustomers/", {

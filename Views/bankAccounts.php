@@ -77,6 +77,13 @@
                     <s26-icon icon="dollar-sign" class="fs-2"></s26-icon>
                     <span class="fs-2"> {{ $s26.currency(item.amount) }} </span>
                   </div>
+                  <div class="col-12 text-end text-secondary fs-6 opacity-50">
+                    Por Efectivizar:
+                    <span class="fw-bold fs-6">
+                      <s26-icon icon="dollar-sign"></s26-icon>
+                      {{ $s26.currency(item.amount_pending) }}
+                    </span>
+                  </div>
                 </div>
                 <div class="bank-account-footer row mx-0">
                   <div class="col-9">

@@ -35,10 +35,12 @@ class CategoriesModel extends Mysql
     $date_range = ($this->date != '' && count($this->date) == 2) ?
       " AND created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
+    $status = $this->status > 0 ? "status = $this->status AND " : '';
+
     $where = "
       id LIKE '%$this->id%' AND
       name LIKE '%$this->name%' AND
-      status LIKE '%$this->status%' AND 
+      $status
       status > 0 
       $date_range
     ";
@@ -61,7 +63,7 @@ class CategoriesModel extends Mysql
     for ($i = 0; $i < count($items); $i++) {
       $items[$i]['icon'] = $this->Icon->selectIcon($items[$i]['icon_id']);
       $items[$i]['photo'] = $this->Photo->selectPhoto($items[$i]['photo_id']);
-      $items[$i]['subcategories'] = $this->selectSubcategories($items[$i]['id']);
+      $items[$i]['subcategories'] = $this->selectSubcategories($items[$i]['id'], $this->status);
     }
 
     return [
@@ -71,24 +73,26 @@ class CategoriesModel extends Mysql
     ];
   }
 
-  public function selectSubcategories(int $id)
+  public function selectSubcategories(int $id, $status)
   {
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
 
     $this->id = $id;
+    $this->status = $status;
+
+    $status = $this->status > 0 ? "AND status = $this->status " : '';
 
     $info = "SELECT COUNT(*) as count 
       FROM subcategories
-      WHERE category_id = $this->id AND status > 0
+      WHERE category_id = $this->id  $status AND status > 0
     ";
 
     $info_table = $this->info_table_company($info, $this->db_company);
 
 
-    $rows = "
-      SELECT *
+    $rows = "SELECT *
       FROM subcategories
-      WHERE category_id = $this->id AND status > 0
+      WHERE category_id = $this->id $status AND status > 0
     ";
 
     $items = $this->select_all_company($rows, $this->db_company);

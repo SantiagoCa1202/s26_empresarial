@@ -182,7 +182,7 @@ class SalesModel extends Mysql
 
     $payments = "SELECT *, sp.id as id, pm.name as payment_method, sp.status as status, sp.bank_account_id, CONCAT(ba.bank_entity, ' - ', ba.n_account ) as bank_account, be.bank_entity
     FROM sales_payments sp
-    JOIN s26_empresarial.payment_methods pm
+    JOIN payment_methods pm
     ON sp.payment_method_id = pm.id
     LEFT JOIN ( SELECT ba.id, be.bank_entity, ba.n_account
       FROM bank_accounts ba

@@ -62,31 +62,6 @@ class System extends Controllers
     die();
   }
 
-  public function getPaymentMethods()
-  {
-    $perPage = intval($_GET['perPage']);
-    $filter = [
-      'id' => !empty($_GET['id']) ? intval($_GET['id']) : '',
-      'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
-    ];
-    $arrData = $this->model->selectPaymentMethods($perPage, $filter);
-
-    echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
-    die();
-  }
-
-  public function getPaymentMethod($id)
-  {
-    $id = intval(strClean($id));
-    if ($id > 0) {
-      $arrData = $this->model->selectPaymentMethod($id);
-      $arrRes = (empty($arrData)) ? 0 : $arrData;
-
-      echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
-    }
-    die();
-  }
-
   public function getIcons()
   {
     $perPage = intval($_GET['perPage']);

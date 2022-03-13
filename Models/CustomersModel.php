@@ -38,6 +38,8 @@ class CustomersModel extends Mysql
     $date_range = ($this->date != '' && count($this->date) == 2) ?
       " AND u.created_at BETWEEN '{$this->date[0]} 00:00:00' AND '{$this->date[1]}  23:59:59'" : "";
 
+    $status = $this->status > 0 ? "status = $this->status AND" : '';
+
 
     $where = "
       id LIKE '%$this->id%' AND
@@ -47,7 +49,7 @@ class CustomersModel extends Mysql
       phone LIKE '%$this->phone%' AND
       mobile LIKE '%$this->mobile%' AND
       email LIKE '%$this->email%' AND
-      status LIKE '%$this->status%' AND 
+      $status
       status > 0 
       $date_range";
 
