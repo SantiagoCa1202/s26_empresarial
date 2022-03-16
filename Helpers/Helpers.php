@@ -287,5 +287,11 @@ function group_array_by_date(string $column, array $array)
   return $items;
 }
 
+// VALIDAR SI EXISTE UNA URL 
+function url_exists($url) {
+  $hdrs = @get_headers($url);
+  return is_array($hdrs) ? preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/',$hdrs[0]) : false;
+}
+
 // ACTIVE POST FROM AXIOS POST CONTENTS
 // $_POST = json_decode(file_get_contents('php://input'), true);

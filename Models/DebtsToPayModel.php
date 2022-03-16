@@ -187,7 +187,7 @@ class DebtsToPayModel extends Mysql
     $this->check_id = $check_id;
     $this->payment_status = $payment_status;
 
-    $query_insert = "INSERT INTO record_of_debts_payable (
+    $query_insert = "INSERT INTO debts_to_pay_payments (
       debt_id,
       expiration_date,
       payment_date,

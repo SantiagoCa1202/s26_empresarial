@@ -24,10 +24,11 @@ class DebtsToPay extends Controllers
         'ruc' => !empty($_GET['ruc']) ? strClean($_GET['ruc']) : '',
         'business_name' => !empty($_GET['business_name']) ? strClean($_GET['business_name']) : '',
         'n_document' => !empty($_GET['n_document']) ? strClean($_GET['n_document']) : '',
-        'status_payment' => !empty($_GET['status_payment']) ? intval($_GET['status_payment']) : '',
+        'payment_status' => !empty($_GET['payment_status']) ? intval($_GET['payment_status']) : '',
         'establishment_id' => !empty($_GET['establishment_id']) ? intval($_GET['establishment_id']) : '',
+        'date_issue' => !empty($_GET['date_issue']) ? $_GET['date_issue'] : '',
+        'expiration_date' => !empty($_GET['expiration_date']) ? $_GET['expiration_date'] : '',
         'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
-        'date' => !empty($_GET['date']) ? $_GET['date'] : '',
       ];
       $arrData = $this->model->selectDebts($perPage, $filter);
       echo json_encode($arrData, JSON_UNESCAPED_UNICODE);

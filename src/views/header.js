@@ -43,7 +43,7 @@ if (element) {
       subDocuments: ["buys", "creditNotes", "withholdings"],
       subWallet: ["wallet", "estadisticas", "bankAccounts"],
       subAccounts: [
-        "accounts_to_pay",
+        "debtsToPay",
         "accounts_to_receivable",
         "accounts_info",
         "checkBooks",

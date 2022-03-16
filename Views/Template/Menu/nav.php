@@ -314,7 +314,7 @@
           <ul :class="[{ activeSubMenu: activeSubMenu == 6 }, 'submenu']">
             <?php if (!empty($_SESSION['permits'][30]['r'])) { ?>
               <li>
-                <a href="<?= BASE_URL ?>/accounts_to_pay" :class="focusSubMenu('accounts_to_pay')">
+                <a href="<?= BASE_URL ?>/debtsToPay" :class="focusSubMenu('debtsToPay')">
                   Ctas. Por Pagar
                 </a>
               </li>

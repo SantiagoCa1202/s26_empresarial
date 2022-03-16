@@ -8,6 +8,7 @@
 <br>
 
 <?php
+
 //   //Get user IP address
 //  if ( isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
 //    $ip = $_SERVER['HTTP_CLIENT_IP'];

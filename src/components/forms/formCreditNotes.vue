@@ -200,7 +200,7 @@ export default {
                 this.$alertify.success(res.data.msg);
                 this.$alertify.warning(
                   `Recuerda Aztualizar los datos en 
-                  <a href="${BASE_URL}/accounts_to_pay" target="_BLANK" class="btn btn-link"> Cuentas Por Pagar </a>`
+                  <a href="${BASE_URL}/debtsToPay" target="_BLANK" class="btn btn-link"> Cuentas Por Pagar </a>`
                 );
               } else if (res.data.type == 3) {
                 this.$alertify.warning(res.data.msg);

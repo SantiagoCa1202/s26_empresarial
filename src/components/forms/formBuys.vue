@@ -484,7 +484,7 @@ export default {
               if (this.id > 0) {
                 this.$alertify.warning(
                   `Recuerda Aztualizar los datos en 
-                  <a href="${BASE_URL}/accounts_to_pay" target="_BLANK" class="btn btn-link"> Cuentas Por Pagar </a>`
+                  <a href="${BASE_URL}/debtsToPay" target="_BLANK" class="btn btn-link"> Cuentas Por Pagar </a>`
                 );
               }
               $s26.hide_loader_points();
