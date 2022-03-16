@@ -31,7 +31,7 @@ class Boxes extends Controllers
       } else {
         // ACCESO A LA CAJA REGISTRADA CON EL DISPOSITIVO
         $establishment_id = $_SESSION['userData']['establishment_id'];
-        $box_id = $_SESSION['userData']['device']['box_id'];
+        $box_id = $_SESSION['userData']['box_id'];
       }
 
       $filter = [

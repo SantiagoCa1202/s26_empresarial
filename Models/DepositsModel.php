@@ -39,10 +39,10 @@ class DepositsModel extends Mysql
 
     $info = "SELECT DISTINCT COUNT(d.id) as count, SUM(dc.amount) AS total_deposit
       FROM deposits d
-      LEFT JOIN(SELECT SUM(dc.amount) as amount, dc.deposit_id, d.establishment_id
+      LEFT JOIN(SELECT SUM(dc.amount) as amount, dc.deposit_id, b.establishment_id
         FROM deposits_cash dc
-        LEFT JOIN( SELECT * FROM s26_empresarial.devices GROUP BY box_id)d
-        ON dc.box_id = d.box_id
+        JOIN boxes b
+        ON dc.box_id = b.id
         WHERE dc.status = 1
         GROUP BY dc.deposit_id
       )dc
@@ -61,10 +61,10 @@ class DepositsModel extends Mysql
         GROUP BY ba.id
       )ba
       ON d.bank_account_id = ba.id
-      LEFT JOIN(SELECT SUM(dc.amount) as amount, dc.deposit_id, d.establishment_id
+      LEFT JOIN(SELECT SUM(dc.amount) as amount, dc.deposit_id, b.establishment_id
         FROM deposits_cash dc
-        LEFT JOIN( SELECT * FROM s26_empresarial.devices GROUP BY box_id)d
-        ON dc.box_id = d.box_id
+        JOIN boxes b
+        ON dc.box_id = b.id
         WHERE dc.status = 1
         GROUP BY dc.deposit_id
 
@@ -176,17 +176,13 @@ class DepositsModel extends Mysql
 
     $this->deposit_id = $deposit_id;
 
-    $rows = "SELECT dc.id, dc.deposit_id, dc.box_id, dc.amount as deposit_amount, dc.status, d.establishment, b.name
+    $rows = "SELECT dc.id, dc.deposit_id, dc.box_id, dc.amount as deposit_amount, dc.status, b.name, 
+    CONCAT(es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as establishment
       FROM deposits_cash dc
       JOIN boxes b
       ON dc.box_id = b.id
-      LEFT JOIN ( SELECT d.box_id, CONCAT(es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as establishment
-        FROM s26_empresarial.devices d
-        JOIN s26_empresarial.establishments es
-        ON d.establishment_id = es.id
-        GROUP BY d.box_id 
-      )d
-      ON b.id = d.box_id
+      JOIN s26_empresarial.establishments es
+      ON b.establishment_id = es.id 
       WHERE dc.deposit_id = $this->deposit_id AND dc.status > 0
       ORDER BY dc.id ASC
     ";

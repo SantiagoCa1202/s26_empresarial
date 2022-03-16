@@ -122,7 +122,7 @@
         >
         </s26-select-establishment>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <s26-select-role
           label="Seleccionar Rol"
           size="sm"
@@ -132,14 +132,15 @@
         >
         </s26-select-role>
       </div>
-      <div class="col-6">
-        <s26-select-status
-          label="Estado"
-          id="form-status"
-          v-model="form.status"
+      <div class="col-4">
+        <s26-select-box
+          id="form-box"
+          v-model="form.box_id"
           s26_required
+          :establishment_id="form.establishment_id"
+          :status="1"
         >
-        </s26-select-status>
+        </s26-select-box>
       </div>
       <div class="col-4">
         <s26-select-status
@@ -191,6 +192,15 @@
           label="Descuento Manual"
           id="form-discount_manual"
           v-model="form.discount_manual"
+          s26_required
+        >
+        </s26-select-status>
+      </div>
+      <div class="col-4">
+        <s26-select-status
+          label="Estado"
+          id="form-status"
+          v-model="form.status"
           s26_required
         >
         </s26-select-status>

@@ -134,6 +134,7 @@ class UsersModel extends Mysql
     int $role_id,
     int $insurance,
     int $establishment_id,
+    int $box_id,
     int $user_access,
     int $access_boxes,
     int $create_notifications_users,
@@ -154,6 +155,7 @@ class UsersModel extends Mysql
     $this->role_id = $role_id;
     $this->insurance = $insurance;
     $this->establishment_id = $establishment_id;
+    $this->box_id = $box_id;
     $this->user_access = $user_access;
     $this->access_boxes = $access_boxes;
     $this->create_notifications_users = $create_notifications_users;
@@ -166,8 +168,8 @@ class UsersModel extends Mysql
     $request = $this->select_all($sql);
 
     if (empty($request)) {
-      $query_insert = "INSERT INTO users (name, last_name, document, email, password, phone, gender_id, date_of_birth, role_id, establishment_id, insurance, create_notifications_users, user_access, access_boxes, cost_access, pvp_manual, discount_manual, status) 
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      $query_insert = "INSERT INTO users (name, last_name, document, email, password, phone, gender_id, date_of_birth, role_id, establishment_id, box_id, insurance, create_notifications_users, user_access, access_boxes, cost_access, pvp_manual, discount_manual, status) 
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       $arrData = array(
         $this->name,
         $this->last_name,
@@ -179,6 +181,7 @@ class UsersModel extends Mysql
         $this->date_of_birth,
         $this->role_id,
         $this->establishment_id,
+        $this->box_id,
         $this->insurance,
         $this->create_notifications_users,
         $this->user_access,
@@ -208,6 +211,7 @@ class UsersModel extends Mysql
     int $role_id,
     int $insurance,
     int $establishment_id,
+    int $box_id,
     int $user_access,
     int $access_boxes,
     int $create_notifications_users,
@@ -228,6 +232,7 @@ class UsersModel extends Mysql
     $this->role_id = $role_id;
     $this->insurance = $insurance;
     $this->establishment_id = $establishment_id;
+    $this->box_id = $box_id;
     $this->user_access = $user_access;
     $this->access_boxes = $access_boxes;
     $this->create_notifications_users = $create_notifications_users;
@@ -241,7 +246,7 @@ class UsersModel extends Mysql
 
     if (empty($request)) {
       if ($this->password !== "") {
-        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, password = ?, phone = ?, gender_id = ?, date_of_birth = ?, role_id = ?, establishment_id = ?, insurance = ?, create_notifications_users = ?, user_access = ?, access_boxes = ?, cost_access = ?, pvp_manual = ?, discount_manual = ?, status = ? WHERE id = $this->id";
+        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, password = ?, phone = ?, gender_id = ?, date_of_birth = ?, role_id = ?, establishment_id = ?, box_id = ?, insurance = ?, create_notifications_users = ?, user_access = ?, access_boxes = ?, cost_access = ?, pvp_manual = ?, discount_manual = ?, status = ? WHERE id = $this->id";
         $arrData = array(
           $this->name,
           $this->last_name,
@@ -253,6 +258,7 @@ class UsersModel extends Mysql
           $this->date_of_birth,
           $this->role_id,
           $this->establishment_id,
+          $this->box_id,
           $this->insurance,
           $this->create_notifications_users,
           $this->user_access,
@@ -263,7 +269,7 @@ class UsersModel extends Mysql
           $this->status
         );
       } else {
-        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, phone = ?, gender_id = ?, date_of_birth = ?, role_id = ?, establishment_id = ?, insurance = ?, create_notifications_users = ?, user_access = ?, access_boxes = ?, cost_access = ?, pvp_manual = ?, discount_manual = ?, status = ? WHERE id = $this->id";
+        $sql = "UPDATE users SET name = ?, last_name = ?, document = ?, email = ?, phone = ?, gender_id = ?, date_of_birth = ?, role_id = ?, establishment_id = ?, box_id = ?, insurance = ?, create_notifications_users = ?, user_access = ?, access_boxes = ?, cost_access = ?, pvp_manual = ?, discount_manual = ?, status = ? WHERE id = $this->id";
         $arrData = array(
           $this->name,
           $this->last_name,
@@ -274,6 +280,7 @@ class UsersModel extends Mysql
           $this->date_of_birth,
           $this->role_id,
           $this->establishment_id,
+          $this->box_id,
           $this->insurance,
           $this->create_notifications_users,
           $this->user_access,

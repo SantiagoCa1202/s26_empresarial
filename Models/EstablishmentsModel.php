@@ -2,7 +2,6 @@
 require_once('CompaniesModel.php');
 require_once('UsersModel.php');
 require_once('SystemModel.php');
-require_once('DevicesModel.php');
 
 class EstablishmentsModel extends Mysql
 {
@@ -22,7 +21,6 @@ class EstablishmentsModel extends Mysql
     parent::__construct();
     $this->Company = new CompaniesModel;
     $this->System = new SystemModel;
-    $this->Devices = new DevicesModel;
   }
 
 
@@ -88,7 +86,6 @@ class EstablishmentsModel extends Mysql
       'status' => !empty($_GET['status']) ? intval($_GET['status']) : '',
     ];
     $request['company'] = $this->Company->selectCompany($request['company_id']);
-    $request['devices'] = $this->Devices->selectDevices(1000, $fil);
     $request['city'] = $this->System->selectCity($request['city_id']);
 
     return $request;

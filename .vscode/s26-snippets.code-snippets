@@ -212,26 +212,30 @@
   },
   "S26 dep_post": {
     "prefix": "s26_dep_post",
-    "body": [
-      "dep(\\$_POST);exit;\r",
-      
-    ],
+    "body": ["dep(\\$_POST);exit;\r"],
     "description": "imprimir post"
   },
   "S26 db_company": {
     "prefix": "s26_db_company",
     "body": [
-      "\\$this->db_company = \\$_SESSION['userData']['establishment']['company']['data_base']['data_base'];\r",
-      
+      "\\$this->db_company = \\$_SESSION['userData']['establishment']['company']['data_base']['data_base'];\r"
     ],
     "description": "imprimir post"
   },
   "S26 console": {
     "prefix": "s26_console",
-    "body": [
-      "console.log($1)\r",
-      
-    ],
+    "body": ["console.log($1)\r"],
     "description": "imprimir post"
   },
+  "S26 Card": {
+    "prefix": "s26-card",
+    "body": [
+      "<s26-card>\r",
+      "\t<template v-slot:header>$1</template>\r",
+      "\t<template v-slot:body>$1</template>\r",
+      "\t<template v-slot:footer>$1</template>\r",
+      "</s26-card>"
+    ],
+    "description": "s26 card default"
+  }
 }

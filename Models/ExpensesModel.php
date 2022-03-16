@@ -48,20 +48,22 @@ class ExpensesModel extends Mysql
       e.description LIKE '%$this->description%' AND
       e.amount LIKE '%$this->amount%' AND
       e.account LIKE '%$this->account%' AND
-      d.establishment_id LIKE '%$this->establishment_id%' AND
+      b.establishment_id LIKE '%$this->establishment_id%' AND
       e.status LIKE '%$this->status%' AND
       e.status > 0 
       $date_range";
 
     $info = "SELECT COUNT(*) as count, SUM(IF(e.account = 1, e.amount, 0)) AS total_cost, SUM(IF(e.account = 2, e.amount, 0)) AS total_gain
       FROM expenses e
-      JOIN s26_empresarial.devices d
-      ON e.box_id = d.box_id
+      JOIN boxes b
+      ON e.box_id = b.id
       WHERE $where 
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "SELECT DISTINCT e.*, ba.bank_entity, b.box, d.establishment,
+    $rows = "SELECT DISTINCT e.*, 
+      ba.bank_entity, b.name as box, 
+      CONCAT(es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as establishment,
       IF(bank_account_id > 0 , 'Banco', 'Caja') as `add`
       FROM expenses e
       LEFT JOIN(
@@ -72,18 +74,10 @@ class ExpensesModel extends Mysql
         GROUP BY ba.id
       )ba
       ON e.bank_account_id = ba.id
-      LEFT JOIN(SELECT id, name as box
-        FROM boxes
-      ) b
+      JOIN boxes b 
       ON e.box_id = b.id
-      LEFT JOIN(SELECT d.establishment_id, d.box_id, 
-        CONCAT(es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as establishment
-        FROM s26_empresarial.devices d
-        JOIN s26_empresarial.establishments es
-        ON d.establishment_id = es.id
-        GROUP BY d.box_id
-      )d
-      ON e.box_id = d.box_id
+      JOIN s26_empresarial.establishments es
+      ON b.establishment_id = es.id
       WHERE $where
       ORDER BY e.id DESC LIMIT 0, $this->perPage
     ";
@@ -107,10 +101,8 @@ class ExpensesModel extends Mysql
     FROM expenses e
     JOIN boxes b
     ON e.box_id = b.id
-    JOIN s26_empresarial.devices d
-    ON e.box_id = d.box_id
     JOIN s26_empresarial.establishments es
-    ON d.establishment_id = es.id
+    ON b.establishment_id = es.id
     LEFT JOIN(
       SELECT ba.id, be.bank_entity, ba.n_account
       FROM bank_accounts ba

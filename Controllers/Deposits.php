@@ -70,67 +70,73 @@ class Deposits extends Controllers
     $arr_boxes = !empty($_POST['arr_boxes']) ? $_POST['arr_boxes'] : [];
 
     $request = "";
-    if (
-      $bank_account_id > 0 &&
-      COUNT($arr_boxes) > 0 &&
-      ($status == 1 || $status == 2)
-    ) {
-      if ($id == 0) {
+    if ($_SESSION['userData']['box']['status'] == 1) {
 
-        if ($_SESSION['permitsModule']['w']) {
-          //Crear
-          $request = $this->model->insertDeposit(
-            $bank_account_id,
-            $description,
-            $status,
-          );
-          $type = 1;
-        } else {
-          $request = -5;
-        }
-      } else {
 
-        if ($_SESSION['permitsModule']['u']) {
-          // Actualizar
-          $request = $this->model->updateDeposit(
-            $id,
-            $bank_account_id,
-            $description,
-            $status,
-          );
-          $type = 2;
-        } else {
-          $request = -5;
-        }
-      }
+      if (
+        $bank_account_id > 0 &&
+        COUNT($arr_boxes) > 0 &&
+        ($status == 1 || $status == 2)
+      ) {
+        if ($id == 0) {
 
-      if ($request > 0) {
-        for ($i = 0; $i < count($arr_boxes); $i++) {
-          $box = $arr_boxes[$i];
-
-          if ($id > 0) {
-            // EDITAR
-            $this->model->updateDepositCash(
-              bigintval($box['id']),
-              isset($box['deposit_amount']) ? floatval($box['deposit_amount']) : 0,
-              intval($box['status']),
+          if ($_SESSION['permitsModule']['w']) {
+            //Crear
+            $request = $this->model->insertDeposit(
+              $bank_account_id,
+              $description,
+              $status,
             );
+            $type = 1;
           } else {
-            //INSERTAR
-            $this->model->insertDepositCash(
-              $request,
-              bigintval($box['id']),
-              isset($box['deposit_amount']) ? floatval($box['deposit_amount']) : 0,
-              intval($box['status']),
+            $request = -5;
+          }
+        } else {
+
+          if ($_SESSION['permitsModule']['u']) {
+            // Actualizar
+            $request = $this->model->updateDeposit(
+              $id,
+              $bank_account_id,
+              $description,
+              $status,
             );
+            $type = 2;
+          } else {
+            $request = -5;
           }
         }
+
+        if ($request > 0) {
+          for ($i = 0; $i < count($arr_boxes); $i++) {
+            $box = $arr_boxes[$i];
+
+            if ($id > 0) {
+              // EDITAR
+              $this->model->updateDepositCash(
+                bigintval($box['id']),
+                isset($box['deposit_amount']) ? floatval($box['deposit_amount']) : 0,
+                intval($box['status']),
+              );
+            } else {
+              //INSERTAR
+              $this->model->insertDepositCash(
+                $request,
+                bigintval($box['id']),
+                isset($box['deposit_amount']) ? floatval($box['deposit_amount']) : 0,
+                intval($box['status']),
+              );
+            }
+          }
+        }
+      } else {
+        $type = 0;
+        $request = -1;
       }
+      $arrRes = s26_res("Deposito", $request, $type);
     } else {
-      $type = 0;
-      $request = -1;
+      $arrRes = array('type' => 0, 'msg' => 'Alteración de Sistema, Se Enviara Un Informe a Servicio Tecnico');
     }
-    $arrRes = s26_res("Deposito", $request, $type);
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }

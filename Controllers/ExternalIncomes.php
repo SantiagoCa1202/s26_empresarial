@@ -110,7 +110,7 @@ class ExternalIncomes extends Controllers
           $item = $external_incomes_amount[$i];
           // INSERTAR
 
-          $box_id = $_SESSION['userData']['access_boxes'] == 1 && $item['box_id'] > 0 ? bigintval($item['box_id']) : $_SESSION['userData']['device']['box_id'];
+          $box_id = $_SESSION['userData']['access_boxes'] == 1 && $item['box_id'] > 0 ? bigintval($item['box_id']) : $_SESSION['userData']['box_id'];
 
           $bank_account_id = $item['add'] == 2 ? bigintval($item['bank_account_id']) : null;
 

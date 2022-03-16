@@ -444,7 +444,9 @@ class ProductsModel extends Mysql
         ON sp.sale_id = s.id
         JOIN products_variant pv
         ON sp.variant_id = pv.id
-        WHERE s.establishment_id LIKE '%$this->establishment_id%' AND
+        JOIN boxes b
+        ON s.box_id = b.id
+        WHERE b.establishment_id LIKE '%$this->establishment_id%' AND
         $query = $this->id AND YEAR(s.created_at) LIKE '%$this->year%'
       )sp
       ON pv.id = sp.variant_id
@@ -455,7 +457,9 @@ class ProductsModel extends Mysql
         ON scp.sale_id = sc.id
         JOIN products_variant pv
         ON scp.variant_id = pv.id
-        WHERE sc.establishment_id LIKE '%$this->establishment_id%' AND
+        JOIN boxes b
+        ON sc.box_id = b.id
+        WHERE b.establishment_id LIKE '%$this->establishment_id%' AND
         $query = $this->id AND YEAR(sc.created_at) LIKE '%$this->year%'
       )scp
       ON pv.id = scp.variant_id
@@ -466,7 +470,9 @@ class ProductsModel extends Mysql
         ON sp.sale_id = s.id
         JOIN products_variant pv
         ON sp.variant_id = pv.id
-        WHERE s.establishment_id LIKE '%$this->establishment_id%' AND s.status != 1 AND $query = $this->id AND YEAR(s.created_at) LIKE '%$this->year%'
+        JOIN boxes b
+        ON s.box_id = b.id
+        WHERE b.establishment_id LIKE '%$this->establishment_id%' AND s.status != 1 AND $query = $this->id AND YEAR(s.created_at) LIKE '%$this->year%'
       )spr
       ON pv.id = spr.variant_id
       LEFT JOIN (
@@ -476,7 +482,9 @@ class ProductsModel extends Mysql
         ON scp.sale_id = sc.id
         JOIN products_variant pv
         ON scp.variant_id = pv.id
-        WHERE sc.establishment_id LIKE '%$this->establishment_id%' AND sc.status != 1 AND $query = $this->id AND YEAR(sc.created_at) LIKE '%$this->year%'
+        JOIN boxes b
+        ON sc.box_id = b.id
+        WHERE b.establishment_id LIKE '%$this->establishment_id%' AND sc.status != 1 AND $query = $this->id AND YEAR(sc.created_at) LIKE '%$this->year%'
       )scpr
       ON pv.id = scpr.variant_id
       LEFT JOIN (
@@ -538,22 +546,26 @@ class ProductsModel extends Mysql
       FROM ( $t_months ) t_months
       LEFT JOIN (SELECT SUM(amount) as amount, month(created_at) as id_month
         FROM (
-          SELECT SUM(sp.amount) as amount, s.created_at, s.establishment_id
+          SELECT SUM(sp.amount) as amount, s.created_at, b.establishment_id
             FROM sales_products sp
             JOIN sales s
             ON sp.sale_id = s.id
             JOIN products_variant pv
             ON sp.variant_id = pv.id
-            WHERE year(s.created_at) LIKE '%$this->year%' AND s.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id
+            JOIN boxes b
+            ON s.box_id = b.id
+            WHERE year(s.created_at) LIKE '%$this->year%' AND b.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id
             GROUP BY month(s.created_at)
           UNION ALL
-          SELECT SUM(sp.amount) as amount, s.created_at, s.establishment_id
+          SELECT SUM(sp.amount) as amount, s.created_at, b.establishment_id
             FROM sales_credits_products sp
             JOIN sales_credits s
             ON sp.sale_id = s.id
             JOIN products_variant pv
             ON sp.variant_id = pv.id
-            WHERE year(s.created_at) LIKE '%$this->year%' AND s.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id
+            JOIN boxes b
+            ON s.box_id = b.id
+            WHERE year(s.created_at) LIKE '%$this->year%' AND b.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id
             GROUP BY month(s.created_at)
         )x
         WHERE year(created_at) LIKE '%$this->year%' AND 
@@ -570,22 +582,26 @@ class ProductsModel extends Mysql
       FROM ( $t_months ) t_months
       LEFT JOIN (SELECT SUM(amount) as amount, month(created_at) as id_month
         FROM (
-          SELECT SUM(sp.amount) as amount, s.created_at, s.establishment_id
+          SELECT SUM(sp.amount) as amount, s.created_at, b.establishment_id
             FROM sales_products sp
             JOIN sales s
             ON sp.sale_id = s.id
             JOIN products_variant pv
             ON sp.variant_id = pv.id
-            WHERE year(s.created_at) LIKE '%$this->year%' AND s.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id AND s.status != 1
+            JOIN boxes b
+            ON s.box_id = b.id
+            WHERE year(s.created_at) LIKE '%$this->year%' AND b.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id AND s.status != 1
             GROUP BY month(s.created_at)
           UNION ALL
-          SELECT SUM(sp.amount) as amount, s.created_at, s.establishment_id
+          SELECT SUM(sp.amount) as amount, s.created_at, b.establishment_id
             FROM sales_credits_products sp
             JOIN sales_credits s
             ON sp.sale_id = s.id
             JOIN products_variant pv
             ON sp.variant_id = pv.id
-            WHERE year(s.created_at) LIKE '%$this->year%' AND s.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id AND s.status != 1
+            JOIN boxes b
+            ON s.box_id = b.id
+            WHERE year(s.created_at) LIKE '%$this->year%' AND b.establishment_id LIKE '%$this->establishment_id%' AND $query = $this->id AND s.status != 1
             GROUP BY month(s.created_at)
         )x
         WHERE year(created_at) LIKE '%$this->year%' AND 

@@ -114,7 +114,7 @@ class System extends Controllers
 
   public function getColors()
   {
-    $perPage = intval($_GET['perPage']);
+    $perPage = !empty($_GET['perPage']) ?  intval($_GET['perPage']) : 1000000;
     $filter = [
       'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
     ];

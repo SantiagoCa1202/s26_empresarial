@@ -18,6 +18,7 @@ import "./tarjets";
 import "./uploads";
 import "./views";
 import "./charts";
+import "./progress";
 
 import tests from "./tests.vue";
 Vue.component("s26-test", tests);

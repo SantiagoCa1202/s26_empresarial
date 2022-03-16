@@ -37,7 +37,7 @@ class SalesModel extends Mysql
       s.n_document LIKE '%$this->n_document%' AND
       c.document LIKE '%$this->customer%' AND
       s.status LIKE '%$this->status%' AND
-      s.establishment_id LIKE '%$this->establishment_id%' AND
+      b.establishment_id LIKE '%$this->establishment_id%' AND
       s.document_id LIKE '%$this->type_doc_id%' AND 
       spay.payment_method_id LIKE '%$this->payment_method_id%' AND
       s.status > 0 AND
@@ -49,6 +49,8 @@ class SalesModel extends Mysql
       FROM sales s 
       JOIN customers c
       ON s.customer_id = c.id
+      JOIN boxes b
+      ON s.box_id = b.id
       LEFT JOIN (
         SELECT payment_method_id, sale_id, status
         FROM sales_payments
@@ -66,6 +68,8 @@ class SalesModel extends Mysql
       ON sp.sale_id = s.id
       JOIN customers c
       ON s.customer_id = c.id
+      JOIN boxes b
+      ON s.box_id = b.id
       LEFT JOIN (
         SELECT payment_method_id, sale_id, status
         FROM sales_payments
@@ -80,6 +84,8 @@ class SalesModel extends Mysql
 
     $rows = "SELECT s.id, s.date, d.alias as alias_document, d.name as name_document, s.n_document, c.document as customer, s.customer_id, sp.total_products, sp.total_discount, sp.total_sale, sp.total_pvp, s.status
       FROM sales s 
+      JOIN boxes b
+      ON s.box_id = b.id
       LEFT JOIN (
         SELECT sale_id, SUM(amount) as total_products, SUM(discount) as total_discount, SUM(amount*pvp-discount) as total_sale, SUM(amount*pvp) as total_pvp
         FROM sales_products
@@ -219,7 +225,6 @@ class SalesModel extends Mysql
     string $customer_id,
     string $n_document,
     string $note,
-    int $establishment_id,
     int $box_id,
   ) {
 
@@ -230,18 +235,16 @@ class SalesModel extends Mysql
     $this->customer_id = $customer_id;
     $this->n_document = $n_document;
     $this->note = $note;
-    $this->establishment_id = $establishment_id;
     $this->box_id = $box_id;
 
 
-    $query_insert = "INSERT INTO sales (date, document_id, customer_id, n_document, note, establishment_id, box_id) VALUES (?,?,?,?,?,?,?)";
+    $query_insert = "INSERT INTO sales (date, document_id, customer_id, n_document, note, box_id) VALUES (?,?,?,?,?,?)";
     $arrData = array(
       $this->date,
       $this->document_id,
       $this->customer_id,
       $this->n_document,
       $this->note,
-      $this->establishment_id,
       $this->box_id,
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);

@@ -1,6 +1,5 @@
 <?php
 require_once('UsersModel.php');
-require_once('DevicesModel.php');
 class LoginModel extends Mysql
 {
   private $idUser;
@@ -25,14 +24,12 @@ class LoginModel extends Mysql
     return $request;
   }
 
-  public function sessionLogin(int $idUser, string $ip_adress)
+  public function sessionLogin(int $idUser)
   {
     $Users = new UsersModel;
-    $Devices = new DevicesModel;
+
     $this->idUser = $idUser;
-    $this->ip_adress = $ip_adress;
     $request = $Users->selectUser($this->idUser);
-    $request['device'] = $Devices->searchDevice($this->ip_adress);
     return $request;
   }
 

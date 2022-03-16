@@ -11,7 +11,7 @@
       <s26-sidebar title="Ingresos Externos" icon="piggy-bank" @update="allRows" @reset="onReset" v-model="activeSidebar">
         <template v-slot:header>
           <?php
-          if ($_SESSION['permitsModule']['w']) {
+          if ($_SESSION['permitsModule']['w'] && $_SESSION['userData']['box']['status'] == 1) {
           ?>
             <button type="button" class="btn btn-info form-control mb-2" @click="setIdRow(0, 'update')">
               Nuevo
@@ -102,7 +102,7 @@
                       </div>
                     <?php
                     }
-                    if ($_SESSION['permitsModule']['u']) {
+                    if ($_SESSION['permitsModule']['u']  && $_SESSION['userData']['box']['status'] == 1) {
                     ?>
                       <div class="col-4 s26-align-center">
                         <button type="button" class="btn btn-link" @click="setIdRow(externalIncome.id, 'update')">
@@ -111,7 +111,7 @@
                       </div>
                     <?php
                     }
-                    if ($_SESSION['permitsModule']['d']) {
+                    if ($_SESSION['permitsModule']['d']  && $_SESSION['userData']['box']['status'] == 1) {
                     ?>
                       <div class="col-4 s26-align-center">
                         <button type="button" class="btn btn-link text-danger" @click="setIdRow(externalIncome.id, 'delete')">

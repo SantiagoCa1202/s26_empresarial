@@ -20,7 +20,7 @@ class BoxesModel extends Mysql
     $this->establishment_id = $filter['establishment_id'];
     $this->perPage = $perPage;
 
-    $establishment_id = $this->establishment_id > 0 ? "d.establishment_id = '$this->establishment_id' AND" : "";
+    $establishment_id = $this->establishment_id > 0 ? "b.establishment_id = '$this->establishment_id' AND" : "";
 
     $box_id = $this->id > 0 ? "b.id LIKE '%$this->id%' AND" : "";
 
@@ -34,11 +34,6 @@ class BoxesModel extends Mysql
 
     $info = "SELECT COUNT(b.id) as count 
       FROM boxes b
-      LEFT JOIN ( SELECT box_id, establishment_id
-        FROM s26_empresarial.devices
-        GROUP BY box_id
-      )d
-      ON b.id = d.box_id 
       WHERE $where 
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
@@ -55,15 +50,10 @@ class BoxesModel extends Mysql
       SUM(IFNULL(sp.total_sales_pending,0) + 
         IFNULL(scp.total_sales_credits_pending,0)
       ) as amount_pending, 
-      CONCAT(d.tradename, ' - ', LPAD(d.n_establishment,3,'0') ) as establishment
+      CONCAT(es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as establishment
       FROM boxes b
-      LEFT JOIN ( SELECT d.box_id, d.establishment_id, es.tradename, es.n_establishment
-        FROM s26_empresarial.devices d
-        JOIN s26_empresarial.establishments es
-        ON d.establishment_id = es.id
-        GROUP BY d.box_id 
-      )d
-      ON b.id = d.box_id 
+      JOIN s26_empresarial.establishments es
+      ON b.establishment_id = es.id
       LEFT JOIN( SELECT SUM(amount) as total_expenses, box_id
         FROM expenses 
         WHERE status = 1 AND bank_account_id IS NULL
@@ -166,15 +156,10 @@ class BoxesModel extends Mysql
       SUM(IFNULL(sp.total_sales_pending,0) + 
         IFNULL(scp.total_sales_credits_pending,0)
       ) as amount_pending,
-      CONCAT(d.tradename, ' - ', LPAD(d.n_establishment,3,'0') ) as establishment
+      CONCAT(es.tradename, ' - ', LPAD(es.n_establishment,3,'0') ) as establishment
       FROM boxes b
-      LEFT JOIN ( SELECT d.box_id, d.establishment_id, es.tradename, es.n_establishment
-        FROM s26_empresarial.devices d
-        JOIN s26_empresarial.establishments es
-        ON d.establishment_id = es.id
-        GROUP BY d.box_id 
-      )d
-      ON b.id = d.box_id 
+      JOIN s26_empresarial.establishments es
+      ON b.establishment_id = es.id
       LEFT JOIN( SELECT SUM(amount) as total_expenses, box_id
         FROM expenses 
         WHERE status = 1 AND bank_account_id IS NULL

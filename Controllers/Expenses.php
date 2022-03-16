@@ -77,64 +77,70 @@ class Expenses extends Controllers
     $status = !empty($_POST['status']) ? intval($_POST['status']) : 1;
 
     $request = "";
-    if (
-      valString($tradename) &&
-      valString($description) &&
-      $amount > 0 &&
-      ($account == 1 || $account == 2) &&
-      ($add == 1 || $add == 2) &&
-      ($status == 1 || $status == 2)
-    ) {
-      // VALIDAR SI EGRESA EN CAJA O EN BANCOS 
+    if ($_SESSION['userData']['box']['status'] == 1) {
 
-      $box_id = $_SESSION['userData']['access_boxes'] == 1 && $_POST['box_id'] > 0 ? bigintval($_POST['box_id']) : $_SESSION['userData']['device']['box_id'];
+      if (
+        valString($tradename) &&
+        valString($description) &&
+        $amount > 0 &&
+        ($account == 1 || $account == 2) &&
+        ($add == 1 || $add == 2) &&
+        ($status == 1 || $status == 2)
+      ) {
+        // VALIDAR SI EGRESA EN CAJA O EN BANCOS 
 
-      $bank_account_id = $add == 2 ? bigintval($_POST['bank_account_id']) : null;
-      if ($id == 0) {
+        $box_id = $_SESSION['userData']['access_boxes'] == 1 && $_POST['box_id'] > 0 ? bigintval($_POST['box_id']) : $_SESSION['userData']['box_id'];
 
-        if ($_SESSION['permitsModule']['w']) {
-          //Crear
-          $request = $this->model->insertExpense(
-            $n_document,
-            $tradename,
-            $description,
-            $amount,
-            $account,
-            $date,
-            $bank_account_id,
-            $box_id,
-            $status
-          );
-          $type = 1;
+        $bank_account_id = $add == 2 ? bigintval($_POST['bank_account_id']) : null;
+        if ($id == 0) {
+
+          if ($_SESSION['permitsModule']['w']) {
+            //Crear
+            $request = $this->model->insertExpense(
+              $n_document,
+              $tradename,
+              $description,
+              $amount,
+              $account,
+              $date,
+              $bank_account_id,
+              $box_id,
+              $status
+            );
+            $type = 1;
+          } else {
+            $request = -5;
+          }
         } else {
-          $request = -5;
+
+          if ($_SESSION['permitsModule']['u']) {
+            // Actualizar
+            $request = $this->model->updateExpense(
+              $id,
+              $n_document,
+              $tradename,
+              $description,
+              $amount,
+              $account,
+              $date,
+              $bank_account_id,
+              $box_id,
+              $status
+            );
+            $type = 2;
+          } else {
+            $request = -5;
+          }
         }
       } else {
-
-        if ($_SESSION['permitsModule']['u']) {
-          // Actualizar
-          $request = $this->model->updateExpense(
-            $id,
-            $n_document,
-            $tradename,
-            $description,
-            $amount,
-            $account,
-            $date,
-            $bank_account_id,
-            $box_id,
-            $status
-          );
-          $type = 2;
-        } else {
-          $request = -5;
-        }
+        $type = 0;
+        $request = -1;
       }
+      $arrRes = s26_res("Egreso", $request, $type);
     } else {
-      $type = 0;
-      $request = -1;
+      $arrRes = array('type' => 0, 'msg' => 'Alteración de Sistema, Se Enviara Un Informe a Servicio Tecnico');
     }
-    $arrRes = s26_res("Egreso", $request, $type);
+
     echo json_encode($arrRes, JSON_UNESCAPED_UNICODE);
     die();
   }

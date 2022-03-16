@@ -38,5 +38,6 @@ import "./deposits";
 import "./externalIncomes";
 import "./boxes";
 import "./paymentMethods";
+import "./wallet";
 
 export default s26Views;

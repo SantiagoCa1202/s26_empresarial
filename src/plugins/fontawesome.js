@@ -100,6 +100,8 @@ import {
   faSlidersH,
   faPiggyBank,
   faCashRegister,
+  faBroadcastTower,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -204,7 +206,9 @@ library.add(
   faBug,
   faSlidersH,
   faPiggyBank,
-  faCashRegister
+  faCashRegister,
+  faBroadcastTower,
+  faExclamationTriangle
 );
 
 Vue.component("s26-icon", FontAwesomeIcon);

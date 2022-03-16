@@ -109,7 +109,7 @@ class SalesCredits extends Controllers
     $bank_entity_id = intval($_POST['bank_entity_id']);
     $date_check = empty($_POST['date_check']) ? null : $_POST['date_check'];
     $status = $payment_method_id >= 4 && $payment_method_id <= 7 ? 2 : 1;
-    $box_id = isset($_SESSION['userData']['device']['box_id']) ? $_SESSION['userData']['device']['box_id'] : null;
+    $box_id = !empty($_SESSION['userData']['box_id']) ? $_SESSION['userData']['box_id'] : null;
 
     $request = "";
 
@@ -166,7 +166,7 @@ class SalesCredits extends Controllers
     $bank_entity_id = intval($_POST['bank_entity_id']);
     $date_check = empty($_POST['date_check']) ? null : $_POST['date_check'];
     $status = intval($_POST['status']);
-    $current_box_id = isset($_SESSION['userData']['device']['box_id']) ? $_SESSION['userData']['device']['box_id'] : null;
+    $current_box_id = !empty($_SESSION['userData']['box_id']) ? $_SESSION['userData']['box_id'] : null;
     $box_id = intval($_POST['box_id']);
     $box_name = strClean($_POST['box_name']);
 

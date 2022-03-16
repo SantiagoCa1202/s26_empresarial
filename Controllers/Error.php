@@ -1,17 +1,20 @@
-<?php 
+<?php
 
-  class Errors extends Controllers
+class Errors extends Controllers
+{
+  public function __construct()
   {
-    public function __construct() 
-    {
-      parent::__construct();
-    }
-
-    public function notFound() 
-    {
-      $this->views->getView($this, "error");
+    parent::__construct();
+    session_start();
+    if (empty($_SESSION['login'])) {
+      header('Location: ' . base_url() . '/login');
     }
   }
-  $notFound = new Errors();
-  $notFound->notFound();
-?>
+
+  public function notFound()
+  {
+    $this->views->getView($this, "error");
+  }
+}
+$notFound = new Errors();
+$notFound->notFound();

@@ -86,8 +86,9 @@ class Users extends Controllers
     $phone = strClean($_POST['phone']);
     $gender_id = intval($_POST['gender_id']);
     $date_of_birth = strClean($_POST['date_of_birth']);
-    $role_id = intval($_POST['role_id']);
-    $establishment_id = intval($_POST['establishment_id']);
+    $role_id = bigintval($_POST['role_id']);
+    $establishment_id = bigintval($_POST['establishment_id']);
+    $box_id = bigintval($_POST['box_id']);
     $insurance = intval($_POST['insurance']);
     $create_notifications_users = intval($_POST['create_notifications_users']);
     $user_access = intval($_POST['user_access']);
@@ -106,6 +107,7 @@ class Users extends Controllers
       (val_date($date_of_birth)) &&
       ($role_id > 0) &&
       ($establishment_id > 0) &&
+      ($box_id > 0) &&
       ($insurance == 1 || $insurance == 2) &&
       ($status == 1 || $status == 2) &&
       ($cost_access == 1 || $cost_access == 2) &&
@@ -139,6 +141,7 @@ class Users extends Controllers
             $role_id,
             $insurance,
             $establishment_id,
+            $box_id,
             $user_access,
             $access_boxes,
             $create_notifications_users,
@@ -176,6 +179,7 @@ class Users extends Controllers
             $role_id,
             $insurance,
             $establishment_id,
+            $box_id,
             $user_access,
             $access_boxes,
             $create_notifications_users,

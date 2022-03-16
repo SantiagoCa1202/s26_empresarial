@@ -34,7 +34,7 @@ class SalesCreditsModel extends Mysql
       s.n_document LIKE '%$this->n_document%' AND
       c.document LIKE '%$this->customer%' AND
       s.status LIKE '%$this->status%' AND
-      s.establishment_id LIKE '%$this->establishment_id%' AND
+      b.establishment_id LIKE '%$this->establishment_id%' AND
       s.document_id LIKE '%$this->type_doc_id%' AND 
       s.status > 0
       $date_range
@@ -44,6 +44,8 @@ class SalesCreditsModel extends Mysql
       FROM sales_credits s 
       JOIN customers c
       ON s.customer_id = c.id
+      JOIN boxes b
+      ON s.box_id = b.id
       WHERE $where
 
     ";
@@ -54,6 +56,8 @@ class SalesCreditsModel extends Mysql
       ON sp.sale_id = s.id
       JOIN customers c
       ON s.customer_id = c.id
+      JOIN boxes b
+      ON s.box_id = b.id
       WHERE $where
     ";
     $info_table = $this->info_table_company($info_sales, $this->db_company);
@@ -71,6 +75,8 @@ class SalesCreditsModel extends Mysql
       ON s.document_id = d.id
       JOIN customers c
       ON s.customer_id = c.id
+      JOIN boxes b
+      ON s.box_id = b.id
       WHERE $where
       ORDER BY date DESC, id DESC LIMIT 0, $this->perPage
     ";
@@ -197,7 +203,7 @@ class SalesCreditsModel extends Mysql
     string $customer_id,
     string $n_document,
     string $note,
-    int $establishment_id
+    int $box_id
   ) {
 
     $this->db_company = $_SESSION['userData']['establishment']['company']['data_base']['data_base'];
@@ -206,16 +212,16 @@ class SalesCreditsModel extends Mysql
     $this->customer_id = $customer_id;
     $this->n_document = $n_document;
     $this->note = $note;
-    $this->establishment_id = $establishment_id;
+    $this->box_id = $box_id;
 
 
-    $query_insert = "INSERT INTO sales_credits (date, customer_id, customer_billing_id, note, establishment_id) VALUES (?,?,?,?,?)";
+    $query_insert = "INSERT INTO sales_credits (date, customer_id, customer_billing_id, note, box_id) VALUES (?,?,?,?,?)";
     $arrData = array(
       $this->date,
       $this->customer_id,
       $this->customer_id,
       $this->note,
-      $this->establishment_id
+      $this->box_id
     );
     $request = $this->insert_company($query_insert, $arrData, $this->db_company);
 
