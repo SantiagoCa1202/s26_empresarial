@@ -1,5 +1,6 @@
 <?php
 require_once('SystemModel.php');
+require_once('PaymentMethodsModel.php');
 require_once('EstablishmentsModel.php');
 require_once('FilesModel.php');
 require_once('ProvidersModel.php');
@@ -32,7 +33,8 @@ class BuysModel extends Mysql
   {
     parent::__construct();
 
-    $this->Document = new SystemModel;
+    $this->System = new SystemModel;
+    $this->PaymentMethods = new PaymentMethodsModel;
     $this->Establishment = new EstablishmentsModel;
     $this->File = new FilesModel;
     $this->Provider = new ProvidersModel;
@@ -94,9 +96,9 @@ class BuysModel extends Mysql
 
     for ($i = 0; $i < count($items); $i++) {
 
-      $items[$i]['type_doc'] = $this->Document->selectDocument($items[$i]['type_doc_id']);
+      $items[$i]['type_doc'] = $this->System->selectDocument($items[$i]['type_doc_id']);
 
-      $items[$i]['payment_method'] = $this->Document->selectPaymentMethod($items[$i]['payment_method_id']);
+      $items[$i]['payment_method'] = $this->PaymentMethods->selectPaymentMethod($items[$i]['payment_method_id']);
 
       $items[$i]['file'] = $items[$i]['file_id'] > 0 ?  $this->File->selectFile($items[$i]['file_id']) : '';
 
@@ -122,9 +124,9 @@ class BuysModel extends Mysql
 
     $request['provider'] = $this->Provider->selectProvider($request['provider_id']);
 
-    $request['type_doc'] = $this->Document->selectDocument($request['type_doc_id']);
+    $request['type_doc'] = $this->System->selectDocument($request['type_doc_id']);
 
-    $request['payment_method'] = $this->Document->selectPaymentMethod($request['payment_method_id']);
+    $request['payment_method'] = $this->PaymentMethods->selectPaymentMethod($request['payment_method_id']);
 
     $request['file'] = $request['file_id'] > 0 ?  $this->File->selectFile($request['file_id']) : '';
 

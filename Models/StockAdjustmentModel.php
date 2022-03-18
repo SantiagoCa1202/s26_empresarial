@@ -33,7 +33,7 @@ class StockAdjustmentModel extends Mysql
     $info = "SELECT COUNT(DISTINCT s.id) as count 
       FROM stock_adjustment s
       LEFT JOIN (SELECT pe.product_variant_id, pe.establishment_id, 
-        pe.stock, pv.ean_code, pv.sku, pv.pvp_1, pv.pvp_2, pv.pvp_3,
+        pe.stock, pv.ean_code, pv.sku, pe.pvp_1, pe.pvp_2, pe.pvp_3,
         p.name, p.model, p.trademark
         FROM products_establishments pe
         JOIN products_variant pv 
@@ -54,7 +54,7 @@ class StockAdjustmentModel extends Mysql
     $rows = "SELECT DISTINCT s.id, s.amount, pe.ean_code, pe.name, pe.model, pe.trademark, pe.sku, pe.stock, if(pe.pvp_3 > 0, pe.pvp_3, if(pe.pvp_2 > 0, pe.pvp_2, pe.pvp_1)) as pvp, pe.product_id
       FROM stock_adjustment s
       LEFT JOIN (SELECT pe.product_variant_id, pe.establishment_id, 
-        pe.stock, pv.ean_code, pv.sku, pv.pvp_1, pv.pvp_2, pv.pvp_3,
+        pe.stock, pv.ean_code, pv.sku, pe.pvp_1, pe.pvp_2, pe.pvp_3,
         p.name, p.model, p.trademark, pv.product_id
         FROM products_establishments pe
         JOIN products_variant pv 

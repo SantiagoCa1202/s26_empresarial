@@ -46,10 +46,10 @@ class VariantsModel extends Mysql
       WHERE pv.ean_code LIKE '%$this->ean_code%' AND 
       pv.sku LIKE '%$this->sku%' AND 
       (
-        pv.pvp_1 LIKE '%$this->pvp%' OR
-        pv.pvp_2 LIKE '%$this->pvp%' OR
-        pv.pvp_3 LIKE '%$this->pvp%' OR
-        pv.pvp_distributor LIKE '%$this->pvp%'
+        pe.pvp_1 LIKE '%$this->pvp%' OR
+        pe.pvp_2 LIKE '%$this->pvp%' OR
+        pe.pvp_3 LIKE '%$this->pvp%' OR
+        pe.pvp_distributor LIKE '%$this->pvp%'
       ) AND
       p.name LIKE '%$this->product%' AND 
       p.model LIKE '%$this->model%' AND 
@@ -58,10 +58,11 @@ class VariantsModel extends Mysql
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "SELECT pv.id, pv.product_id, pv.ean_code, pv.sku, pv.min_stock, pv.max_stock, pv.cost, pv.pvp_1, pv.pvp_2, pv.pvp_3, pv.pvp_distributor, pv.color_id, pv.size, pv.fragance, pv.net_content, pv.shape, pv.package, pv.additional_info, pv.created_at,
-    sc.name as category, pe.stock,
+    $rows = "SELECT pv.id, pv.product_id, pv.ean_code, pv.sku, pv.color_id, pv.size, pv.fragance, pv.net_content, pv.shape, pv.package, pv.additional_info, pv.created_at,
+    sc.name as category, 
     p.name, p.model, p.trademark,
-    if(pv.pvp_3 > 0, pv.pvp_3, if(pv.pvp_2 > 0, pv.pvp_2, pv.pvp_1)) as pvp
+    pe.stock, pe.min_stock, pe.max_stock, pe.cost, pe.pvp_1, pe.pvp_2, pe.pvp_3, pe.pvp_distributor,
+    if(pe.pvp_3 > 0, pe.pvp_3, if(pe.pvp_2 > 0, pe.pvp_2, pe.pvp_1)) as pvp
 
       FROM products_variant pv
       JOIN products p
@@ -75,10 +76,10 @@ class VariantsModel extends Mysql
       WHERE pv.ean_code LIKE '%$this->ean_code%' AND 
       pv.sku LIKE '%$this->sku%' AND 
       (
-        pv.pvp_1 LIKE '%$this->pvp%' OR
-        pv.pvp_2 LIKE '%$this->pvp%' OR
-        pv.pvp_3 LIKE '%$this->pvp%' OR
-        pv.pvp_distributor LIKE '%$this->pvp%'
+        pe.pvp_1 LIKE '%$this->pvp%' OR
+        pe.pvp_2 LIKE '%$this->pvp%' OR
+        pe.pvp_3 LIKE '%$this->pvp%' OR
+        pe.pvp_distributor LIKE '%$this->pvp%'
       ) AND
       p.name LIKE '%$this->product%' AND 
       p.model LIKE '%$this->model%' AND 

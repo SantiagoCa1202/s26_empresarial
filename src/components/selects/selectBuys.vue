@@ -106,6 +106,10 @@ export default {
       type: String,
       default: "Comprobantes",
     },
+    establishment_id: {
+      type: String,
+      default: "",
+    },
     type_doc: {},
     is_null: Boolean,
     assign: Boolean,
@@ -145,10 +149,18 @@ export default {
       }
     },
   },
+  watch: {
+    establishment_id: function () {
+      if (this.establishment_id) {
+        this.allRows();
+      }
+    },
+  },
   methods: {
     allRows() {
       const params = {
         n_document: this.search,
+        establishment_id: this.establishment_id,
         perPage: this.perPage,
         type_doc_id: this.type_doc,
       };

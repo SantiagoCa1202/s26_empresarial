@@ -22,10 +22,17 @@ class ProductsEntries extends Controllers
   {
     if ($_SESSION['permitsModule']['r']) {
       $perPage = !empty($_GET['perPage']) ? intval($_GET['perPage']) : 1000000;
+      if ($_SESSION['permits'][41]['r']) {
+        $establishment_id = !empty($_GET['establishment_id']) ? intval($_GET['establishment_id']) : "";
+      } else {
+        $establishment_id = $_SESSION['userData']['establishment_id'];
+      }
+      
       $filter = [
         'code' => !empty($_GET['code']) ? strClean($_GET['code']) : '',
         'name' => !empty($_GET['name']) ? strClean($_GET['name']) : '',
         'document_id' => isset($_GET['document_id']) ? $_GET['document_id'] : '',
+        'establishment_id' => $establishment_id,
         'date' => !empty($_GET['date']) ? $_GET['date'] : '',
       ];
       $arrData = $this->model->selectEntries($perPage, $filter);

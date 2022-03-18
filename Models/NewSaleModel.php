@@ -56,7 +56,7 @@ class NewSaleModel extends Mysql
     $this->id = $id;
     $establishment_id = $_SESSION['userData']['establishment_id'];
     $rows = "SELECT ssp.product_variant_id as id, ssp.amount, ssp.cost, ssp.pvp, ssp.discount, ssp.iva, 
-      pv.ean_code as code, pv.pvp_1, pv.pvp_2, pv.pvp_3, pv.pvp_distributor, pv.product_id,
+      pv.ean_code as code, pe.pvp_1, pe.pvp_2, pe.pvp_3, pe.pvp_distributor, pv.product_id,
       pe.stock, CONCAT(p.name, ' / ', p.model, ' / ', p.trademark) product, p.serial
       FROM sales_saved_products ssp
       JOIN products_variant pv

@@ -50,8 +50,7 @@ class ProductsDamagedsModel extends Mysql
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "
-      SELECT DISTINCT pd.id, pd.cost, pv.ean_code, p.name, pd.amount, b.type_doc_id , b.n_document, pd.document_id, p.model, p.trademark, pd.created_at
+    $rows = "SELECT DISTINCT pd.id, pd.cost, pv.ean_code, p.name, pd.amount, b.type_doc_id , b.n_document, pd.document_id, p.model, p.trademark, pd.created_at
       FROM products_damageds pd
       JOIN products_variant pv
       ON pd.product_variant_id = pv.id

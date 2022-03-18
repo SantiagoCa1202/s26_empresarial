@@ -454,20 +454,20 @@ class WalletModel extends Mysql
 
     $establishment = $this->establishment_id > 0 ? " = $this->establishment_id" : "";
 
-    $info = "SELECT IFNULL(SUM(pee.amount),0) as entries, 
+    $info = "SELECT IFNULL(SUM(pe.amount),0) as entries, 
       SUM(IFNULL(sp.amount, 0)+IFNULL(scp.amount, 0)) as outlets,
       SUM(IFNULL(spr.amount, 0)+IFNULL(scpr.amount, 0)) as returns,
       SUM(IFNULL(pd.amount, 0)) as damageds,
       SUM(IFNULL(sa.amount, 0)) as settings
       FROM products_variant pv
       LEFT JOIN (
-        SELECT SUM(pee.amount) as amount, pee.product_variant_id 
-        FROM products_entries_establishments pee
+        SELECT SUM(pe.amount) as amount, pe.product_variant_id 
+        FROM products_entries_variants pe
         JOIN products_variant pv
-        ON pee.product_variant_id = pv.id
-        WHERE pee.to_establishment_id $establishment AND pee.created_at $date_range
-      )pee
-      ON pv.id = pee.product_variant_id
+        ON pe.product_variant_id = pv.id
+        WHERE pe.establishment_id $establishment AND pe.created_at $date_range
+      )pe
+      ON pv.id = pe.product_variant_id
       LEFT JOIN (
         SELECT SUM(sp.amount) as amount, sp.variant_id 
         FROM sales_products sp

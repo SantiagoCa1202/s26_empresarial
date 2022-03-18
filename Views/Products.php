@@ -26,7 +26,7 @@
             <s26-form-input label="Producto" id="name" v-model="filter.product" maxlength="100" @keyup="allRows"></s26-form-input>
             <s26-form-input label="Modelo" id="model" v-model="filter.model" maxlength="100" @keyup="allRows"></s26-form-input>
             <s26-form-input label="Marca" id="trademark" v-model="filter.trademark" maxlength="100" @keyup="allRows"></s26-form-input>
-            <s26-form-input label="P.V.P" id="pvp" v-model="filter.pvp" maxlength="100" @keyup="allRows" number></s26-form-input>
+            <s26-form-input label="P.V.P" id="pvp" v-model="filter.pvp" maxlength="100" @keyup="allRows" money></s26-form-input>
             <?php
             if ($_SESSION['permits'][36]['r']) {
             ?>

@@ -62,14 +62,13 @@ DECLARE new_cost decimal(10,2);
 DECLARE current_stock int;
 DECLARE current_cost decimal(10,2);
 
-SELECT SUM(stock) INTO current_stock FROM products_establishments WHERE product_variant_id = variant_id;
-SELECT cost INTO current_cost FROM products_variant WHERE id = variant_id;
+SELECT stock, cost INTO current_stock, current_cost FROM products_establishments WHERE id = product_variant_establishment_id;
 
 SET new_stock = current_stock + n_amount;
 SET new_total = (current_stock * current_cost) + (n_amount * n_cost);
 SET new_cost = new_total / new_stock;
 
-UPDATE products_variant SET cost = new_cost WHERE id = variant_id;
+UPDATE products_establishments SET cost = new_cost WHERE id = product_variant_establishment_id;
 
 SELECT new_stock,new_cost;
 

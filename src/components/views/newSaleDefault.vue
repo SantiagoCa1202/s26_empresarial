@@ -988,6 +988,8 @@ export default {
               } else {
                 product.id = prod["id"];
                 product.product_id = prod["product_id"];
+                product.product_variant_establishment_id =
+                  prod["product_variant_establishment_id"];
                 product.ean_code = prod["ean_code"];
                 product.product = `${prod["name"]} / ${prod["model"]} / ${prod["trademark"]} / ${prod["sku"]} `;
                 product.stock = prod["stock"];
@@ -1078,6 +1080,8 @@ export default {
     open_stock_adjustment(i) {
       this.product_id = i;
       this.adjustment.variant_id = this.current_sale.products[i]["id"];
+      this.adjustment.product_variant_establishment_id =
+        this.current_sale.products[i]["product_variant_establishment_id"];
       this.adjustment.amount =
         parseInt(~this.current_sale.products[i]["stock"]) + 2;
       this.modal_options = "stock_adjustment";

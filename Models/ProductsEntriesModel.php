@@ -22,6 +22,7 @@ class ProductsEntriesModel extends Mysql
     $this->name = $filter['name'];
     $this->document_id = $filter['document_id'];
     $this->date = $filter['date'];
+    $this->establishment_id = $filter['establishment_id'];
     $this->perPage = $perPage;
 
     $date_range = ($this->date != '' && count($this->date) == 2) ?
@@ -29,9 +30,11 @@ class ProductsEntriesModel extends Mysql
 
     $document_id = $this->document_id >= -1 ? "pev.document_id = '$this->document_id' AND" : "";
 
+    $establishment = $this->establishment_id > 0 ? "pev.establishment_id = '$this->establishment_id' AND" : "";
 
     $where = "
       $document_id
+      $establishment
       pv.ean_code LIKE '%$this->code%' AND
       (
         p.name LIKE '%$this->name%' OR
@@ -51,8 +54,7 @@ class ProductsEntriesModel extends Mysql
     ";
     $info_table = $this->info_table_company($info, $this->db_company);
 
-    $rows = "
-      SELECT DISTINCT pev.id, pev.cost, pv.ean_code, p.name, pev.amount, b.type_doc_id , b.n_document, pev.document_id, p.model, p.trademark, pev.created_at
+    $rows = "SELECT DISTINCT pev.id, pev.cost, pv.ean_code, p.name, pev.amount, b.type_doc_id , b.n_document, pev.document_id, p.model, p.trademark, pev.created_at
       FROM products_entries_variants pev
       JOIN products_variant pv
       ON pev.product_variant_id = pv.id

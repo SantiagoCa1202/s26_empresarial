@@ -19,7 +19,7 @@
       <s26-icon icon="angle-down" class="icon-angle-down"></s26-icon>
     </div>
     <div class="s26-select-container">
-      <div class="s26-select-container-options">
+      <div class="select-year s26-select-container-options">
         <div
           :class="['s26-select-options text-center', value == 0 ? 'focus' : '']"
           tabindex="0"
@@ -87,7 +87,7 @@ export default {
 };
 </script>
 <style>
-.s26-select-container-options {
+.select-year.s26-select-container-options {
   height: 270px;
 }
 </style>

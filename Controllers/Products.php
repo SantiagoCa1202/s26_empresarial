@@ -170,8 +170,13 @@ class Products extends Controllers
     //EN PRODUCTOS ENTRADAS 
     $document_id = !empty($_POST['document_id']) ? intval($_POST['document_id']) : '';
 
-    //ESTABLECIMIENTO MATRIZ
-    $matrix = $_SESSION['userData']['establishment']['company']['matrix_establishment_id'];
+    //ESTABLECIMIENTO
+
+    if ($_SESSION['permits'][41]['r']) {
+      $establishment_id = !empty($_POST['establishment_id']) ? intval($_POST['establishment_id']) : $_SESSION['userData']['establishment_id'];
+    } else {
+      $establishment_id = $_SESSION['userData']['establishment_id'];
+    }
 
     $request = "";
     $response = [];
@@ -256,14 +261,6 @@ class Products extends Controllers
               $request,
               strClean($variants[$i]['code']),
               strClean($variants[$i]['sku']),
-              intval($variants[$i]['amount']),
-              intval($variants[$i]['min_stock']),
-              intval($variants[$i]['max_stock']),
-              floatval($variants[$i]['cost']),
-              floatval($variants[$i]['pvp_1']),
-              floatval($variants[$i]['pvp_2']),
-              floatval($variants[$i]['pvp_3']),
-              floatval($variants[$i]['pvp_distributor']),
               intval($variants[$i]['variants']['color_id']),
               strClean($variants[$i]['variants']['size']),
               strClean($variants[$i]['variants']['fragance']),
@@ -298,25 +295,28 @@ class Products extends Controllers
                 $request_variant,
                 intval($variants[$i]['amount']),
                 floatval($variants[$i]['cost']),
-                intval($document_id)
+                intval($document_id),
+                bigintval($establishment_id),
               );
               if ($request_variant > 0) {
                 array_push($res_variants, $request_entry_variant);
               }
               // INSERTAR VARIANTE EN ESTABLECIMIENTO
-              $request_variant_establishment = $this->model->insertVariantEstablishment($request_variant, $matrix, intval($variants[$i]['amount']));
+              $request_variant_establishment = $this->model->insertVariantEstablishment(
+                $request_variant,
+                $establishment_id,
+                intval($variants[$i]['amount']),
+                intval($variants[$i]['min_stock']),
+                intval($variants[$i]['max_stock']),
+                floatval($variants[$i]['cost']),
+                floatval($variants[$i]['pvp_1']),
+                floatval($variants[$i]['pvp_2']),
+                floatval($variants[$i]['pvp_3']),
+                floatval($variants[$i]['pvp_distributor']),
+              );
 
               if ($request_variant_establishment > 0) {
                 array_push($res_variants, $request_variant_establishment);
-
-                //Insertar Entrada Establecimientos
-                $request_entry_establishment = $this->model->insertEntryEstablishment(
-                  $request_variant,
-                  intval($variants[$i]['amount']),
-                  $matrix,
-                  $matrix,
-                );
-                array_push($res_variants, $request_entry_establishment);
               }
 
               // INSERTAR FOTOS DE VARIANTES
@@ -344,7 +344,7 @@ class Products extends Controllers
             array_push($response, $arrRes);
           }
           // RESPUESTA VARIANTES 
-          if (count($res_variants) == count($variants) * 4) {
+          if (count($res_variants) == count($variants) * 3) {
             $arrRes = array(
               'type' => 1,
               'msg' => 'Variantes de Producto guardadas correctamente.'
@@ -449,10 +449,15 @@ class Products extends Controllers
 
   public function addAmount()
   {
+    $variant_id = bigintval($_POST['id']);
+    $product_id = bigintval($_POST['product_id']);
+    $product_variant_establishment_id = bigintval($_POST['product_variant_establishment_id']);
 
-    $variant_id = intval($_POST['id']);
-    $product_id = intval($_POST['product_id']);
+    $establishment_id = $_SESSION['userData']['establishment_id'];
+
     $amount = intval($_POST['amount']);
+    $min_stock = intval($_POST['min_stock']);
+    $max_stock = intval($_POST['max_stock']);
     $update_pvp = boolval($_POST['update_pvp']);
     $cost = floatval($_POST['cost']);
     $pvp_1 = floatval($_POST['pvp_1']);
@@ -464,8 +469,6 @@ class Products extends Controllers
 
     //EN PRODUCTOS SERIES
     $series = !empty($_POST['series']) ? arrClean($_POST['series']) : [];
-
-    $matrix = $_SESSION['userData']['establishment']['company']['matrix_establishment_id'];
 
     $response = [];
     if (
@@ -485,37 +488,60 @@ class Products extends Controllers
           intval($variant_id),
           intval($amount),
           floatval($cost),
-          intval($document_id)
+          intval($document_id),
+          $establishment_id
         );
 
         if ($request_variant > 0) {
-          //actualizar costo
-          $request = $this->model->updateCost(
-            $variant_id,
-            $amount,
-            $cost
-          );
-          $arrRes = s26_res("Costo", $request, 2);
-          array_push($response, $arrRes);
-          //ACTUALIZAR STOCK EN MATRIZ
-          $request_stock = $this->model->updateStock(
-            $variant_id,
-            $amount,
-            $matrix
-          );
-          $arrRes = s26_res("Stock", $request_stock, 2);
-          array_push($response, $arrRes);
 
-          //actualizar precios 
-          if ($update_pvp) {
-            $request = $this->model->updatePrices(
-              $variant_id,
-              $pvp_1,
-              $pvp_2,
-              $pvp_3,
-              $pvp_distributor,
+          //VALIDR SI LA VARIANTE EXISTE EN EL ESTABLECIMIENTO 
+
+          if ($product_variant_establishment_id > 0) {
+
+            //actualizar costo
+            $request = $this->model->updateCost(
+              $product_variant_establishment_id,
+              $amount,
+              $cost
             );
-            $arrRes = s26_res("Precios", $request, 2);
+            $arrRes = s26_res("Costo", $request, 2);
+            array_push($response, $arrRes);
+            //ACTUALIZAR STOCK EN ESTABLECIMIENTO
+            $request_stock = $this->model->updateStock(
+              $product_variant_establishment_id,
+              $amount
+            );
+            $arrRes = s26_res("Stock", $request_stock, 2);
+            array_push($response, $arrRes);
+
+            //actualizar precios 
+            if ($update_pvp) {
+              $request = $this->model->updatePrices(
+                $product_variant_establishment_id,
+                $pvp_1,
+                $pvp_2,
+                $pvp_3,
+                $pvp_distributor,
+              );
+              $arrRes = s26_res("Precios", $request, 2);
+              array_push($response, $arrRes);
+            }
+          } else {
+            // INSERTAR VARIANTE EN ESTABLECIMIENTO
+            $request = $this->model->insertVariantEstablishment(
+              $variant_id,
+              $establishment_id,
+              $amount,
+              $min_stock,
+              $max_stock,
+              floatval($cost),
+              floatval($pvp_1),
+              floatval($pvp_2),
+              floatval($pvp_3),
+              floatval($pvp_distributor),
+            );
+
+            $arrRes = s26_res("Variante", $request, 1);
             array_push($response, $arrRes);
           }
 
@@ -544,16 +570,6 @@ class Products extends Controllers
             $arrRes = array('type' => 2, 'msg' => 'No se ingresaron Series, puedes ingresarlas más tarde.');
             array_push($response, $arrRes);
           }
-
-          //Insertar Entrada Establecimientos
-          $request_entry_establishment = $this->model->insertEntryEstablishment(
-            $variant_id,
-            $amount,
-            $matrix,
-            $matrix,
-          );
-          $arrRes = s26_res("Entrada en Establecimiento", $request_entry_establishment, 2);
-          array_push($response, $arrRes);
         }
       } else {
         $request = -5;
@@ -583,8 +599,13 @@ class Products extends Controllers
     //EN PRODUCTOS ENTRADAS 
     $document_id = !empty($_POST['document_id']) ? intval($_POST['document_id']) : '';
 
-    //ESTABLECIMIENTO MATRIZ
-    $matrix = $_SESSION['userData']['establishment']['company']['matrix_establishment_id'];
+    //ESTABLECIMIENTO
+
+    if ($_SESSION['permits'][41]['r']) {
+      $establishment_id = !empty($_POST['establishment_id']) ? intval($_POST['establishment_id']) : $_SESSION['userData']['establishment_id'];
+    } else {
+      $establishment_id = $_SESSION['userData']['establishment_id'];
+    }
 
     // INSERTAR VARIANTES
     $res_variant = [];
@@ -598,14 +619,6 @@ class Products extends Controllers
         $id,
         strClean($variants[$i]['code']),
         strClean($variants[$i]['sku']),
-        intval($variants[$i]['amount']),
-        intval($variants[$i]['min_stock']),
-        intval($variants[$i]['max_stock']),
-        floatval($variants[$i]['cost']),
-        floatval($variants[$i]['pvp_1']),
-        floatval($variants[$i]['pvp_2']),
-        floatval($variants[$i]['pvp_3']),
-        floatval($variants[$i]['pvp_distributor']),
         intval($variants[$i]['variants']['color_id']),
         strClean($variants[$i]['variants']['size']),
         strClean($variants[$i]['variants']['fragance']),
@@ -640,25 +653,28 @@ class Products extends Controllers
           $request_variant,
           intval($variants[$i]['amount']),
           floatval($variants[$i]['cost']),
-          intval($document_id)
+          intval($document_id),
+          $establishment_id
         );
         if ($request_variant > 0) {
           array_push($res_variants, $request_entry_variant);
         }
         // INSERTAR VARIANTE EN ESTABLECIMIENTO
-        $request_variant_establishment = $this->model->insertVariantEstablishment($request_variant, $matrix, intval($variants[$i]['amount']));
+        $request_variant_establishment = $this->model->insertVariantEstablishment(
+          $request_variant,
+          $establishment_id,
+          intval($variants[$i]['amount']),
+          intval($variants[$i]['min_stock']),
+          intval($variants[$i]['max_stock']),
+          floatval($variants[$i]['cost']),
+          floatval($variants[$i]['pvp_1']),
+          floatval($variants[$i]['pvp_2']),
+          floatval($variants[$i]['pvp_3']),
+          floatval($variants[$i]['pvp_distributor']),
+        );
 
         if ($request_variant_establishment > 0) {
           array_push($res_variants, $request_variant_establishment);
-
-          //Insertar Entrada Establecimientos
-          $request_entry_establishment = $this->model->insertEntryEstablishment(
-            $request_variant,
-            intval($variants[$i]['amount']),
-            $matrix,
-            $matrix,
-          );
-          array_push($res_variants, $request_entry_establishment);
         }
 
         // INSERTAR FOTOS DE VARIANTES
@@ -739,6 +755,7 @@ class Products extends Controllers
 
     $variant_id = intval($_POST['variant_id']);
     $amount = intval($_POST['amount']);
+    $product_variant_establishment_id = bigintval($_POST['product_variant_establishment_id']);
 
     $establishment_id = $_SESSION['userData']['establishment_id'];
 
@@ -747,12 +764,10 @@ class Products extends Controllers
       $amount > 0
     ) {
       if ($_SESSION['permitsModule']['u']) {
-
-        //ACTUALIZAR STOCK EN MATRIZ
+        //ACTUALIZAR STOCK EN ESTABLECIMIENTO
         $request = $this->model->updateStock(
-          $variant_id,
-          $amount,
-          $establishment_id
+          $product_variant_establishment_id,
+          $amount
         );
 
         if ($request > 0) {

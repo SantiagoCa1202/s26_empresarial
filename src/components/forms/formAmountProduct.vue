@@ -1,7 +1,11 @@
 <template>
   <s26-modal-multiple
     id="formAmountProduct"
-    title="Añadir Cantidad"
+    :title="
+      form.product_variant_establishment_id > 0
+        ? 'Añadir Cantidad'
+        : 'Registrar Variante'
+    "
     :levels="levels"
     body_style="min-height: 475px;"
     @onReset="onReset"
@@ -20,6 +24,7 @@
             is_null
             assign
             s26_required
+            :establishment_id="form.establishment_id"
           ></s26-select-buys>
         </div>
         <div class="col-sm-4">
@@ -77,11 +82,38 @@
 
       <div class="col-12 row mx-0 variants">
         <h2 class="h6 fw-600">Stock y Costos.</h2>
-        <div class="col-4">
+
+        <div class="col-6">
+          <s26-form-input
+            label="Stock Mínimo"
+            id="form-min_stock"
+            type="number"
+            v-model="form.min_stock"
+            number
+            s26_required
+            v-if="form.product_variant_establishment_id == null"
+          >
+          </s26-form-input>
+        </div>
+        <div class="col-6">
+          <s26-form-input
+            label="Stock Máximo"
+            id="form-max_stock"
+            type="number"
+            v-model="form.max_stock"
+            number
+            s26_required
+            v-if="form.product_variant_establishment_id == null"
+          >
+          </s26-form-input>
+        </div>
+        <div class="col-4" v-if="form.product_variant_establishment_id > 0">
           <s26-input-read label="Stock Actual" :content="data.stock">
           </s26-input-read>
         </div>
-        <div class="col-4">
+        <div
+          :class="form.product_variant_establishment_id > 0 ? 'col-4' : 'col-6'"
+        >
           <s26-form-input
             label="Cantidad"
             id="form-amount"
@@ -93,15 +125,19 @@
           >
           </s26-form-input>
         </div>
-        <div class="col-4">
+        <div
+          :class="form.product_variant_establishment_id > 0 ? 'col-4' : 'col-6'"
+        >
           <s26-input-read label="Nuevo Stock" :content="new_stock">
           </s26-input-read>
         </div>
-        <div class="col-4">
+        <div class="col-4" v-if="form.product_variant_establishment_id > 0">
           <s26-input-read label="Costo Actual" :content="data.cost" money>
           </s26-input-read>
         </div>
-        <div class="col-4">
+        <div
+          :class="form.product_variant_establishment_id > 0 ? 'col-4' : 'col-6'"
+        >
           <s26-form-input
             label="Costo"
             id="form-cost"
@@ -115,7 +151,9 @@
           >
           </s26-form-input>
         </div>
-        <div class="col-4">
+        <div
+          :class="form.product_variant_establishment_id > 0 ? 'col-4' : 'col-6'"
+        >
           <s26-input-read label="Nuevo Costo" :content="new_cost" money>
           </s26-input-read>
         </div>
@@ -130,6 +168,7 @@
             type="checkbox"
             v-model="form.update_pvp"
             id="form-update_pvp"
+            :disabled="form.product_variant_establishment_id == null"
           />
           <label class="form-check-label" for="form-update_pvp">
             Actualizar Precios.
@@ -257,6 +296,10 @@ export default {
       },
       form: {
         product_id: "",
+        product_variant_establishment_id: "",
+        establishment_id: "",
+        min_stock: 0,
+        max_stock: 0,
         amount: 1,
         update_pvp: false,
         cost: "",
@@ -307,15 +350,24 @@ export default {
       this.axios
         .get("/products/getVariant/" + id)
         .then((res) => {
-          console.log(res.data)
           this.data = res.data;
           this.form.product_id = this.data.product_id;
+          this.form.product_variant_establishment_id =
+            this.data.product_variant_establishment_id;
+          this.form.establishment_id = this.data.establishment_id;
           this.form.cost = this.data.cost;
           this.form.pvp_1 = this.data.pvp_1;
           this.form.pvp_2 = this.data.pvp_2;
           this.form.pvp_3 = this.data.pvp_3;
           this.form.serial = this.data.serial;
           this.form.pvp_distributor = this.data.pvp_distributor;
+
+          if (this.form.product_variant_establishment_id == null) {
+            this.$alertify.message(
+              "La Variante Existe, pero no esta registrada en este establecimiento. "
+            );
+            this.form.update_pvp = true;
+          }
         })
         .catch((err) => console.log(err));
     },

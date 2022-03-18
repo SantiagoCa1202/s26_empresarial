@@ -181,7 +181,10 @@
                 >
                   {{ variant.sku }}
                 </span>
-                <span class="btn btn-sm btn-info fw-600" title="Stock de Variante">
+                <span
+                  class="btn btn-sm btn-info fw-600"
+                  title="Stock de Variante"
+                >
                   {{ variant.establishment_stock.info.stock }}
                 </span>
 
@@ -213,21 +216,22 @@
                   >
                   </s26-input-read>
                 </div>
-                <div class="col-2">
+                <div class="col-4">
                   <s26-input-read label="Stock" :content="estab.stock">
-                  </s26-input-read>
-                </div>
-                <div class="col-2">
-                  <s26-input-read
-                    label="Estado"
-                    :content="estab.status == 1 ? 'Activo' : 'Inactivo'"
-                  >
                   </s26-input-read>
                 </div>
                 <div class="col-12">
                   <span class="fw-600">Dirección:</span>
                   {{ estab.city }} -
                   {{ estab.address }}
+                  <span
+                    :class="[
+                      'float-end',
+                      estab.status == 1 ? 'text-success' : 'text-danger',
+                    ]"
+                  >
+                    {{ estab.status == 1 ? "Activo" : "Inactivo" }}
+                  </span>
                 </div>
               </div>
             </div>
